@@ -22,15 +22,15 @@ public final class CommandRegistry {
 
     private CommandRegistry(){
         commandMap.put(new UrlBind("", RequestMethod.GET), new MainCommand());
-        commandMap.put(new UrlBind("register", RequestMethod.GET),
+        commandMap.put(new UrlBind("/register", RequestMethod.GET),
                 (request, response) -> {
                     List<String> formErrors = CookieFormErrorUtils.getErrorsFromCookie(request.getCookies());
                     request.setAttribute("errors", formErrors);
                     CookieFormErrorUtils.deleteErrorCookies(request.getCookies(), response);
                     return new CommandResult("register.jsp", RequestDirection.FORWARD);
                 });
-        commandMap.put(new UrlBind("register", RequestMethod.POST), new RegisterPostCommand());
-        commandMap.put(new UrlBind("login", RequestMethod.GET),
+        commandMap.put(new UrlBind("/register", RequestMethod.POST), new RegisterPostCommand());
+        commandMap.put(new UrlBind("/login", RequestMethod.GET),
                 ((request, response) -> {
                     //TODO make one method for this
                     List<String> formErrors = CookieFormErrorUtils.getErrorsFromCookie(request.getCookies());
@@ -60,7 +60,7 @@ public final class CommandRegistry {
             return "";
         }
         System.out.println("Path info: " + pathInfo);
-        return pathInfo.replaceAll("s|\\/".replace("s", request.getServerName()), "");
+        return pathInfo.replaceAll("s".replace("s", request.getServerName()), "");
     }
 
 }
