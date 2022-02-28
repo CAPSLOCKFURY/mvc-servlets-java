@@ -1,6 +1,7 @@
 package forms.base.prg;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.UTF8UrlCoder;
 
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CookieFormErrorUtils {
+public class CookieFormErrorsPRG implements FormErrorPRG {
 
     public static Cookie setErrorCookie(List<String> errors){
         String joinedErrors = String.join(";", errors);
@@ -32,4 +33,10 @@ public class CookieFormErrorUtils {
         });
     }
 
+    @Override
+    public void processErrors(HttpServletRequest request, HttpServletResponse response) {
+        List<String> formErrors = getErrorsFromCookie(request.getCookies());
+        request.setAttribute("errors", formErrors);
+        deleteErrorCookies(request.getCookies(), response);
+    }
 }

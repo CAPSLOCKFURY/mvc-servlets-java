@@ -3,14 +3,14 @@ package commands;
 import commands.impl.LoginPostCommand;
 import commands.impl.MainCommand;
 import commands.impl.RegisterPostCommand;
+import commands.utils.RequestDirection;
+import commands.utils.RequestMethod;
 import exceptions.CommandNotFoundException;
-import forms.RegisterForm;
-import forms.base.prg.CookieFormErrorUtils;
+import forms.base.prg.FormErrorPRG;
+import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
-import utils.UTF8UrlCoder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,21 +24,18 @@ public final class CommandRegistry {
         commandMap.put(new UrlBind("", RequestMethod.GET), new MainCommand());
         commandMap.put(new UrlBind("/register", RequestMethod.GET),
                 (request, response) -> {
-                    List<String> formErrors = CookieFormErrorUtils.getErrorsFromCookie(request.getCookies());
-                    request.setAttribute("errors", formErrors);
-                    CookieFormErrorUtils.deleteErrorCookies(request.getCookies(), response);
+                    FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
+                    errorProcessor.processErrors(request, response);
                     return new CommandResult("register.jsp", RequestDirection.FORWARD);
                 });
         commandMap.put(new UrlBind("/register", RequestMethod.POST), new RegisterPostCommand());
         commandMap.put(new UrlBind("/login", RequestMethod.GET),
                 ((request, response) -> {
-                    //TODO make one method for this
-                    List<String> formErrors = CookieFormErrorUtils.getErrorsFromCookie(request.getCookies());
-                    request.setAttribute("errors", formErrors);
-                    CookieFormErrorUtils.deleteErrorCookies(request.getCookies(), response);
+                    FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
+                    errorProcessor.processErrors(request, response);
                     return new CommandResult("login.jsp", RequestDirection.FORWARD);
                 }));
-        commandMap.put(new UrlBind("login", RequestMethod.POST), new LoginPostCommand());
+        commandMap.put(new UrlBind("/login", RequestMethod.POST), new LoginPostCommand());
     }
 
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {

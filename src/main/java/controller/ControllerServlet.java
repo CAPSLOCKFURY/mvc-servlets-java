@@ -5,7 +5,7 @@ import java.io.*;
 import commands.Command;
 import commands.CommandRegistry;
 import commands.CommandResult;
-import commands.RequestDirection;
+import commands.utils.RequestDirection;
 import exceptions.CommandNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;

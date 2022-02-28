@@ -1,5 +1,7 @@
 package commands;
 
+import commands.utils.RequestDirection;
+
 public class CommandResult {
 
     private final String jspPage;

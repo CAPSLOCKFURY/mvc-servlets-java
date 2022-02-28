@@ -2,7 +2,7 @@ package commands.impl;
 
 import commands.Command;
 import commands.CommandResult;
-import commands.RequestDirection;
+import commands.utils.RequestDirection;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

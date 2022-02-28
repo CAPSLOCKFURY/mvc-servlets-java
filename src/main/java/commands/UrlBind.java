@@ -1,5 +1,7 @@
 package commands;
 
+import commands.utils.RequestMethod;
+
 import java.util.Objects;
 
 public class UrlBind {

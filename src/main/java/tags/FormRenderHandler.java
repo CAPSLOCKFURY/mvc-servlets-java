@@ -21,7 +21,6 @@ public class FormRenderHandler extends TagSupport {
 
     @Override
     public int doStartTag(){
-        //TODO make sure class extends Form
         out = pageContext.getOut();
         Class<?> formClass = classForName(formClassPath);
         if(formClass == null || !formClass.getSuperclass().equals(Form.class)){
