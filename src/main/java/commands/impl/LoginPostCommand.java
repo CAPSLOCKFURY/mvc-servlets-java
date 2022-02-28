@@ -8,6 +8,8 @@ import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import static utils.UrlUtils.getAbsoluteUrl;
+
 public class LoginPostCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -17,9 +19,9 @@ public class LoginPostCommand implements Command {
         //TODO do this only if form has errors
         response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         if(isValid){
-            return new CommandResult("/MVCProject_war_exploded/project", RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         } else {
-            return new CommandResult("/MVCProject_war_exploded/project/login", RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("/login", request), RequestDirection.REDIRECT);
         }
     }
 }

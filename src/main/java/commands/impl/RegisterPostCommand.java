@@ -7,6 +7,9 @@ import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.UrlUtils;
+
+import static utils.UrlUtils.getAbsoluteUrl;
 
 public class RegisterPostCommand implements Command {
 
@@ -17,10 +20,9 @@ public class RegisterPostCommand implements Command {
         boolean isValid = form.validate();
         response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         if(isValid){
-            //TODO Fix urls
-            return new CommandResult("/MVCProject_war_exploded/project", RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         } else {
-            return new CommandResult("/MVCProject_war_exploded/project/register", RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("/register", request), RequestDirection.REDIRECT);
         }
     }
 }
