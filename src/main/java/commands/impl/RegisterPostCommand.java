@@ -11,12 +11,12 @@ public class RegisterPostCommand implements Command {
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
-        RegisterForm form = new RegisterForm(
-                request.getParameter("login"), request.getParameter("email"), request.getParameter("password"), request.getParameter("repeatPassword")
-        );
+        RegisterForm form = new RegisterForm();
+        form.mapRequestToForm(form, request);
         boolean isValid = form.validate();
         request.setAttribute("errors", form.getErrors());
         if(isValid){
+            //TODO Fix urls
             return new CommandResult("/MVCProject_war_exploded/project", RequestDirection.REDIRECT);
         } else {
             //TODO Add prg

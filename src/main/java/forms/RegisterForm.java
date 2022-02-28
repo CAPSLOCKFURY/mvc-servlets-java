@@ -10,19 +10,23 @@ public class RegisterForm extends Form {
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
     @HtmlInput(type = InputType.TEXT, placeholder = "Login")
-    private final String login;
+    private String login;
     @HtmlInput(type = InputType.TEXT, placeholder = "Email")
-    private final String email;
+    private String email;
     @HtmlInput(type = InputType.PASSWORD, placeholder = "Password")
-    private final String password;
+    private String password;
     @HtmlInput(type = InputType.PASSWORD, placeholder = "Repeat Password")
-    private final String repeatPassword;
+    private String repeatPassword;
 
     public RegisterForm(String login, String email, String password, String repeatPassword){
         this.login = login;
         this.email = email;
         this.password = password;
         this.repeatPassword = repeatPassword;
+    }
+
+    public RegisterForm(){
+
     }
 
     @Override
@@ -52,5 +56,21 @@ public class RegisterForm extends Form {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
     }
 }
