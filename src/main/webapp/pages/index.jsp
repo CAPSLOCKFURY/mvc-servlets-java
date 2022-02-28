@@ -6,10 +6,7 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<t:mytag message="Test message attribute"/>
-<h1><%= "Hello World!" %>
-</h1>
-<br/>
-<a href=${pageContext.request.contextPath}/project/register>Register</a>
+<jsp:include page="header.jsp"/>
+<h1><%= "Hello World!" %></h1>
 </body>
 </html>

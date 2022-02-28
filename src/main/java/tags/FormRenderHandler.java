@@ -1,5 +1,6 @@
 package tags;
 
+import forms.base.Form;
 import forms.base.HtmlInput;
 import forms.base.HtmlInputRenderer;
 import jakarta.servlet.jsp.JspWriter;
@@ -23,7 +24,7 @@ public class FormRenderHandler extends TagSupport {
         //TODO make sure class extends Form
         out = pageContext.getOut();
         Class<?> formClass = classForName(formClassPath);
-        if(formClass == null){
+        if(formClass == null || !formClass.getSuperclass().equals(Form.class)){
             return SKIP_BODY;
         }
         Arrays.stream(formClass.getDeclaredFields())

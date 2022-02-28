@@ -15,8 +15,8 @@ public abstract class Form {
         return errors;
     }
 
-    public final <T extends Form> void mapRequestToForm(T form, HttpServletRequest request){
-        Class<? extends Form> formClass = form.getClass();
+    public final void mapRequestToForm(HttpServletRequest request){
+        Class<? extends Form> formClass = this.getClass();
         Arrays.stream(formClass.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(HtmlInput.class))
                 .forEach(field -> {
@@ -25,7 +25,7 @@ public abstract class Form {
                         //TODO put this in another method
                         String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
                         Method method = formClass.getMethod("set".concat(field.getName().substring(0,1).toUpperCase().concat(field.getName().substring(1))), field.getType());
-                        method.invoke(form, request.getParameter(name));
+                        method.invoke(this, request.getParameter(name));
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
                     }

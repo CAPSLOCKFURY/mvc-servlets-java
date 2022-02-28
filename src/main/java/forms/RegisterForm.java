@@ -18,19 +18,9 @@ public class RegisterForm extends Form {
     @HtmlInput(type = InputType.PASSWORD, placeholder = "Repeat Password")
     private String repeatPassword;
 
-    public RegisterForm(String login, String email, String password, String repeatPassword){
-        this.login = login;
-        this.email = email;
-        this.password = password;
-        this.repeatPassword = repeatPassword;
-    }
-
-    public RegisterForm(){
-
-    }
-
     @Override
     public boolean validate(){
+        //TODO null checks
         if(!password.equals(repeatPassword)){
             errors.add("Password mismatch");
         }
