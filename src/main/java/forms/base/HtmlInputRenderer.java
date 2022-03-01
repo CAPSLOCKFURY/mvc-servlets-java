@@ -40,7 +40,6 @@ public class HtmlInputRenderer {
     }
 
     public void setLocale(String locale){
-        System.out.println("Html input rendered set locale is " +locale);
         this.locale = locale;
     }
 }
