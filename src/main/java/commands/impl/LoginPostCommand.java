@@ -16,8 +16,9 @@ public class LoginPostCommand implements Command {
         LoginForm form = new LoginForm();
         form.mapRequestToForm(request);
         boolean isValid = form.validate();
-        //TODO do this only if form has errors
-        response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+        if (!isValid) {
+            response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+        }
         if(isValid){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         } else {

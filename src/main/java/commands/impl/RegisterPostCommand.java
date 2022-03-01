@@ -18,7 +18,9 @@ public class RegisterPostCommand implements Command {
         RegisterForm form = new RegisterForm();
         form.mapRequestToForm(request);
         boolean isValid = form.validate();
-        response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+        if (!isValid) {
+            response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+        }
         if(isValid){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         } else {
