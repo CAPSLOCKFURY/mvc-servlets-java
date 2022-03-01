@@ -12,7 +12,9 @@ import java.util.Locale;
 public abstract class Form {
     protected List<String> errors = new LinkedList<>();
 
-    protected Locale locale;
+    protected Locale locale = Locale.ROOT;
+
+    public abstract boolean validate();
 
     public List<String> getErrors() {
         return errors;
@@ -36,6 +38,7 @@ public abstract class Form {
 
     }
 
-    public abstract boolean validate();
-
+    public void setLocale(Locale locale){
+        this.locale = locale;
+    }
 }

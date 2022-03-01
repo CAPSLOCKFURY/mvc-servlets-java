@@ -2,6 +2,7 @@ package forms;
 
 import forms.base.*;
 
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class RegisterForm extends Form {
@@ -20,18 +21,19 @@ public class RegisterForm extends Form {
 
     @Override
     public boolean validate(){
+        ResourceBundle formsBundle = ResourceBundle.getBundle("forms", locale);
         //TODO null checks
         if(!password.equals(repeatPassword)){
-            errors.add("Password mismatch");
+            errors.add(formsBundle.getString("errors.repeatPassword"));
         }
         if(!loginPattern.matcher(login).matches()){
-            errors.add("Login does not match regex");
+            errors.add(formsBundle.getString("errors.loginRegex"));
         }
         if(!emailPattern.matcher(email).matches()){
-            errors.add("Email does not match regex");
+            errors.add(formsBundle.getString("errors.emailRegex"));
         }
         if(!passwordPattern.matcher(password).matches()){
-            errors.add("Password does not match regex");
+            errors.add(formsBundle.getString("errors.passwordRegex"));
         }
         return errors.size() == 0;
     }

@@ -1,7 +1,5 @@
 package forms.base;
 
-import utils.LocaleUtils;
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 
