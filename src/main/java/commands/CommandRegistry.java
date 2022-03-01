@@ -38,7 +38,9 @@ public final class CommandRegistry {
         commandMap.put(new UrlBind("/login", RequestMethod.POST), new LoginPostCommand());
         commandMap.put(new UrlBind("/change-language", RequestMethod.GET),
                 ((request, response) -> {
-                    response.addCookie(new Cookie("Content-Language", request.getParameter("lang")));
+                    Cookie langCookie = new Cookie("Content-Language", request.getParameter("lang"));
+                    langCookie.setMaxAge(-1);
+                    response.addCookie(langCookie);
                     return new CommandResult(request.getHeader("referer"), RequestDirection.REDIRECT);
                 }));
     }

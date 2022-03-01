@@ -12,9 +12,9 @@ public class LoginForm extends Form {
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
 
-    @HtmlInput(type = InputType.TEXT, placeholder = "Login")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
     private String login;
-    @HtmlInput(type = InputType.PASSWORD, placeholder = "Password")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
     private String password;
 
     @Override
