@@ -4,6 +4,7 @@ import forms.base.Form;
 import forms.base.HtmlInput;
 import forms.base.InputType;
 
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class LoginForm extends Form {
@@ -19,11 +20,12 @@ public class LoginForm extends Form {
 
     @Override
     public boolean validate() {
+        ResourceBundle formBundle = ResourceBundle.getBundle("forms", locale);
         if(!loginPattern.matcher(login).matches()){
-            errors.add("Login does not match regex");
+            errors.add(formBundle.getString("errors.loginRegex"));
         }
         if(!passwordPattern.matcher(password).matches()){
-            errors.add("Password does not match regex");
+            errors.add(formBundle.getString("errors.passwordRegex"));
         }
         return errors.size() == 0;
     }
