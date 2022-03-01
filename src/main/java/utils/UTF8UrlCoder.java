@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-public class UTF8UrlCoder {
+public final class UTF8UrlCoder {
 
     public static String encode(String s){
         try{

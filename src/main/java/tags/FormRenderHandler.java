@@ -3,8 +3,10 @@ package tags;
 import forms.base.Form;
 import forms.base.HtmlInput;
 import forms.base.HtmlInputRenderer;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import utils.LocaleUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,8 +32,12 @@ public class FormRenderHandler extends TagSupport {
                 .filter(field -> field.isAnnotationPresent(HtmlInput.class))
                 .forEach(field -> {
                     HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
+                    //TODO put this into another methods
                     String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
-                    HtmlInputRenderer inputRenderer = new HtmlInputRenderer(htmlInput.type(), name, htmlInput.placeholder());
+                    String localizedPlaceholder = htmlInput.localizedPlaceholder().equals("non-localized") ? null : htmlInput.localizedPlaceholder();
+                    //TODO probably add builder pattern here
+                    HtmlInputRenderer inputRenderer = new HtmlInputRenderer(htmlInput.type(), name, htmlInput.placeholder(), localizedPlaceholder);
+                    inputRenderer.setLocale(LocaleUtils.getLocaleFromCookies(((HttpServletRequest)pageContext.getRequest()).getCookies()));
                     write(inputRenderer.construct());
                 });
         return SKIP_BODY;

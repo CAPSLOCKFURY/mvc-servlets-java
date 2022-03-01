@@ -7,7 +7,6 @@ import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import utils.UrlUtils;
 
 import static utils.UrlUtils.getAbsoluteUrl;
 

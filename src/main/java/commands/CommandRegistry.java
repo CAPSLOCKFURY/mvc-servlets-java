@@ -8,8 +8,8 @@ import commands.utils.RequestMethod;
 import exceptions.CommandNotFoundException;
 import forms.base.prg.FormErrorPRG;
 import forms.base.prg.CookieFormErrorsPRG;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +36,11 @@ public final class CommandRegistry {
                     return new CommandResult("login.jsp", RequestDirection.FORWARD);
                 }));
         commandMap.put(new UrlBind("/login", RequestMethod.POST), new LoginPostCommand());
+        commandMap.put(new UrlBind("/change-language", RequestMethod.GET),
+                ((request, response) -> {
+                    response.addCookie(new Cookie("Content-Language", request.getParameter("lang")));
+                    return new CommandResult(request.getHeader("referer"), RequestDirection.REDIRECT);
+                }));
     }
 
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {
