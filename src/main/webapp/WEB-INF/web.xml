@@ -14,4 +14,8 @@
     <welcome-file-list>
         <welcome-file>ControllerServlet</welcome-file>
     </welcome-file-list>
+<!--    <error-page>-->
+<!--        <error-code>404</error-code>-->
+<!--        <location>/pages/errors/error_404.jsp</location>-->
+<!--    </error-page>-->
 </web-app>
