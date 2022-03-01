@@ -27,7 +27,7 @@ public class CookieFormErrorsPRG implements FormErrorPRG {
     public static void deleteErrorCookies(Cookie[] cookies, HttpServletResponse response){
         List<Cookie> deleteList = Arrays.stream(cookies).filter(c -> c.getName().equals("errors")).collect(Collectors.toList());
         deleteList.forEach(c -> {
-            c.setValue(null);
+            c.setValue("");
             c.setMaxAge(0);
             response.addCookie(c);
         });

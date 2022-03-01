@@ -12,6 +12,7 @@ public final class LocaleUtils {
 
     private final static HashMap<String, Locale> localeCache = new HashMap();
 
+    @Deprecated
     public static Locale of(String locale){
         Locale cachedLocale = localeCache.get(locale);
         if(cachedLocale == null){
@@ -23,6 +24,9 @@ public final class LocaleUtils {
     }
 
     public static String getLocaleFromCookies(Cookie[] cookies){
+        if(cookies == null || cookies.length == 0){
+            return "en";
+        }
         Map<String, String> cookieMap = Arrays.stream(cookies).collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
         return cookieMap.getOrDefault("Content-Language", "en");
     }

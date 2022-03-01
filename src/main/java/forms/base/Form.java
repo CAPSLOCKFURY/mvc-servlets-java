@@ -7,9 +7,12 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class Form {
     protected List<String> errors = new LinkedList<>();
+
+    protected Locale locale;
 
     public List<String> getErrors() {
         return errors;
@@ -30,6 +33,7 @@ public abstract class Form {
                         e.printStackTrace();
                     }
                 });
+
     }
 
     public abstract boolean validate();

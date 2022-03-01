@@ -11,6 +11,7 @@ public class HtmlInputRenderer {
     private final String placeholder;
     private final String localizedPlaceholder;
 
+    //TODO put this into Locale class
     private String locale = "ru_RU";
 
     public HtmlInputRenderer(InputType type, String name, String placeholder, String localizedPlaceholder) {
@@ -31,7 +32,7 @@ public class HtmlInputRenderer {
         }
         if(localizedPlaceholder != null){
             sb.append(String.format("placeholder=\"%s\" ",
-                    ResourceBundle.getBundle("forms", LocaleUtils.of(locale))
+                    ResourceBundle.getBundle("forms", new Locale(locale))
                             .getString("placeholder." + localizedPlaceholder)));
         }
         sb.append(">");
@@ -39,6 +40,7 @@ public class HtmlInputRenderer {
     }
 
     public void setLocale(String locale){
+        System.out.println("Html input rendered set locale is " +locale);
         this.locale = locale;
     }
 }
