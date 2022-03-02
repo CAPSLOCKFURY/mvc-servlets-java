@@ -1,18 +1,15 @@
 package commands;
 
-import commands.impl.LoginPostCommand;
-import commands.impl.MainCommand;
-import commands.impl.RegisterPostCommand;
-import commands.utils.RequestDirection;
-import commands.utils.RequestMethod;
+import commands.base.*;
 import exceptions.CommandNotFoundException;
 import forms.base.prg.FormErrorPRG;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import utils.ClassUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public final class CommandRegistry {
 
@@ -21,21 +18,21 @@ public final class CommandRegistry {
     private final Map<UrlBind, Command> commandMap = new HashMap<>();
 
     private CommandRegistry(){
-        commandMap.put(new UrlBind("", RequestMethod.GET), new MainCommand());
+        //TODO make config file for this
+        List<Class<? extends Command>> commands = ClassUtils.getAnnotatedCommandClassesInPackage("commands.impl");
+        registerAnnotatedCommands(commands);
         commandMap.put(new UrlBind("/register", RequestMethod.GET),
                 (request, response) -> {
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
                     errorProcessor.processErrors(request, response);
                     return new CommandResult("register.jsp", RequestDirection.FORWARD);
                 });
-        commandMap.put(new UrlBind("/register", RequestMethod.POST), new RegisterPostCommand());
         commandMap.put(new UrlBind("/login", RequestMethod.GET),
                 ((request, response) -> {
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
                     errorProcessor.processErrors(request, response);
                     return new CommandResult("login.jsp", RequestDirection.FORWARD);
                 }));
-        commandMap.put(new UrlBind("/login", RequestMethod.POST), new LoginPostCommand());
         commandMap.put(new UrlBind("/change-language", RequestMethod.GET),
                 ((request, response) -> {
                     Cookie langCookie = new Cookie("Content-Language", request.getParameter("lang"));
@@ -64,7 +61,20 @@ public final class CommandRegistry {
             return "";
         }
         System.out.println("Path info: " + pathInfo);
-        return pathInfo.replaceAll("s".replace("s", request.getServerName()), "");
+        return pathInfo.replaceAll(request.getServerName(), "");
+    }
+
+    private void registerAnnotatedCommands(List<Class<? extends Command>> commands){
+        commands.forEach(c ->{
+            try {
+                WebMapping webMapping = c.getAnnotation(WebMapping.class);
+                Command instance = c.getConstructor().newInstance();
+                UrlBind bind = new UrlBind(webMapping.url(), webMapping.method());
+                commandMap.put(bind, instance);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }

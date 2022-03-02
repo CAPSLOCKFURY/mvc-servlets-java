@@ -1,8 +1,6 @@
 package commands.impl;
 
-import commands.Command;
-import commands.CommandResult;
-import commands.utils.RequestDirection;
+import commands.base.*;
 import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,8 +11,8 @@ import java.util.Locale;
 
 import static utils.UrlUtils.getAbsoluteUrl;
 
+@WebMapping(url = "/register", method = RequestMethod.POST)
 public class RegisterPostCommand implements Command {
-
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         RegisterForm form = new RegisterForm();

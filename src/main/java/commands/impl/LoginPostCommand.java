@@ -1,8 +1,6 @@
 package commands.impl;
 
-import commands.Command;
-import commands.CommandResult;
-import commands.utils.RequestDirection;
+import commands.base.*;
 import forms.LoginForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +11,7 @@ import java.util.Locale;
 
 import static utils.UrlUtils.getAbsoluteUrl;
 
+@WebMapping(url = "/login", method = RequestMethod.POST)
 public class LoginPostCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

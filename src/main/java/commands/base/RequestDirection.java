@@ -1,4 +1,4 @@
-package commands.utils;
+package commands.base;
 
 public enum RequestDirection {
     FORWARD, REDIRECT

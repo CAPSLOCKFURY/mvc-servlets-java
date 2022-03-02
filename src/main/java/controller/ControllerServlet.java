@@ -2,10 +2,10 @@ package controller;
 
 import java.io.*;
 
-import commands.Command;
+import commands.base.Command;
 import commands.CommandRegistry;
-import commands.CommandResult;
-import commands.utils.RequestDirection;
+import commands.base.CommandResult;
+import commands.base.RequestDirection;
 import exceptions.CommandNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
