@@ -15,10 +15,12 @@ import utils.testfolders.case4.ACase4;
 import utils.testfolders.case4.BCase4;
 import utils.testfolders.case4.CCase4;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClassUtilsTest {
 
