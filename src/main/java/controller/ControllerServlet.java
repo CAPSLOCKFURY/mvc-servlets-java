@@ -1,14 +1,16 @@
 package controller;
 
-import java.io.*;
-
-import commands.base.Command;
 import commands.CommandRegistry;
+import commands.base.Command;
 import commands.base.CommandResult;
 import commands.base.RequestDirection;
 import exceptions.CommandNotFoundException;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 public class ControllerServlet extends HttpServlet {
 

@@ -1,6 +1,8 @@
 package forms;
 
-import forms.base.*;
+import forms.base.Form;
+import forms.base.HtmlInput;
+import forms.base.InputType;
 
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;

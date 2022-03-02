@@ -2,14 +2,17 @@ package commands;
 
 import commands.base.*;
 import exceptions.CommandNotFoundException;
-import forms.base.prg.FormErrorPRG;
 import forms.base.prg.CookieFormErrorsPRG;
+import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import utils.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public final class CommandRegistry {
 
