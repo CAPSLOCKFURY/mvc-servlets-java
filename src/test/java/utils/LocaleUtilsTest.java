@@ -15,7 +15,7 @@ public class LocaleUtilsTest {
     @MethodSource("getLocaleFromCookiesCases")
     public void testGetLocaleFromCookies(Cookie[] cookies, String expectedLocale){
         String contentLang = LocaleUtils.getLocaleFromCookies(cookies);
-        assertEquals(contentLang, expectedLocale);
+        assertEquals(expectedLocale, contentLang);
     }
 
     public static Stream<Arguments> getLocaleFromCookiesCases(){

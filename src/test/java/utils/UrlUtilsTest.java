@@ -19,7 +19,7 @@ public class UrlUtilsTest {
         Mockito.when(request.getContextPath()).thenReturn("/mockito");
         Mockito.when(request.getServletPath()).thenReturn("/app");
         String result = UrlUtils.getAbsoluteUrl(url, request);
-        assertEquals(result, expected);
+        assertEquals(expected, result);
     }
 
     public static Stream<Arguments> getAbsoluteUrlCases(){

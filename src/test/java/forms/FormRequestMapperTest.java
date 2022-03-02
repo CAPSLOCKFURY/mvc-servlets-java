@@ -23,7 +23,7 @@ public class FormRequestMapperTest {
         Arrays.stream(pairs).forEach(pair ->
                 Mockito.doReturn(pair.getValue()).when(request).getParameter(pair.getKey()));
         form.mapRequestToForm(request);
-        assertEquals(form.toString(), expected);
+        assertEquals(expected, form.toString());
     }
 
     public static Stream<Arguments> mapperCases(){

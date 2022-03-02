@@ -17,7 +17,7 @@ public class HtmlInputRendererTest {
     public void testNonLocalized(InputType type, String name, String placeholder, String expected){
         HtmlInputRenderer renderer = new HtmlInputRenderer(type, name, placeholder, null);
         String renderedInput = renderer.construct();
-        assertEquals(renderedInput, expected);
+        assertEquals(expected, renderedInput);
     }
 
     @ParameterizedTest
@@ -26,7 +26,7 @@ public class HtmlInputRendererTest {
         HtmlInputRenderer renderer = new HtmlInputRenderer(type, name, "", localizedPlaceholder);
         renderer.setLocale(locale);
         String renderedInput = renderer.construct();
-        assertEquals(renderedInput, expected);
+        assertEquals(expected, renderedInput);
     }
 
     public static Stream<Arguments> nonLocalizedCases(){

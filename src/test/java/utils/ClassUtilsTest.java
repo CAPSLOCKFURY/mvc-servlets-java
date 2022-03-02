@@ -28,14 +28,14 @@ public class ClassUtilsTest {
     @MethodSource("getClassesInPackageCases")
     public void testGetClassesInPackage(String packageName, List<Class<?>> expected){
         List<Class<?>> classes = ClassUtils.getClassesInPackage(packageName);
-        assertEquals(classes, expected);
+        assertEquals(expected, classes);
     }
 
     @ParameterizedTest
     @MethodSource("getAnnotatedCommandClassesInPackageCases")
     public void testGetAnnotatedCommandClassesInPackage(String packageName, List<Class<?>> expected){
         List<Class<? extends Command>> classes = ClassUtils.getAnnotatedCommandClassesInPackage(packageName);
-        assertEquals(classes, expected);
+        assertEquals(expected, classes);
     }
 
     public static Stream<Arguments> getClassesInPackageCases(){
