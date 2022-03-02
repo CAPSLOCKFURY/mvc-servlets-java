@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ClassUtils {
+public final class ClassUtils {
 
     public static List<Class<?>> getClassesInPackage(String packageName){
         //TODO add recursive directories support
