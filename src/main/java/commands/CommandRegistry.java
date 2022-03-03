@@ -6,6 +6,8 @@ import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class CommandRegistry {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final CommandRegistry instance = new CommandRegistry();
 
@@ -46,12 +50,12 @@ public final class CommandRegistry {
     }
 
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {
-        System.out.println("Resolving command");
+        logger.debug("Resolving command");
         String url = getRequestUrl(request);
-        System.out.println(url);
+        logger.debug(url);
         UrlBind urlBind = new UrlBind(url, RequestMethod.valueOf(request.getMethod()));
         return Optional.ofNullable(commandMap.get(urlBind))
-                .orElseThrow(CommandNotFoundException::new);
+                .orElseThrow(() -> {logger.error("Command not found"); return new CommandNotFoundException();});
     }
 
     public static CommandRegistry getInstance() {
@@ -60,10 +64,10 @@ public final class CommandRegistry {
 
     private static String getRequestUrl(HttpServletRequest request){
         String pathInfo = request.getPathInfo();
+        logger.debug("Path info: " + pathInfo);
         if(pathInfo == null){
             return "";
         }
-        System.out.println("Path info: " + pathInfo);
         return pathInfo.replaceAll(request.getServerName(), "");
     }
 
