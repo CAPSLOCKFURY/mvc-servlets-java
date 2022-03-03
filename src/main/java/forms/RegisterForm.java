@@ -12,13 +12,13 @@ public class RegisterForm extends Form {
     private final static Pattern emailPattern = Pattern.compile("[a-z0-9.]+@[a-z]+(.com|.net|.ukr|.ru|.ua)");
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
-    @HtmlInput(type = InputType.TEXT, placeholder = "Login", localizedPlaceholder = "login")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
     private String login;
-    @HtmlInput(type = InputType.TEXT, placeholder = "Email", localizedPlaceholder = "email")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email")
     private String email;
-    @HtmlInput(type = InputType.PASSWORD, placeholder = "Password", localizedPlaceholder = "password")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
     private String password;
-    @HtmlInput(type = InputType.PASSWORD, placeholder = "Repeat Password", localizedPlaceholder = "repeatPassword")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword")
     private String repeatPassword;
 
     @Override
