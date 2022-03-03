@@ -35,8 +35,11 @@ public class FormRenderHandler extends TagSupport {
                     //TODO put this into another methods
                     String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
                     String localizedPlaceholder = htmlInput.localizedPlaceholder().equals("non-localized") ? null : htmlInput.localizedPlaceholder();
-                    //TODO probably add builder pattern here
-                    HtmlInputRenderer inputRenderer = new HtmlInputRenderer(htmlInput.type(), name, htmlInput.placeholder(), localizedPlaceholder);
+                    HtmlInputRenderer inputRenderer = new HtmlInputRenderer.Builder(htmlInput.type())
+                            .withName(name)
+                            .withPlaceholder(htmlInput.placeholder())
+                            .withLocalizedPlaceholder(localizedPlaceholder)
+                            .build();
                     HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
                     inputRenderer.setLocale(LocaleUtils.getLocaleFromCookies(req.getCookies()));
                     write(inputRenderer.construct());

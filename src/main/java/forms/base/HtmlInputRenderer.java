@@ -12,13 +12,6 @@ public class HtmlInputRenderer {
     //TODO put this into Locale class
     private String locale = "ru_RU";
 
-    public HtmlInputRenderer(InputType type, String name, String placeholder, String localizedPlaceholder) {
-        this.type = type;
-        this.name = name;
-        this.placeholder = placeholder;
-        this.localizedPlaceholder = localizedPlaceholder;
-    }
-
     public String construct(){
         //TODO break this into multiple methods
         StringBuilder sb = new StringBuilder();
@@ -35,6 +28,43 @@ public class HtmlInputRenderer {
         }
         sb.append(">");
         return sb.toString();
+    }
+
+    public static class Builder{
+        private final InputType type;
+        private String name;
+        private String placeholder = "";
+        private String localizedPlaceholder;
+
+        public Builder(InputType type){
+            this.type = type;
+        }
+
+        public Builder withName(String name){
+            this.name = name;
+            return this;
+        }
+
+        public Builder withPlaceholder(String placeholder){
+            this.placeholder = placeholder;
+            return this;
+        }
+
+        public Builder withLocalizedPlaceholder(String localizedPlaceholder){
+            this.localizedPlaceholder = localizedPlaceholder;
+            return this;
+        }
+
+        public HtmlInputRenderer build(){
+            return new HtmlInputRenderer(this);
+        }
+    }
+
+    private HtmlInputRenderer(Builder builder){
+        type = builder.type;
+        name = builder.name;
+        placeholder = builder.placeholder;
+        localizedPlaceholder = builder.localizedPlaceholder;
     }
 
     public void setLocale(String locale){
