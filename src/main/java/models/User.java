@@ -12,6 +12,10 @@ public class User {
         email = form.getEmail();
     }
 
+    public User(){
+
+    }
+
     public String getLogin() {
         return login;
     }
