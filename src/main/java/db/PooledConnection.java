@@ -31,6 +31,10 @@ public class PooledConnection implements Connection {
         ConnectionPool.releaseConnection(this);
     }
 
+    public void closeInDb() throws SQLException {
+        connection.close();
+    }
+
     @Override
     public Statement createStatement() throws SQLException {
         return connection.createStatement();

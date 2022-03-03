@@ -6,14 +6,9 @@ import exceptions.db.NoAvailableConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -24,11 +19,11 @@ public class ConnectionPool {
 
     private static final ConnectionPool instance = new ConnectionPool();
 
-    private String url;
-    private String user;
-    private String password;
-    private String driverName;
-    private int poolSize;
+    private static String url;
+    private static String user;
+    private static String password;
+    private static String driverName;
+    private static int poolSize;
 
     private static BlockingQueue<Connection> connectionPool;
     private static BlockingQueue<Connection> usedConnections;
@@ -91,5 +86,19 @@ public class ConnectionPool {
         password = properties.getString("database.password");
         driverName = properties.getString("driver.name");
         poolSize = Integer.parseInt(properties.getString("pool.size"));
+    }
+
+    public static void releaseAllConnections(){
+        connectionPool.addAll(usedConnections);
+    }
+
+    public static void closeAllConnections(){
+        connectionPool.forEach(c -> {
+            try {
+                ((PooledConnection)c).closeInDb();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
