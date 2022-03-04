@@ -39,12 +39,10 @@ public class SqlMapperTest {
     public static Stream<Arguments> sqlMapperCases(){
         return Stream.of(
                 Arguments.of(
-                        //new StringPair[]{new StringPair("field", "fieldValue"), new StringPair("stringField", "stringFieldValue")},
-                        //new StringIntPair[]{new StringIntPair("intField", 1)},
                         new TypePair[]{
-                                new TypePair<String, String, String>("field", "fieldValue", String.class),
-                                new TypePair<String, Integer, Integer>("intField", 1, Integer.class),
-                                new TypePair<String, String, String>("stringField", "stringFieldValue", String.class)
+                                new TypePair<>("field", "fieldValue", String.class),
+                                new TypePair<>("intField", 1, Integer.class),
+                                new TypePair<>("stringField", "stringFieldValue", String.class)
                         },
                         new TestModel(),
                         "TestModel{" +
