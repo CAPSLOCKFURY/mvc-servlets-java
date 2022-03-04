@@ -2,6 +2,7 @@ package dao.dao.impl;
 
 import dao.dao.UserDao;
 import db.ConnectionPool;
+import forms.RegisterForm;
 import models.User;
 import models.base.PreparedStatementMapper;
 import models.base.SqlMapper;
@@ -56,10 +57,10 @@ public class PostgreSQLUserDao extends UserDao {
     }
 
     @Override
-    public boolean createUser(User user) {
+    public boolean createUser(RegisterForm form) {
         try(Connection connection = ConnectionPool.getConnection()){
             PreparedStatement stmt = connection.prepareStatement(INSERT_USER);
-            PreparedStatementMapper<User> stmtMapper = new PreparedStatementMapper<>(user, stmt, "id");
+            PreparedStatementMapper<RegisterForm> stmtMapper = new PreparedStatementMapper<>(form, stmt, "password");
             stmtMapper.mapToPreparedStatement();
             return stmt.executeUpdate() == 1;
         } catch (SQLException sqle){

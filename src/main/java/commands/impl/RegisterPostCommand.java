@@ -23,9 +23,10 @@ public class RegisterPostCommand implements Command {
         form.mapRequestToForm(request);
         form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));
         boolean isValid = form.validate();
-        UserDao dao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
-        boolean result = dao.createUser(new User(form));
-        System.out.println(result);
+        if(isValid) {
+            UserDao dao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+            boolean result = dao.createUser(form);
+        }
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         }
