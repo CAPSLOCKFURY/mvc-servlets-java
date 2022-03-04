@@ -3,6 +3,7 @@ package dao.dao.impl;
 import dao.dao.UserDao;
 import db.ConnectionPool;
 import models.User;
+import models.base.PreparedStatementMapper;
 import models.base.SqlMapper;
 
 import java.sql.*;
@@ -13,6 +14,7 @@ public class PostgreSQLUserDao extends UserDao {
 
     private final static String SELECT_USER_BY_ID = "select * from users where id = ?";
     private final static String SELECT_ALL_USERS = "select * from users";
+    private final static String INSERT_USER = "insert into users(login, email) values (?, ?)";
 
     @Override
     public User getUserById(int id) {
@@ -22,15 +24,13 @@ public class PostgreSQLUserDao extends UserDao {
             ResultSet rs = stmt.executeQuery();
             User user = new User();
             while (rs.next()){
-//                user.setId(rs.getInt("id"));
-//                user.setLogin(rs.getString("login"));
-//                user.setEmail(rs.getString("email"));
                 SqlMapper<User> userMapper = new SqlMapper<>(user);
                 userMapper.mapFromResultSet(rs);
             }
             return user;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
+            //TODO do not return null
             return null;
         }
     }
@@ -43,15 +43,28 @@ public class PostgreSQLUserDao extends UserDao {
             List<User> users = new LinkedList<>();
             while (rs.next()){
                 User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setLogin(rs.getString("login"));
-                user.setEmail(rs.getString("email"));
+                SqlMapper<User> userMapper = new SqlMapper<>(user);
+                userMapper.mapFromResultSet(rs);
                 users.add(user);
             }
             return users;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
+            //TODO do not return null
             return null;
+        }
+    }
+
+    @Override
+    public boolean createUser(User user) {
+        try(Connection connection = ConnectionPool.getConnection()){
+            PreparedStatement stmt = connection.prepareStatement(INSERT_USER);
+            PreparedStatementMapper<User> stmtMapper = new PreparedStatementMapper<>(user, stmt, "id");
+            stmtMapper.mapToPreparedStatement();
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return false;
         }
     }
 

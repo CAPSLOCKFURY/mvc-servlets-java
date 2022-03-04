@@ -1,10 +1,14 @@
 package commands.impl;
 
 import commands.base.*;
+import dao.dao.UserDao;
+import dao.factory.DaoAbstractFactory;
+import dao.factory.SqlDB;
 import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.User;
 import utils.LocaleUtils;
 
 import java.util.Locale;
@@ -19,6 +23,9 @@ public class RegisterPostCommand implements Command {
         form.mapRequestToForm(request);
         form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));
         boolean isValid = form.validate();
+        UserDao dao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+        boolean result = dao.createUser(new User(form));
+        System.out.println(result);
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         }
