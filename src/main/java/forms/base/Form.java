@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import static utils.StringUtils.capitalize;
 
 public abstract class Form {
     protected List<String> errors = new LinkedList<>();
@@ -29,7 +30,7 @@ public abstract class Form {
                         HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
                         //TODO put this in another method
                         String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
-                        Method method = formClass.getMethod("set".concat(field.getName().substring(0,1).toUpperCase().concat(field.getName().substring(1))), field.getType());
+                        Method method = formClass.getMethod("set".concat(capitalize(field.getName())), field.getType());
                         method.invoke(this, request.getParameter(name));
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
