@@ -1,6 +1,7 @@
 package dao.factory;
 
 import dao.factory.impl.PostgreSQLDaoFactory;
+import exceptions.db.DaoFactoryNotFound;
 
 public class DaoAbstractFactory {
 
@@ -8,7 +9,6 @@ public class DaoAbstractFactory {
         if(type == SqlDB.POSTGRESQL){
             return new PostgreSQLDaoFactory();
         }
-        //TODO throw exception
-        return null;
+        throw new DaoFactoryNotFound();
     }
 }
