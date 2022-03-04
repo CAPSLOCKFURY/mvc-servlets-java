@@ -3,7 +3,7 @@ package models.resources;
 import models.base.SqlRow;
 import models.base.SqlType;
 
-public class TestModel extends AbstractTestModel {
+public class TestModel {
 
     @SqlRow(rowName = "field", type = SqlType.STRING)
     public String field;

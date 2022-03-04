@@ -3,7 +3,6 @@ package models;
 import forms.resourses.StringIntPair;
 import forms.resourses.StringPair;
 import models.base.SqlMapper;
-import models.resources.AbstractTestModel;
 import models.resources.TestModel;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,7 +19,7 @@ public class SqlMapperTest {
 
     @ParameterizedTest
     @MethodSource("sqlMapperCases")
-    public void testMapper(StringPair[] pairs, StringIntPair[] stringIntPairs, AbstractTestModel model, String expected) throws SQLException {
+    public void testMapper(StringPair[] pairs, StringIntPair[] stringIntPairs, Object model, String expected) throws SQLException {
         ResultSet rs = Mockito.mock(ResultSet.class);
         for(StringPair pair : pairs){
             Mockito.when(rs.getString(pair.getKey())).thenReturn(pair.getValue());
@@ -28,7 +27,7 @@ public class SqlMapperTest {
         for (StringIntPair pair : stringIntPairs){
             Mockito.when(rs.getInt(pair.getKey())).thenReturn(pair.getValue());
         }
-        SqlMapper<AbstractTestModel> modelMapper = new SqlMapper<>(model);
+        SqlMapper modelMapper = new SqlMapper(model);
         modelMapper.mapFromResultSet(rs);
         assertEquals(expected, model.toString());
     }
