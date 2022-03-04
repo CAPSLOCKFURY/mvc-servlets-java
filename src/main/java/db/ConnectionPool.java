@@ -17,13 +17,15 @@ public class ConnectionPool {
 
     private static final Logger logger = LogManager.getLogger();
 
+    //TODO remove this and make init method instead
     private static final ConnectionPool instance = new ConnectionPool();
-
+    //TODO write constants in jcc style
     private static String url;
     private static String user;
     private static String password;
     private static String driverName;
     private static int poolSize;
+    private static int FREE_CONNECTION_WAIT_TIME;
 
     private static BlockingQueue<Connection> connectionPool;
     private static BlockingQueue<Connection> usedConnections;
@@ -56,7 +58,8 @@ public class ConnectionPool {
         if(connectionPool.size() == 0) {
             logger.error("Connection pool is empty");
             try {
-                Thread.sleep(3000);
+                // TODO add this value to config
+                Thread.sleep(FREE_CONNECTION_WAIT_TIME);
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -72,8 +75,11 @@ public class ConnectionPool {
 
     public static void releaseConnection(Connection connection){
         if(usedConnections.remove(connection)) {
-            connectionPool.add(connection);
-            logger.debug("Returned connection back to pool");
+            if(connectionPool.offer(connection)) {
+                logger.debug("Returned connection back to pool");
+            } else {
+                logger.fatal("Could not return connection to connection poll");
+            }
         } else {
             logger.fatal("Could not return connection to connection poll");
         }
@@ -86,10 +92,11 @@ public class ConnectionPool {
         password = properties.getString("database.password");
         driverName = properties.getString("driver.name");
         poolSize = Integer.parseInt(properties.getString("pool.size"));
+        FREE_CONNECTION_WAIT_TIME = Integer.parseInt(properties.getString("pool.freeConnectionWaitTime"));
     }
 
     public static void releaseAllConnections(){
-        connectionPool.addAll(usedConnections);
+        usedConnections.forEach(ConnectionPool::releaseConnection);
     }
 
     public static void closeAllConnections(){
@@ -100,5 +107,13 @@ public class ConnectionPool {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static int getCurrentPoolSize(){
+        return connectionPool.size();
+    }
+
+    public static int getUsedConnectionsSize(){
+        return usedConnections.size();
     }
 }
