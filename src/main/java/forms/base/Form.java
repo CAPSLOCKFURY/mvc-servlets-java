@@ -29,6 +29,7 @@ public abstract class Form {
                         HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
                         //TODO put this in another method
                         String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
+                        // TODO use capitalize method
                         Method method = formClass.getMethod("set".concat(field.getName().substring(0,1).toUpperCase().concat(field.getName().substring(1))), field.getType());
                         method.invoke(this, request.getParameter(name));
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {

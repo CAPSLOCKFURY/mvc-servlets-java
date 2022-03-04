@@ -3,6 +3,7 @@ package dao.dao.impl;
 import dao.dao.UserDao;
 import db.ConnectionPool;
 import models.User;
+import models.base.SqlMapper;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -21,9 +22,11 @@ public class PostgreSQLUserDao extends UserDao {
             ResultSet rs = stmt.executeQuery();
             User user = new User();
             while (rs.next()){
-                user.setId(rs.getInt("id"));
-                user.setLogin(rs.getString("login"));
-                user.setEmail(rs.getString("email"));
+//                user.setId(rs.getInt("id"));
+//                user.setLogin(rs.getString("login"));
+//                user.setEmail(rs.getString("email"));
+                SqlMapper<User> userMapper = new SqlMapper<>(user);
+                userMapper.mapFromResultSet(rs);
             }
             return user;
         } catch (SQLException sqle) {
