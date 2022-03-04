@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MySqlUserDao extends UserDao {
+public class PostgreSQLUserDao extends UserDao {
 
     private final static String SELECT_USER_BY_ID = "select * from users where id = ?";
     private final static String SELECT_ALL_USERS = "select * from users";
