@@ -4,10 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
 import static utils.StringUtils.capitalize;
 
 public abstract class Form {
@@ -37,6 +35,19 @@ public abstract class Form {
                     }
                 });
 
+    }
+
+    public boolean isValid(){
+        return errors.size() == 0;
+    }
+
+    public boolean addError(String error){
+        return errors.add(error);
+    }
+
+    public boolean addLocalizedError(String errorKey){
+        ResourceBundle bundle = ResourceBundle.getBundle("forms", locale);
+        return errors.add(bundle.getString(errorKey));
     }
 
     public void setLocale(Locale locale){

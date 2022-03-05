@@ -19,8 +19,8 @@ import java.util.List;
 public class MainCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
-        List<User> users = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao().getAllUsers();
-        request.setAttribute("users", users);
+//        List<User> users = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao().getAllUsers();
+//        request.setAttribute("users", users);
         return new CommandResult("/index.jsp", RequestDirection.FORWARD);
     }
 }

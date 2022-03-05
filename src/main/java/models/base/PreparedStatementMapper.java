@@ -20,7 +20,7 @@ public class PreparedStatementMapper<T> {
         this.stmt = stmt;
         this.ignoreFields = new HashSet<>(Arrays.asList(ignoreFields));
     }
-
+    // TODO remove stmt from constructor and add it to this method
     public void mapToPreparedStatement(){
         AtomicInteger stmtCursor = new AtomicInteger(1);
         Arrays.stream(form.getClass().getDeclaredFields())
@@ -45,13 +45,14 @@ public class PreparedStatementMapper<T> {
                             stmt.setString(stmtCursor.getAndIncrement(), value);
                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e) {
                             e.printStackTrace();
-                            return;
                         }
                     }
                 });
     }
 
     private Method getGetterMethod(String fieldName) throws NoSuchMethodException {
-        return form.getClass().getDeclaredMethod("get".concat(capitalize(fieldName)));
+        Method getter = form.getClass().getDeclaredMethod("get".concat(capitalize(fieldName)));
+        getter.setAccessible(true);
+        return getter;
     }
 }

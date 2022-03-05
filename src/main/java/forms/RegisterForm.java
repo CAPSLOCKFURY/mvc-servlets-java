@@ -6,12 +6,11 @@ import forms.base.InputType;
 import models.base.SqlRow;
 import models.base.SqlType;
 
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class RegisterForm extends Form {
     private final static Pattern loginPattern = Pattern.compile("[a-zA-Z_0-9-]+");
-    private final static Pattern emailPattern = Pattern.compile("[a-z0-9.]+@[a-z]+(.com|.net|.ukr|.ru|.ua)");
+    private final static Pattern emailPattern = Pattern.compile("[a-z0-9.]+@[a-z]+(\\.com|\\.net|\\.ukr|\\.ru|\\.ua)");
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
@@ -31,19 +30,18 @@ public class RegisterForm extends Form {
 
     @Override
     public boolean validate(){
-        ResourceBundle formsBundle = ResourceBundle.getBundle("forms", locale);
         //TODO null checks
         if(!password.equals(repeatPassword)){
-            errors.add(formsBundle.getString("errors.repeatPassword"));
+            addLocalizedError("errors.repeatPassword");
         }
         if(!loginPattern.matcher(login).matches()){
-            errors.add(formsBundle.getString("errors.loginRegex"));
+            addLocalizedError("errors.loginRegex");
         }
         if(!emailPattern.matcher(email).matches()){
-            errors.add(formsBundle.getString("errors.emailRegex"));
+            addLocalizedError("errors.emailRegex");
         }
         if(!passwordPattern.matcher(password).matches()){
-            errors.add(formsBundle.getString("errors.passwordRegex"));
+            addLocalizedError("errors.passwordRegex");
         }
         return errors.size() == 0;
     }

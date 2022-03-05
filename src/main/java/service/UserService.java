@@ -1,0 +1,36 @@
+package service;
+
+import dao.dao.UserDao;
+import dao.factory.DaoAbstractFactory;
+import dao.factory.SqlDB;
+import exceptions.db.DaoException;
+import forms.RegisterForm;
+import models.User;
+
+import java.sql.SQLException;
+
+public class UserService {
+    private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+
+    public boolean createUser(RegisterForm form) {
+        try {
+            if(userDao.getUserByEmail(form.getEmail()).getEmail() != null){
+                form.addLocalizedError("errors.emailExists");
+                return false;
+            }
+            return userDao.createUser(form);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            form.addError("Database error");
+            return false;
+        }
+    }
+
+    public User getUserById(int id){
+        try {
+            return userDao.getUserById(id);
+        } catch (SQLException sqle){
+            throw new DaoException();
+        }
+    }
+}

@@ -12,8 +12,8 @@ public class GetUserCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.parseInt(request.getParameter("id"));
-        User user = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao().getUserById(id);
-        request.setAttribute("user", user);
+//        User user = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao().getUserById(id);
+//        request.setAttribute("user", user);
         return new CommandResult("/user.jsp", RequestDirection.FORWARD);
     }
 }
