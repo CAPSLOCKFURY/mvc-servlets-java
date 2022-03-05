@@ -3,6 +3,8 @@ package forms;
 import forms.base.Form;
 import forms.base.HtmlInput;
 import forms.base.InputType;
+import models.base.SqlColumn;
+import models.base.SqlType;
 
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -14,8 +16,10 @@ public class LoginForm extends Form {
 
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
+    @SqlColumn(type = SqlType.STRING, rowName = "login")
     private String login;
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
+    @SqlColumn(type = SqlType.STRING, rowName = "password")
     private String password;
 
     @Override

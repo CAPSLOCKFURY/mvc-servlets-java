@@ -2,6 +2,7 @@ package dao.dao.impl;
 
 import dao.dao.UserDao;
 import db.ConnectionPool;
+import forms.LoginForm;
 import forms.RegisterForm;
 import models.User;
 import models.base.SqlColumn;
@@ -12,23 +13,24 @@ import java.util.List;
 
 public class PostgreSQLUserDao extends UserDao {
 
-    private final static String SELECT_USER_BY_ID = "select * from users where id = ?";
-    private final static String SELECT_ALL_USERS = "select * from users";
+    private final static String FIND_USER_BY_ID = "select * from users where id = ?";
+    private final static String FIND_ALL_USERS = "select * from users";
     private final static String INSERT_USER = "insert into users(login, email, password) values (?, ?, ?)";
     private final static String FIND_BY_LOGIN = "select * from users where login = ?";
     private final static String FIND_BY_EMAIL = "select * from users where email = ?";
+    private final static String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = ?";
 
     @Override
     public User getUserById(int id) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-          return getOneById(connection, SELECT_USER_BY_ID, id, User.class);
+          return getOneById(connection, FIND_USER_BY_ID, id, User.class);
         }
     }
 
     @Override
     public List<User> getAllUsers() throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return getAll(connection, SELECT_ALL_USERS, User.class);
+            return getAll(connection, FIND_ALL_USERS, User.class);
         }
     }
 
@@ -76,6 +78,13 @@ public class PostgreSQLUserDao extends UserDao {
         }
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, FIND_BY_LOGIN, new LoginParam(login), User.class);
+        }
+    }
+
+    @Override
+    public User getUserByLoginAndPassword(LoginForm form) throws SQLException {
+        try(Connection connection = ConnectionPool.getConnection()){
+            return getOneByParams(connection, FIND_BY_LOGIN_AND_PASSWORD, form, User.class);
         }
     }
 

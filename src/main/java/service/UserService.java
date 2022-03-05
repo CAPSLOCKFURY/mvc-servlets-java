@@ -4,6 +4,7 @@ import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import forms.LoginForm;
 import forms.RegisterForm;
 import models.User;
 
@@ -27,6 +28,21 @@ public class UserService {
             sqle.printStackTrace();
             form.addError("Database error");
             return 0;
+        }
+    }
+
+    public User loginUser(LoginForm form){
+        try{
+            User user = userDao.getUserByLoginAndPassword(form);
+            if(user.getId() == null){
+                form.addLocalizedError("errors.userNotFound");
+                return user;
+            }
+            return user;
+        } catch (SQLException e){
+            e.printStackTrace();
+            form.addError("Database error");
+            return new User();
         }
     }
 

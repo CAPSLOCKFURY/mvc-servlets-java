@@ -1,5 +1,6 @@
 package dao.dao;
 
+import forms.LoginForm;
 import forms.RegisterForm;
 import models.User;
 
@@ -16,4 +17,6 @@ public abstract class UserDao extends AbstractDao {
     public abstract User getUserByEmail(String email) throws SQLException;
 
     public abstract User getUserByLogin(String login) throws SQLException;
+
+    public abstract User getUserByLoginAndPassword(LoginForm form) throws SQLException;
 }
