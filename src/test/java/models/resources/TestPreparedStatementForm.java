@@ -4,13 +4,13 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 
 public class TestPreparedStatementForm {
-    @SqlColumn(rowName = "field", type = SqlType.STRING)
+    @SqlColumn(columnName = "field", type = SqlType.STRING)
     private String field;
 
-    @SqlColumn(rowName = "stringField", type = SqlType.STRING)
+    @SqlColumn(columnName = "stringField", type = SqlType.STRING)
     private String field2;
 
-    @SqlColumn(rowName = "intField", type = SqlType.INT)
+    @SqlColumn(columnName = "intField", type = SqlType.INT)
     private Integer intField;
 
     public TestPreparedStatementForm(String field, String field2, Integer intField) {

@@ -12,5 +12,15 @@
 <h1>Main Page</h1>
 <h1>Welcome user: ${sessionScope.user.login}</h1>
 <h2>Id: ${sessionScope.user.id}</h2>
+<c:forEach var="room" items="${rooms}">
+    <hr>
+    <h1>-------------Room info----------------</h1>
+    <h1>Room number: ${room.number}</h1>
+    <h1>Room name: ${room.name}</h1>
+    <h1>Room status: ${room.status}</h1>
+    <h1>Room capacity: ${room.capacity}</h1>
+    <h1>Room price: ${room.price}</h1>
+    <hr>
+</c:forEach>
 </body>
 </html>

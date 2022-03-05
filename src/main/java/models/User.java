@@ -6,13 +6,13 @@ import models.base.SqlType;
 
 public class User {
 
-    @SqlColumn(rowName = "id", type = SqlType.LONG)
+    @SqlColumn(columnName = "id", type = SqlType.LONG)
     private Long id;
 
-    @SqlColumn(rowName = "login", type = SqlType.STRING)
+    @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
 
-    @SqlColumn(rowName = "email", type = SqlType.STRING)
+    @SqlColumn(columnName = "email", type = SqlType.STRING)
     private String email;
 
     public User(RegisterForm form){

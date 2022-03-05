@@ -44,7 +44,7 @@ public class PostgreSQLUserDao extends UserDao {
     @Override
     public User getUserByEmail(String email) throws SQLException{
         class EmailParam{
-            @SqlColumn(rowName = "email", type = SqlType.STRING)
+            @SqlColumn(columnName = "email", type = SqlType.STRING)
             public String email;
             public EmailParam(String email) {
                 this.email = email;
@@ -64,7 +64,7 @@ public class PostgreSQLUserDao extends UserDao {
     @Override
     public User getUserByLogin(String login) throws SQLException {
         class LoginParam{
-            @SqlColumn(rowName = "login", type = SqlType.STRING)
+            @SqlColumn(columnName = "login", type = SqlType.STRING)
             public String login;
             public LoginParam(String login) {
                 this.login = login;

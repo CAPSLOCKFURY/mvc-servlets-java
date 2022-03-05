@@ -15,26 +15,26 @@ public class RegisterForm extends Form {
     private final static Pattern namePattern = Pattern.compile("[а-яА-Я|a-zA-Z]+");
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
-    @SqlColumn(rowName = "login", type = SqlType.STRING)
+    @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email")
-    @SqlColumn(rowName = "email", type = SqlType.STRING)
+    @SqlColumn(columnName = "email", type = SqlType.STRING)
     private String email;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
-    @SqlColumn(rowName = "password", type = SqlType.STRING)
+    @SqlColumn(columnName = "password", type = SqlType.STRING)
     private String password;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword")
     private String repeatPassword;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
-    @SqlColumn(rowName = "first_name", type = SqlType.STRING)
+    @SqlColumn(columnName = "first_name", type = SqlType.STRING)
     private String firstName;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName")
-    @SqlColumn(rowName = "last_name", type = SqlType.STRING)
+    @SqlColumn(columnName = "last_name", type = SqlType.STRING)
     private String lastName;
 
 

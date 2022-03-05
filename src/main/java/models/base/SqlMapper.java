@@ -2,6 +2,7 @@ package models.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -23,13 +24,19 @@ public class SqlMapper<T> {
                         SqlColumn sqlColumn = f.getAnnotation(SqlColumn.class);
                         Method setterMethod = model.getClass().getMethod("set".concat(capitalize(f.getName())), sqlColumn.type().getTypeClass());
                         if(sqlColumn.type().getTypeClass() == Integer.class){
-                            setterMethod.invoke(model, getIntFromRs(rs, sqlColumn.rowName()));
+                            setterMethod.invoke(model, getIntFromRs(rs, sqlColumn.columnName()));
+                            return;
                         }
                         if(sqlColumn.type().getTypeClass() == String.class){
-                            setterMethod.invoke(model, getStringFromRs(rs, sqlColumn.rowName()));
+                            setterMethod.invoke(model, getStringFromRs(rs, sqlColumn.columnName()));
+                            return;
                         }
                         if(sqlColumn.type().getTypeClass() == Long.class){
-                            setterMethod.invoke(model, getLongFromRs(rs, sqlColumn.rowName()));
+                            setterMethod.invoke(model, getLongFromRs(rs, sqlColumn.columnName()));
+                            return;
+                        }
+                        if(sqlColumn.type().getTypeClass() == BigDecimal.class){
+                            setterMethod.invoke(model, getDecimalFromRs(rs, sqlColumn.columnName()));
                         }
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
@@ -58,6 +65,15 @@ public class SqlMapper<T> {
     private Long getLongFromRs(ResultSet rs, String rowName){
         try {
             return rs.getLong(rowName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private BigDecimal getDecimalFromRs(ResultSet rs, String colName){
+        try {
+            return rs.getBigDecimal(colName);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

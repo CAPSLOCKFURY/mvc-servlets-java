@@ -5,13 +5,13 @@ import models.base.SqlType;
 
 public class TestModel {
 
-    @SqlColumn(rowName = "field", type = SqlType.STRING)
+    @SqlColumn(columnName = "field", type = SqlType.STRING)
     public String field;
 
-    @SqlColumn(rowName = "intField", type = SqlType.INT)
+    @SqlColumn(columnName = "intField", type = SqlType.INT)
     public Integer intField;
 
-    @SqlColumn(rowName = "stringField", type = SqlType.STRING)
+    @SqlColumn(columnName = "stringField", type = SqlType.STRING)
     public String field1;
 
     public String getField() {
