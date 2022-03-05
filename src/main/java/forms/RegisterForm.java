@@ -12,6 +12,7 @@ public class RegisterForm extends Form {
     private final static Pattern loginPattern = Pattern.compile("[a-zA-Z_0-9-]+");
     private final static Pattern emailPattern = Pattern.compile("[a-z0-9.]+@[a-z]+(\\.com|\\.net|\\.ukr|\\.ru|\\.ua)");
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
+    private final static Pattern namePattern = Pattern.compile("[а-яА-Я|a-zA-Z]+");
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
     @SqlColumn(rowName = "login", type = SqlType.STRING)
@@ -28,6 +29,15 @@ public class RegisterForm extends Form {
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword")
     private String repeatPassword;
 
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
+    @SqlColumn(rowName = "first_name", type = SqlType.STRING)
+    private String firstName;
+
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName")
+    @SqlColumn(rowName = "last_name", type = SqlType.STRING)
+    private String lastName;
+
+
     @Override
     public boolean validate(){
         //TODO null checks
@@ -42,6 +52,12 @@ public class RegisterForm extends Form {
         }
         if(!passwordPattern.matcher(password).matches()){
             addLocalizedError("errors.passwordRegex");
+        }
+        if(!namePattern.matcher(firstName).matches()){
+            addLocalizedError("errors.firstNameRegex");
+        }
+        if(!namePattern.matcher(lastName).matches()){
+            addLocalizedError("errors.lastNameRegex");
         }
         return errors.size() == 0;
     }
@@ -68,6 +84,22 @@ public class RegisterForm extends Form {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setRepeatPassword(String repeatPassword) {

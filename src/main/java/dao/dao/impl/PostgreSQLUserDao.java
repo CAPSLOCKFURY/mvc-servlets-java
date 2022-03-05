@@ -15,10 +15,10 @@ public class PostgreSQLUserDao extends UserDao {
 
     private final static String FIND_USER_BY_ID = "select * from users where id = ?";
     private final static String FIND_ALL_USERS = "select * from users";
-    private final static String INSERT_USER = "insert into users(login, email, password) values (?, ?, ?)";
+    private final static String INSERT_USER = "insert into users(login, email, password, first_name, last_name) values (?, ?, md5(?), ?, ?)";
     private final static String FIND_BY_LOGIN = "select * from users where login = ?";
     private final static String FIND_BY_EMAIL = "select * from users where email = ?";
-    private final static String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = ?";
+    private final static String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = md5(?)";
 
     @Override
     public User getUserById(int id) throws SQLException {
