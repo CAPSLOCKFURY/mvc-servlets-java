@@ -12,21 +12,21 @@ import java.sql.SQLException;
 public class UserService {
     private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
-    public boolean createUser(RegisterForm form) {
+    public long createUser(RegisterForm form) {
         try {
             if(userDao.getUserByEmail(form.getEmail()).getEmail() != null){
                 form.addLocalizedError("errors.emailExists");
-                return false;
+                return 0;
             }
             if(userDao.getUserByLogin(form.getLogin()).getLogin() != null){
                 form.addLocalizedError("errors.loginExists");
-                return false;
+                return 0;
             }
             return userDao.createUser(form);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             form.addError("Database error");
-            return false;
+            return 0;
         }
     }
 

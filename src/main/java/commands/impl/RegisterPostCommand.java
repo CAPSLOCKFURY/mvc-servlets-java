@@ -8,6 +8,7 @@ import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import models.User;
 import service.UserService;
 import utils.LocaleUtils;
@@ -31,11 +32,15 @@ public class RegisterPostCommand implements Command {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new CommandResult(getAbsoluteUrl("/register", request), RequestDirection.REDIRECT);
         }
-        userService.createUser(form);
+        long id = userService.createUser(form);
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new CommandResult(getAbsoluteUrl("/register", request), RequestDirection.REDIRECT);
         }
+        HttpSession session = request.getSession();
+        User user = new User(form);
+        user.setId(id);
+        session.setAttribute("user", user);
         return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
 
     }

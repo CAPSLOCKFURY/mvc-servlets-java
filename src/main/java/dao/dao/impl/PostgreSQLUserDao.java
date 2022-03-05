@@ -4,7 +4,7 @@ import dao.dao.UserDao;
 import db.ConnectionPool;
 import forms.RegisterForm;
 import models.User;
-import models.base.SqlRow;
+import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.sql.*;
@@ -33,16 +33,16 @@ public class PostgreSQLUserDao extends UserDao {
     }
 
     @Override
-    public boolean createUser(RegisterForm form) throws SQLException {
+    public long createUser(RegisterForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return createEntity(connection, INSERT_USER, form);
+            return createEntityAndGetId(connection, INSERT_USER, form);
         }
     }
 
     @Override
     public User getUserByEmail(String email) throws SQLException{
         class EmailParam{
-            @SqlRow(rowName = "email", type = SqlType.STRING)
+            @SqlColumn(rowName = "email", type = SqlType.STRING)
             public String email;
             public EmailParam(String email) {
                 this.email = email;
@@ -62,7 +62,7 @@ public class PostgreSQLUserDao extends UserDao {
     @Override
     public User getUserByLogin(String login) throws SQLException {
         class LoginParam{
-            @SqlRow(rowName = "login", type = SqlType.STRING)
+            @SqlColumn(rowName = "login", type = SqlType.STRING)
             public String login;
             public LoginParam(String login) {
                 this.login = login;

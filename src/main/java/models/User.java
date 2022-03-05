@@ -1,18 +1,18 @@
 package models;
 
 import forms.RegisterForm;
-import models.base.SqlRow;
+import models.base.SqlColumn;
 import models.base.SqlType;
 
 public class User {
 
-    @SqlRow(rowName = "id", type = SqlType.INT)
-    private Integer id;
+    @SqlColumn(rowName = "id", type = SqlType.LONG)
+    private Long id;
 
-    @SqlRow(rowName = "login", type = SqlType.STRING)
+    @SqlColumn(rowName = "login", type = SqlType.STRING)
     private String login;
 
-    @SqlRow(rowName = "email", type = SqlType.STRING)
+    @SqlColumn(rowName = "email", type = SqlType.STRING)
     private String email;
 
     public User(RegisterForm form){
@@ -24,11 +24,11 @@ public class User {
 
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

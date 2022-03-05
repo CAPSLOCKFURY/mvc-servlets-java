@@ -11,7 +11,7 @@ public abstract class UserDao extends AbstractDao {
 
     public abstract List<User> getAllUsers() throws SQLException;
 
-    public abstract boolean createUser(RegisterForm form) throws SQLException;
+    public abstract long createUser(RegisterForm form) throws SQLException;
 
     public abstract User getUserByEmail(String email) throws SQLException;
 

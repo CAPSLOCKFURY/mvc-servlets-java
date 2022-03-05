@@ -1,7 +1,7 @@
 package models.base;
 
 public enum SqlType {
-    INT(Integer.class), STRING(String.class);
+    INT(Integer.class), STRING(String.class), LONG(Long.class);
 
     private final Class<?> typeClass;
 

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface SqlRow {
+public @interface SqlColumn {
     String rowName();
     SqlType type();
 }

@@ -24,13 +24,13 @@ public class PreparedStatementMapper<T> {
     public void mapToPreparedStatement(){
         AtomicInteger stmtCursor = new AtomicInteger(1);
         Arrays.stream(form.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(SqlRow.class))
+                .filter(f -> f.isAnnotationPresent(SqlColumn.class))
                 .forEach(f -> {
                     if(ignoreFields.contains(f.getName())){
                        return;
                     }
-                    SqlRow sqlRow = f.getAnnotation(SqlRow.class);
-                    if(sqlRow.type().getTypeClass() == Integer.class){
+                    SqlColumn sqlColumn = f.getAnnotation(SqlColumn.class);
+                    if(sqlColumn.type().getTypeClass() == Integer.class){
                         try {
                             Integer value = (Integer) getGetterMethod(f.getName()).invoke(form);
                             stmt.setInt(stmtCursor.getAndIncrement(), value);
@@ -39,11 +39,20 @@ public class PreparedStatementMapper<T> {
                             return;
                         }
                     }
-                    if(sqlRow.type().getTypeClass() == String.class){
+                    if(sqlColumn.type().getTypeClass() == String.class){
                         try {
                             String value = (String) getGetterMethod(f.getName()).invoke(form);
                             stmt.setString(stmtCursor.getAndIncrement(), value);
                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+                    if(sqlColumn.type().getTypeClass() == Long.class){
+                        try{
+                            Long value = (Long) getGetterMethod(f.getName()).invoke(form);
+                            stmt.setLong(stmtCursor.getAndIncrement(), value);
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
                             e.printStackTrace();
                         }
                     }

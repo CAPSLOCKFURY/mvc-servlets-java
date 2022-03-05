@@ -3,7 +3,7 @@ package forms;
 import forms.base.Form;
 import forms.base.HtmlInput;
 import forms.base.InputType;
-import models.base.SqlRow;
+import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.util.regex.Pattern;
@@ -14,15 +14,15 @@ public class RegisterForm extends Form {
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
-    @SqlRow(rowName = "login", type = SqlType.STRING)
+    @SqlColumn(rowName = "login", type = SqlType.STRING)
     private String login;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email")
-    @SqlRow(rowName = "email", type = SqlType.STRING)
+    @SqlColumn(rowName = "email", type = SqlType.STRING)
     private String email;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
-    @SqlRow(rowName = "password", type = SqlType.STRING)
+    @SqlColumn(rowName = "password", type = SqlType.STRING)
     private String password;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword")

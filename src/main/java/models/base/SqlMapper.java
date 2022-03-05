@@ -17,16 +17,19 @@ public class SqlMapper<T> {
 
     public void mapFromResultSet(ResultSet rs){
         Arrays.stream(model.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(SqlRow.class))
+                .filter(f -> f.isAnnotationPresent(SqlColumn.class))
                 .forEach(f -> {
                     try {
-                        SqlRow sqlRow = f.getAnnotation(SqlRow.class);
-                        Method setterMethod = model.getClass().getMethod("set".concat(capitalize(f.getName())), sqlRow.type().getTypeClass());
-                        if(sqlRow.type().getTypeClass() == Integer.class){
-                            setterMethod.invoke(model, getIntFromRs(rs, sqlRow.rowName()));
+                        SqlColumn sqlColumn = f.getAnnotation(SqlColumn.class);
+                        Method setterMethod = model.getClass().getMethod("set".concat(capitalize(f.getName())), sqlColumn.type().getTypeClass());
+                        if(sqlColumn.type().getTypeClass() == Integer.class){
+                            setterMethod.invoke(model, getIntFromRs(rs, sqlColumn.rowName()));
                         }
-                        if(sqlRow.type().getTypeClass() == String.class){
-                            setterMethod.invoke(model, getStringFromRs(rs, sqlRow.rowName()));
+                        if(sqlColumn.type().getTypeClass() == String.class){
+                            setterMethod.invoke(model, getStringFromRs(rs, sqlColumn.rowName()));
+                        }
+                        if(sqlColumn.type().getTypeClass() == Long.class){
+                            setterMethod.invoke(model, getLongFromRs(rs, sqlColumn.rowName()));
                         }
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
@@ -46,6 +49,15 @@ public class SqlMapper<T> {
     private String getStringFromRs(ResultSet rs, String rowName){
         try {
             return rs.getString(rowName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Long getLongFromRs(ResultSet rs, String rowName){
+        try {
+            return rs.getLong(rowName);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

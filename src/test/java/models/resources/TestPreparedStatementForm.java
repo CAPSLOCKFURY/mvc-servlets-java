@@ -1,16 +1,16 @@
 package models.resources;
 
-import models.base.SqlRow;
+import models.base.SqlColumn;
 import models.base.SqlType;
 
 public class TestPreparedStatementForm {
-    @SqlRow(rowName = "field", type = SqlType.STRING)
+    @SqlColumn(rowName = "field", type = SqlType.STRING)
     private String field;
 
-    @SqlRow(rowName = "stringField", type = SqlType.STRING)
+    @SqlColumn(rowName = "stringField", type = SqlType.STRING)
     private String field2;
 
-    @SqlRow(rowName = "intField", type = SqlType.INT)
+    @SqlColumn(rowName = "intField", type = SqlType.INT)
     private Integer intField;
 
     public TestPreparedStatementForm(String field, String field2, Integer intField) {

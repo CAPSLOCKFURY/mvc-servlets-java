@@ -92,4 +92,15 @@ public abstract class AbstractDao {
         statementMapper.mapToPreparedStatement();
         return stmt.executeUpdate() == 1;
     }
+
+    public long createEntityAndGetId(Connection connection, String sql, Form form) throws SQLException{
+        PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatementMapper<Form> statementMapper = new PreparedStatementMapper<>(form, stmt);
+        statementMapper.mapToPreparedStatement();
+        //TODO add check for successful update
+        stmt.executeUpdate();
+        ResultSet rs = stmt.getGeneratedKeys();
+        rs.next();
+        return rs.getLong(1);
+    }
 }

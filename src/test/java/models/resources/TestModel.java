@@ -1,17 +1,17 @@
 package models.resources;
 
-import models.base.SqlRow;
+import models.base.SqlColumn;
 import models.base.SqlType;
 
 public class TestModel {
 
-    @SqlRow(rowName = "field", type = SqlType.STRING)
+    @SqlColumn(rowName = "field", type = SqlType.STRING)
     public String field;
 
-    @SqlRow(rowName = "intField", type = SqlType.INT)
+    @SqlColumn(rowName = "intField", type = SqlType.INT)
     public Integer intField;
 
-    @SqlRow(rowName = "stringField", type = SqlType.STRING)
+    @SqlColumn(rowName = "stringField", type = SqlType.STRING)
     public String field1;
 
     public String getField() {
