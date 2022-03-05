@@ -18,6 +18,10 @@ public class UserService {
                 form.addLocalizedError("errors.emailExists");
                 return false;
             }
+            if(userDao.getUserByLogin(form.getLogin()).getLogin() != null){
+                form.addLocalizedError("errors.loginExists");
+                return false;
+            }
             return userDao.createUser(form);
         } catch (SQLException sqle){
             sqle.printStackTrace();

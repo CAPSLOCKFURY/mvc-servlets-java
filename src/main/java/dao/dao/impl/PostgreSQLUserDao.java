@@ -2,7 +2,6 @@ package dao.dao.impl;
 
 import dao.dao.UserDao;
 import db.ConnectionPool;
-import exceptions.db.DaoException;
 import forms.RegisterForm;
 import models.User;
 import models.base.SqlRow;
@@ -61,8 +60,23 @@ public class PostgreSQLUserDao extends UserDao {
     }
 
     @Override
-    public User getUserByLogin(String login) {
-        return null;
+    public User getUserByLogin(String login) throws SQLException {
+        class LoginParam{
+            @SqlRow(rowName = "login", type = SqlType.STRING)
+            public String login;
+            public LoginParam(String login) {
+                this.login = login;
+            }
+            public String getLogin() {
+                return login;
+            }
+            public void setLogin(String login) {
+                this.login = login;
+            }
+        }
+        try(Connection connection = ConnectionPool.getConnection()){
+            return getOneByParams(connection, FIND_BY_LOGIN, new LoginParam(login), User.class);
+        }
     }
 
 }
