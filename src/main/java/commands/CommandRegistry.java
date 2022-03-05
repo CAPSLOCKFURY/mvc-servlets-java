@@ -1,6 +1,8 @@
 package commands;
 
 import commands.base.*;
+import commands.base.security.NonAuthenticatedOnly;
+import commands.base.security.Security;
 import exceptions.CommandNotFoundException;
 import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import static utils.UrlUtils.getAbsoluteUrl;
 
 public final class CommandRegistry {
 
@@ -30,12 +33,20 @@ public final class CommandRegistry {
         registerAnnotatedCommands(commands);
         commandMap.put(new UrlBind("/register", RequestMethod.GET),
                 (request, response) -> {
+                    Security security = new NonAuthenticatedOnly();
+                    if(!security.doSecurity(request, response)){
+                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+                    }
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
                     errorProcessor.processErrors(request, response);
                     return new CommandResult("register.jsp", RequestDirection.FORWARD);
                 });
         commandMap.put(new UrlBind("/login", RequestMethod.GET),
                 ((request, response) -> {
+                    Security security = new NonAuthenticatedOnly();
+                    if(!security.doSecurity(request, response)){
+                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+                    }
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
                     errorProcessor.processErrors(request, response);
                     return new CommandResult("login.jsp", RequestDirection.FORWARD);

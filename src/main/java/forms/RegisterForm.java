@@ -39,7 +39,7 @@ public class RegisterForm extends Form {
 
 
     @Override
-    public boolean validate(){
+    public boolean validate() {
         if(!password.equals("")) {
             if (!passwordPattern.matcher(password).matches()) {
                 addLocalizedError("errors.passwordRegex");
