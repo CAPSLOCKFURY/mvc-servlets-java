@@ -1,9 +1,6 @@
 package commands.impl;
 
 import commands.base.*;
-import dao.dao.UserDao;
-import dao.factory.DaoAbstractFactory;
-import dao.factory.SqlDB;
 import forms.RegisterForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;

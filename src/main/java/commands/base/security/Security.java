@@ -1,6 +1,5 @@
 package commands.base.security;
 
-import commands.base.CommandResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
