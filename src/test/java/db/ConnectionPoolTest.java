@@ -21,6 +21,7 @@ public class ConnectionPoolTest {
     public static void setUp(){
         ResourceBundle properties = ResourceBundle.getBundle("database");
         POOL_SIZE = Integer.parseInt(properties.getString("pool.size"));
+        ConnectionPool.initPool();
     }
 
     @AfterEach

@@ -12,13 +12,12 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
 
     private static final Logger logger = LogManager.getLogger();
 
-    //TODO remove this and make init method instead
-    private static final ConnectionPool instance = new ConnectionPool();
     //TODO write constants in jcc style
     private static String url;
     private static String user;
@@ -29,6 +28,9 @@ public class ConnectionPool {
 
     private static BlockingQueue<Connection> connectionPool;
     private static BlockingQueue<Connection> usedConnections;
+
+    private static final ReentrantLock lock = new ReentrantLock();
+    private static boolean POOL_INITIALIZED = false;
 
     private ConnectionPool(){
         initializeProperties();
@@ -42,6 +44,19 @@ public class ConnectionPool {
         usedConnections = new ArrayBlockingQueue<>(poolSize);
         for (int i = 0; i < poolSize; i++) {
             connectionPool.add(createConnection());
+        }
+        POOL_INITIALIZED = true;
+        logger.info("Connection pool initialized");
+    }
+
+    public static void initPool(){
+        lock.lock();
+        try{
+            if(!POOL_INITIALIZED){
+                new ConnectionPool();
+            }
+        } finally {
+            lock.unlock();
         }
     }
 

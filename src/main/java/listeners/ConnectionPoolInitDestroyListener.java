@@ -6,7 +6,13 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 @WebListener
-public class ContextListener implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {
+public class ConnectionPoolInitDestroyListener implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce){
+        ConnectionPool.initPool();
+    }
+
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         ConnectionPool.releaseAllConnections();
