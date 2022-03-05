@@ -24,12 +24,19 @@ public class LoginForm extends Form {
 
     @Override
     public boolean validate() {
-        ResourceBundle formBundle = ResourceBundle.getBundle("forms", locale);
-        if(!loginPattern.matcher(login).matches()){
-            errors.add(formBundle.getString("errors.loginRegex"));
+        if(!login.equals("")) {
+            if (!loginPattern.matcher(login).matches()) {
+                addLocalizedError("errors.loginRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullLogin");
         }
-        if(!passwordPattern.matcher(password).matches()){
-            errors.add(formBundle.getString("errors.passwordRegex"));
+        if(!password.equals("")) {
+            if (!passwordPattern.matcher(password).matches()) {
+                addLocalizedError("errors.passwordRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullPassword");
         }
         return errors.size() == 0;
     }

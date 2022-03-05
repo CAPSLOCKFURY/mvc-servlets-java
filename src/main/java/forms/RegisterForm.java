@@ -40,24 +40,43 @@ public class RegisterForm extends Form {
 
     @Override
     public boolean validate(){
-        //TODO null checks
-        if(!password.equals(repeatPassword)){
-            addLocalizedError("errors.repeatPassword");
+        if(!password.equals("")) {
+            if (!passwordPattern.matcher(password).matches()) {
+                addLocalizedError("errors.passwordRegex");
+            }
+            if (!password.equals(repeatPassword)) {
+                addLocalizedError("errors.repeatPassword");
+            }
+        } else {
+            addLocalizedError("errors.nullPassword");
         }
-        if(!loginPattern.matcher(login).matches()){
-            addLocalizedError("errors.loginRegex");
+        if(!login.equals("")) {
+            if (!loginPattern.matcher(login).matches()) {
+                addLocalizedError("errors.loginRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullLogin");
         }
-        if(!emailPattern.matcher(email).matches()){
-            addLocalizedError("errors.emailRegex");
+        if(!email.equals("")) {
+            if (!emailPattern.matcher(email).matches()) {
+                addLocalizedError("errors.emailRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullEmail");
         }
-        if(!passwordPattern.matcher(password).matches()){
-            addLocalizedError("errors.passwordRegex");
+        if(!firstName.equals("")) {
+            if (!namePattern.matcher(firstName).matches()) {
+                addLocalizedError("errors.firstNameRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullFirstName");
         }
-        if(!namePattern.matcher(firstName).matches()){
-            addLocalizedError("errors.firstNameRegex");
-        }
-        if(!namePattern.matcher(lastName).matches()){
-            addLocalizedError("errors.lastNameRegex");
+        if(!lastName.equals("")) {
+            if (!namePattern.matcher(lastName).matches()) {
+                addLocalizedError("errors.lastNameRegex");
+            }
+        } else {
+            addLocalizedError("errors.nullLastName");
         }
         return errors.size() == 0;
     }
