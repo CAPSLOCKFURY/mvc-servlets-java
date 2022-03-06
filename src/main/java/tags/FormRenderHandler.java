@@ -61,7 +61,11 @@ public class FormRenderHandler extends TagSupport {
         Map<String, String> options = Arrays.stream(htmlSelect.options())
                 .collect(Collectors.toMap(HtmlOption::value, HtmlOption::name));
         HtmlSelectRenderer renderer = new HtmlSelectRenderer.Builder()
-                .withName(htmlSelect.name()).withOptions(options).build();
+                .withName(htmlSelect.name())
+                .withOptions(options)
+                .withId(htmlSelect.id())
+                .withLiteral(htmlSelect.literal())
+                .build();
         return renderer.render();
     }
 
@@ -76,6 +80,8 @@ public class FormRenderHandler extends TagSupport {
                 .withName(name)
                 .withPlaceholder(htmlInput.placeholder())
                 .withLocalizedPlaceholder(localizedPlaceholder)
+                .withId(htmlInput.id())
+                .withLiteral(htmlInput.literal())
                 .build();
         HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
         String localeName = LocaleUtils.getLocaleFromCookies(req.getCookies());
@@ -89,7 +95,10 @@ public class FormRenderHandler extends TagSupport {
         HtmlTextAreaRenderer renderer = new HtmlTextAreaRenderer.Builder()
                 .withName(htmlTextArea.name())
                 .withRows(htmlTextArea.rows())
-                .withCols(htmlTextArea.cols()).build();
+                .withCols(htmlTextArea.cols())
+                .withId(htmlTextArea.id())
+                .withLiteral(htmlTextArea.literal())
+                .build();
         return renderer.render();
     }
 
@@ -101,6 +110,7 @@ public class FormRenderHandler extends TagSupport {
                     .withForElement(label.forElement())
                     .withText(label.text())
                     .withLocalizedText(label.localizedText())
+                    .withLiteral(label.literal())
                     .build();
             labelRenderer.setLocale(new Locale(localeName));
             write(labelRenderer.render());

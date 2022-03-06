@@ -16,24 +16,27 @@ public class RoomRequestForm extends Form {
     private Integer capacity;
 
     @SqlColumn(columnName = "room_class", type = SqlType.STRING)
-    @HtmlSelect(name = "roomClass", options = {
+    @HtmlSelect(id = "roomClass", name = "roomClass", options = {
             @HtmlOption(name = "Cheap", value = "Cheap"),
             @HtmlOption(name = "Normal", value = "Normal"),
             @HtmlOption(name = "Half lux", value = "Half lux"),
             @HtmlOption(name = "Lux", value = "Lux")
-    })
+    }, label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass"))
     private String roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    @HtmlInput(name = "checkInDate", type = InputType.DATE)
+    @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE,
+            label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
     private java.sql.Date checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    @HtmlInput(name = "checkOutDate", type = InputType.DATE)
+    @HtmlInput(id = "checkOutDate", name = "checkOutDate", type = InputType.DATE,
+            label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
     private java.sql.Date checkOutDate;
 
     @SqlColumn(columnName = "comment", type = SqlType.STRING)
-    @HtmlTextArea(rows = "3", cols = "35", name = "comment")
+    @HtmlTextArea(id = "comment", rows = "3", cols = "35", name = "comment",
+            label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
     private String comment;
 
     public Integer getCapacity() {

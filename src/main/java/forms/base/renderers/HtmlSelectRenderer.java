@@ -5,13 +5,17 @@ import java.util.Map;
 public class HtmlSelectRenderer {
     private final String name;
     private final Map<String, String> options;
-    private String id = "";
+    private final String id;
+    private final String literal;
 
     public String render(){
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("<select name=\"%s\" ", name));
         if(!id.equals("")){
             sb.append(String.format("id=\"%s\" ", id));
+        }
+        if(!literal.equals("")){
+            sb.append(literal);
         }
         sb.append(">\n");
         for (Map.Entry<String, String> option : options.entrySet()){
@@ -25,6 +29,7 @@ public class HtmlSelectRenderer {
         private String name;
         private Map<String, String> options;
         private String id = "";
+        private String literal = "";
 
         public Builder withName(String name){
             this.name = name;
@@ -41,6 +46,11 @@ public class HtmlSelectRenderer {
             return this;
         }
 
+        public Builder withLiteral(String literal){
+            this.literal = literal;
+            return this;
+        }
+
         public HtmlSelectRenderer build(){
             return new HtmlSelectRenderer(this);
         }
@@ -50,5 +60,6 @@ public class HtmlSelectRenderer {
         id = builder.id;
         name = builder.name;
         options = builder.options;
+        literal = builder.literal;
     }
 }

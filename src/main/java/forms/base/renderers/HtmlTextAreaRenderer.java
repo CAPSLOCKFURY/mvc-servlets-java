@@ -3,16 +3,20 @@ package forms.base.renderers;
 import forms.base.annotations.HtmlTextArea;
 
 public class HtmlTextAreaRenderer {
-    private String id = "";
+    private final String id;
     private final String name;
     private final String cols;
     private final String rows;
+    private final String literal;
 
     public String render(){
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("<textarea name=\"%s\" rows=\"%s\" cols=\"%s\" ", name, rows, cols));
         if(!id.equals("")) {
             sb.append(String.format("id=\"%s\" ", id));
+        }
+        if(!literal.equals("")){
+            sb.append(literal);
         }
         sb.append(">");
         sb.append("\n</textarea>");
@@ -24,6 +28,7 @@ public class HtmlTextAreaRenderer {
         private String cols;
         private String name;
         private String id = "";
+        private String literal = "";
 
         public Builder withRows(String rows){
             this.rows = rows;
@@ -45,6 +50,11 @@ public class HtmlTextAreaRenderer {
             return this;
         }
 
+        public Builder withLiteral(String literal){
+            this.literal = literal;
+            return this;
+        }
+
         public HtmlTextAreaRenderer build(){
             return new HtmlTextAreaRenderer(this);
         }
@@ -55,5 +65,6 @@ public class HtmlTextAreaRenderer {
         name = builder.name;
         cols = builder.cols;
         rows = builder.rows;
+        literal = builder.literal;
     }
 }

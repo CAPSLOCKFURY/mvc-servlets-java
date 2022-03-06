@@ -10,4 +10,6 @@ public @interface HtmlLabel {
     String text() default "";
 
     String localizedText() default "non-localized";
+
+    String literal() default "";
 }

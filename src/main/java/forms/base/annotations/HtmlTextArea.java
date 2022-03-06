@@ -17,6 +17,8 @@ public @interface HtmlTextArea {
 
     String cols();
 
+    String literal() default "";
+
     HtmlLabel label() default @HtmlLabel(forElement = "", text = "");
 
 }

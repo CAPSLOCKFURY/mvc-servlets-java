@@ -10,7 +10,8 @@ public class HtmlInputRenderer {
     private final String name;
     private final String placeholder;
     private final String localizedPlaceholder;
-    private String id = "";
+    private final String id;
+    private final String literal;
 
     private Locale locale = Locale.ROOT;
 
@@ -31,6 +32,9 @@ public class HtmlInputRenderer {
                     ResourceBundle.getBundle("forms", locale)
                             .getString("placeholder." + localizedPlaceholder)));
         }
+        if(!literal.equals("")){
+            sb.append(literal);
+        }
         sb.append(">");
         return sb.toString();
     }
@@ -41,6 +45,7 @@ public class HtmlInputRenderer {
         private String placeholder = "";
         private String localizedPlaceholder;
         private String id = "";
+        private String literal = "";
 
         public Builder(InputType type){
             this.type = type;
@@ -66,6 +71,11 @@ public class HtmlInputRenderer {
             return this;
         }
 
+        public Builder withLiteral(String literal){
+            this.literal = literal;
+            return this;
+        }
+
         public HtmlInputRenderer build(){
             return new HtmlInputRenderer(this);
         }
@@ -77,6 +87,7 @@ public class HtmlInputRenderer {
         id = builder.id;
         placeholder = builder.placeholder;
         localizedPlaceholder = builder.localizedPlaceholder;
+        literal = builder.literal;
     }
 
     public void setLocale(Locale locale){
