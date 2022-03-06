@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 
 import static utils.StringUtils.capitalize;
 
@@ -37,6 +38,10 @@ public class SqlMapper<T> {
                         }
                         if(sqlColumn.type().getTypeClass() == BigDecimal.class){
                             setterMethod.invoke(model, getDecimalFromRs(rs, sqlColumn.columnName()));
+                            return;
+                        }
+                        if(sqlColumn.type().getTypeClass() == java.sql.Date.class){
+                            setterMethod.invoke(model, getDateFromRs(rs, sqlColumn.columnName()));
                         }
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
@@ -74,6 +79,15 @@ public class SqlMapper<T> {
     private BigDecimal getDecimalFromRs(ResultSet rs, String colName){
         try {
             return rs.getBigDecimal(colName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private java.sql.Date getDateFromRs(ResultSet rs, String colName){
+        try {
+            return rs.getDate(colName);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

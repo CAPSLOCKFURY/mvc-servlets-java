@@ -21,7 +21,7 @@ public class PostgreSQLUserDao extends UserDao {
     private final static String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = md5(?)";
 
     @Override
-    public User getUserById(int id) throws SQLException {
+    public User getUserById(Long id) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
           return getOneById(connection, FIND_USER_BY_ID, id, User.class);
         }

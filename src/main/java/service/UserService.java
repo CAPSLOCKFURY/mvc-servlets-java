@@ -46,7 +46,7 @@ public class UserService {
         }
     }
 
-    public User getUserById(int id){
+    public User getUserById(Long id){
         try {
             return userDao.getUserById(id);
         } catch (SQLException sqle){

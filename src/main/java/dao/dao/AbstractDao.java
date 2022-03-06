@@ -30,9 +30,9 @@ public abstract class AbstractDao {
         return result;
     }
 
-    public <T> T getOneById(Connection connection, String sql, int id, Class<T> model) throws SQLException{
+    public <T> T getOneById(Connection connection, String sql, Long id, Class<T> model) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, id);
+        stmt.setLong(1, id);
         try{
             //TODO put duplicated code to another method
             T entity = model.getConstructor().newInstance();
