@@ -6,6 +6,7 @@ import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import models.Room;
+import models.RoomClass;
 import models.dto.RoomExtendedInfo;
 
 import java.sql.SQLException;
@@ -15,9 +16,27 @@ public class RoomsService {
 
     private final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
 
-    public List<RoomExtendedInfo> getAllRooms(){
+    public List<RoomExtendedInfo> getAllRooms(String locale){
         try{
-            return roomsDao.getAllRooms();
+            return roomsDao.getAllRooms(locale);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
+        }
+    }
+
+    public List<RoomClass> getRoomClasses(String locale){
+        try{
+            return roomsDao.getAllRoomClasses(locale);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
+        }
+    }
+
+    public RoomExtendedInfo getRoomById(Long id, String locale){
+        try{
+            return roomsDao.getRoomById(id, locale);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

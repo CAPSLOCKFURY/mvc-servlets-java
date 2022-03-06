@@ -9,8 +9,10 @@ import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import models.RoomClass;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import service.RoomsService;
 import utils.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 public final class CommandRegistry {
@@ -78,9 +83,8 @@ public final class CommandRegistry {
                     if(!security.doSecurity(request, response)){
                         return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
                     }
-                    Map<String, String> options = new HashMap<>();
-                    options.put("Lux", "Lux");
-                    options.put("Half - lux", "Half Lux");
+                    List<RoomClass> roomClasses = new RoomsService().getRoomClasses(getLocaleFromCookies(request.getCookies()));
+                    Map<String, String> options = roomClasses.stream().collect(Collectors.toMap(c -> String.valueOf(c.getId()), RoomClass::getName));
                     request.setAttribute("roomClassesMap", options);
                     return new CommandResult("room-request.jsp", RequestDirection.FORWARD);
                 }));

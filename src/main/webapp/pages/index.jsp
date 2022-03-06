@@ -19,6 +19,9 @@
     <h1>Room status: ${room.status}</h1>
     <h1>Room capacity: ${room.capacity}</h1>
     <h1>Room price: ${room.price}</h1>
+    <h2><a href="<c:url value="/project/room">
+                    <c:param name="id" value="${room.id}"/>
+                 </c:url>">See room</a></h2>
     <c:if test="${room.checkOutDate != null}">
         <h1>Room will be free at: ${room.checkOutDate}</h1>
     </c:if>

@@ -2,6 +2,7 @@ package models.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -54,6 +55,24 @@ public class PreparedStatementMapper<T> {
                             stmt.setLong(stmtCursor.getAndIncrement(), value);
                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
                             e.printStackTrace();
+                        }
+                    }
+                    if(sqlColumn.type().getTypeClass() == BigDecimal.class){
+                        try{
+                            BigDecimal value = (BigDecimal) getGetterMethod(f.getName()).invoke(form);
+                            stmt.setBigDecimal(stmtCursor.getAndIncrement(), value);
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
+                    if(sqlColumn.type().getTypeClass() == java.sql.Date.class){
+                        try{
+                            java.sql.Date value = (java.sql.Date) getGetterMethod(f.getName()).invoke(form);
+                            stmt.setDate(stmtCursor.getAndIncrement(), value);
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
+                            e.printStackTrace();
+                            return;
                         }
                     }
                 });

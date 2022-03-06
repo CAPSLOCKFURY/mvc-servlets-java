@@ -10,16 +10,20 @@ import java.sql.Date;
 
 public class RoomRequestForm extends Form {
 
+    @SqlColumn(columnName = "user_id", type = SqlType.LONG)
+    private Long userId;
+
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
     @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER,
             label = @HtmlLabel(forElement = "capacity", localizedText = "capacity"))
     private Integer capacity;
 
-    @SqlColumn(columnName = "room_class", type = SqlType.STRING)
+    @SqlColumn(columnName = "room_class", type = SqlType.INT)
     @HtmlSelect(id = "roomClass", name = "roomClass",
             dynamicOptionsAttribute = "roomClassesMap",
-            label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass"))
-    private String roomClass;
+            label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass")
+    )
+    private Integer roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
     @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE,
@@ -36,6 +40,14 @@ public class RoomRequestForm extends Form {
             label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
     private String comment;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public Integer getCapacity() {
         return capacity;
     }
@@ -44,12 +56,12 @@ public class RoomRequestForm extends Form {
         this.capacity = Integer.parseInt(capacity);
     }
 
-    public String getRoomClass() {
+    public Integer getRoomClass() {
         return roomClass;
     }
 
     public void setRoomClass(String roomClass) {
-        this.roomClass = roomClass;
+        this.roomClass = Integer.parseInt(roomClass);
     }
 
     public Date getCheckInDate() {
