@@ -14,6 +14,7 @@
 </c:if>
 <c:if test="${sessionScope.user != null}">
     <a href="<c:url value="/project/profile"/>">Your profile</a>
+    <a href="<c:url value="/project/room-request"/>">Request room</a>
 </c:if>
 <form action="<c:url value="/project/change-language"/>" method="get">
     <select name="lang">

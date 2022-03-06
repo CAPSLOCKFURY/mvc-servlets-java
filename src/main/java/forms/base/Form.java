@@ -5,6 +5,7 @@ import forms.base.annotations.HtmlSelect;
 import forms.base.annotations.HtmlTextArea;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -31,9 +32,7 @@ public abstract class Form {
                                 || field.isAnnotationPresent(HtmlTextArea.class))
                 .forEach(field -> {
                     try {
-                        HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
-                        //TODO put this in another method
-                        String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
+                        String name = getFieldName(field);
                         Method method = formClass.getMethod("set".concat(capitalize(field.getName())), String.class);
                         method.invoke(this, request.getParameter(name));
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -41,6 +40,23 @@ public abstract class Form {
                     }
                 });
 
+    }
+
+    private String getFieldName(Field field){
+        //TODO probably refactor
+        if(field.isAnnotationPresent(HtmlInput.class)){
+            HtmlInput input = field.getDeclaredAnnotation(HtmlInput.class);
+            return input.name().equals("") ? field.getName() : input.name();
+        }
+        if(field.isAnnotationPresent(HtmlSelect.class)){
+            HtmlSelect input = field.getDeclaredAnnotation(HtmlSelect.class);
+            return input.name().equals("") ? field.getName() : input.name();
+        }
+        if(field.isAnnotationPresent(HtmlTextArea.class)){
+            HtmlTextArea input = field.getDeclaredAnnotation(HtmlTextArea.class);
+            return input.name().equals("") ? field.getName() : input.name();
+        }
+        return "";
     }
 
     public boolean isValid(){

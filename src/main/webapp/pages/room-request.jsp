@@ -9,6 +9,7 @@
 <h1>Room request</h1>
 <form method="post">
     <form:renderForm formClassPath="forms.RoomRequestForm"/>
+    <button type="submit">Make request</button>
 </form>
 </body>
 </html>
