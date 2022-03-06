@@ -1,4 +1,4 @@
-package forms.base;
+package forms.base.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

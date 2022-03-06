@@ -1,6 +1,6 @@
 package forms;
 
-import forms.base.HtmlInputRenderer;
+import forms.base.renderers.HtmlInputRenderer;
 import forms.base.InputType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

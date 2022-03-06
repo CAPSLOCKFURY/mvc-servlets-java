@@ -1,7 +1,7 @@
 package forms;
 
 
-import forms.base.HtmlSelectRenderer;
+import forms.base.renderers.HtmlSelectRenderer;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

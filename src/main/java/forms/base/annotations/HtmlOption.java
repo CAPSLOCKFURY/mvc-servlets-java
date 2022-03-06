@@ -1,4 +1,4 @@
-package forms.base;
+package forms.base.annotations;
 
 public @interface HtmlOption {
     String value();

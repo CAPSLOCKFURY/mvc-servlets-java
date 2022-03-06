@@ -1,5 +1,8 @@
 package forms.base;
 
+import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlSelect;
+import forms.base.annotations.HtmlTextArea;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +25,10 @@ public abstract class Form {
     public final void mapRequestToForm(HttpServletRequest request){
         Class<? extends Form> formClass = this.getClass();
         Arrays.stream(formClass.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(HtmlInput.class) || field.isAnnotationPresent(HtmlSelect.class))
+                .filter(field ->
+                        field.isAnnotationPresent(HtmlInput.class)
+                                || field.isAnnotationPresent(HtmlSelect.class)
+                                || field.isAnnotationPresent(HtmlTextArea.class))
                 .forEach(field -> {
                     try {
                         HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);

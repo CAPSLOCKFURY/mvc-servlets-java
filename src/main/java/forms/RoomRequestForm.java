@@ -1,15 +1,17 @@
 package forms;
 
-import forms.base.HtmlInput;
-import forms.base.HtmlOption;
-import forms.base.HtmlSelect;
+import forms.base.Form;
+import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlOption;
+import forms.base.annotations.HtmlSelect;
 import forms.base.InputType;
+import forms.base.annotations.HtmlTextArea;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.sql.Date;
 
-public class RoomRequestForm {
+public class RoomRequestForm extends Form {
 
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
     @HtmlInput(name = "capacity", type = InputType.NUMBER)
@@ -33,7 +35,7 @@ public class RoomRequestForm {
     private java.sql.Date checkOutDate;
 
     @SqlColumn(columnName = "comment", type = SqlType.STRING)
-    //TODO text area
+    @HtmlTextArea(rows = "3", cols = "35", name = "comment")
     private String comment;
 
     public Integer getCapacity() {
@@ -74,5 +76,10 @@ public class RoomRequestForm {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public boolean validate() {
+        return true;
     }
 }

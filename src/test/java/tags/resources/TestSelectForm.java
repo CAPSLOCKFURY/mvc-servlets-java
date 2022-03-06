@@ -1,6 +1,9 @@
 package tags.resources;
 
 import forms.base.*;
+import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlOption;
+import forms.base.annotations.HtmlSelect;
 
 public class TestSelectForm extends Form {
 

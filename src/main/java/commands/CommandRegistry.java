@@ -72,6 +72,8 @@ public final class CommandRegistry {
                     request.getSession().invalidate();
                     return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
                 }));
+        commandMap.put(new UrlBind("/room-request", RequestMethod.GET),
+                ((request, response) -> new CommandResult("room-request.jsp", RequestDirection.FORWARD)));
     }
 
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {

@@ -1,6 +1,13 @@
 package tags;
 
 import forms.base.*;
+import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlOption;
+import forms.base.annotations.HtmlSelect;
+import forms.base.annotations.HtmlTextArea;
+import forms.base.renderers.HtmlInputRenderer;
+import forms.base.renderers.HtmlSelectRenderer;
+import forms.base.renderers.HtmlTextAreaRenderer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.TagSupport;
@@ -30,7 +37,9 @@ public class FormRenderHandler extends TagSupport {
             return SKIP_BODY;
         }
         Arrays.stream(formClass.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(HtmlInput.class) || field.isAnnotationPresent(HtmlSelect.class))
+                .filter(field -> field.isAnnotationPresent(HtmlInput.class)
+                        || field.isAnnotationPresent(HtmlSelect.class)
+                        || field.isAnnotationPresent(HtmlTextArea.class))
                 .forEach(field -> {
                     if(field.isAnnotationPresent(HtmlInput.class)) {
                         write(renderInput(field));
@@ -38,6 +47,10 @@ public class FormRenderHandler extends TagSupport {
                     }
                     if(field.isAnnotationPresent(HtmlSelect.class)){
                         write(renderSelect(field));
+                        return;
+                    }
+                    if(field.isAnnotationPresent(HtmlTextArea.class)){
+                        write(renderTextArea(field));
                         return;
                     }
                 });
@@ -66,6 +79,15 @@ public class FormRenderHandler extends TagSupport {
         HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
         inputRenderer.setLocale(LocaleUtils.getLocaleFromCookies(req.getCookies()));
         return inputRenderer.construct();
+    }
+
+    private String renderTextArea(Field field){
+        HtmlTextArea htmlTextArea = field.getDeclaredAnnotation(HtmlTextArea.class);
+        HtmlTextAreaRenderer renderer = new HtmlTextAreaRenderer.Builder()
+                .withName(htmlTextArea.name())
+                .withRows(htmlTextArea.rows())
+                .withCols(htmlTextArea.cols()).build();
+        return renderer.render();
     }
 
     private void write(String content){
