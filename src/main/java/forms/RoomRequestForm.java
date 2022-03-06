@@ -16,12 +16,9 @@ public class RoomRequestForm extends Form {
     private Integer capacity;
 
     @SqlColumn(columnName = "room_class", type = SqlType.STRING)
-    @HtmlSelect(id = "roomClass", name = "roomClass", options = {
-            @HtmlOption(name = "Cheap", value = "Cheap"),
-            @HtmlOption(name = "Normal", value = "Normal"),
-            @HtmlOption(name = "Half lux", value = "Half lux"),
-            @HtmlOption(name = "Lux", value = "Lux")
-    }, label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass"))
+    @HtmlSelect(id = "roomClass", name = "roomClass",
+            dynamicOptionsAttribute = "roomClassesMap",
+            label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass"))
     private String roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)

@@ -14,6 +14,7 @@ import utils.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,8 +59,14 @@ public class FormRenderHandler extends TagSupport {
     private String renderSelect(Field field){
         HtmlSelect htmlSelect = field.getDeclaredAnnotation(HtmlSelect.class);
         renderLabel(htmlSelect.label());
-        Map<String, String> options = Arrays.stream(htmlSelect.options())
-                .collect(Collectors.toMap(HtmlOption::value, HtmlOption::name));
+        Map<String, String> options;
+        if(htmlSelect.dynamicOptionsAttribute().equals("")) {
+            options = Arrays.stream(htmlSelect.options())
+                    .collect(Collectors.toMap(HtmlOption::value, HtmlOption::name));
+        } else {
+            HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
+            options = (Map<String, String>) req.getAttribute(htmlSelect.dynamicOptionsAttribute());
+        }
         HtmlSelectRenderer renderer = new HtmlSelectRenderer.Builder()
                 .withName(htmlSelect.name())
                 .withOptions(options)

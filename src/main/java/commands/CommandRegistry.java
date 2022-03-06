@@ -73,7 +73,17 @@ public final class CommandRegistry {
                     return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
                 }));
         commandMap.put(new UrlBind("/room-request", RequestMethod.GET),
-                ((request, response) -> new CommandResult("room-request.jsp", RequestDirection.FORWARD)));
+                ((request, response) -> {
+                    Security security = new AuthenticatedOnly();
+                    if(!security.doSecurity(request, response)){
+                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+                    }
+                    Map<String, String> options = new HashMap<>();
+                    options.put("Lux", "Lux");
+                    options.put("Half - lux", "Half Lux");
+                    request.setAttribute("roomClassesMap", options);
+                    return new CommandResult("room-request.jsp", RequestDirection.FORWARD);
+                }));
     }
 
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {

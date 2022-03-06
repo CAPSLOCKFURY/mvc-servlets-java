@@ -14,7 +14,9 @@ public @interface HtmlSelect {
 
     String literal() default "";
 
-    HtmlOption[] options();
+    HtmlOption[] options() default {};
+
+    String dynamicOptionsAttribute() default "";
 
     HtmlLabel label() default @HtmlLabel(forElement = "", text = "");
 
