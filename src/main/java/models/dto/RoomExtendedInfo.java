@@ -27,10 +27,10 @@ public class RoomExtendedInfo {
     private Integer capacity;
 
     @SqlColumn(columnName = "class_name", type = SqlType.STRING)
-    private String class_name;
+    private String className;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date check_out_date;
+    private java.sql.Date checkOutDate;
 
     public Long getId() {
         return id;
@@ -80,19 +80,19 @@ public class RoomExtendedInfo {
         this.capacity = capacity;
     }
 
-    public String getClass_name() {
-        return class_name;
+    public String getClassName() {
+        return className;
     }
 
-    public void setClass_name(String class_name) {
-        this.class_name = class_name;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Date getCheck_out_date() {
-        return check_out_date;
+    public Date getCheckOutDate() {
+        return checkOutDate;
     }
 
-    public void setCheck_out_date(Date check_out_date) {
-        this.check_out_date = check_out_date;
+    public void setCheckOutDate(Date checkOutDate) {
+        this.checkOutDate = checkOutDate;
     }
 }

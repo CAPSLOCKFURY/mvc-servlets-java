@@ -22,13 +22,13 @@ public abstract class Form {
     public final void mapRequestToForm(HttpServletRequest request){
         Class<? extends Form> formClass = this.getClass();
         Arrays.stream(formClass.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(HtmlInput.class))
+                .filter(field -> field.isAnnotationPresent(HtmlInput.class) || field.isAnnotationPresent(HtmlSelect.class))
                 .forEach(field -> {
                     try {
                         HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
                         //TODO put this in another method
                         String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
-                        Method method = formClass.getMethod("set".concat(capitalize(field.getName())), field.getType());
+                        Method method = formClass.getMethod("set".concat(capitalize(field.getName())), String.class);
                         method.invoke(this, request.getParameter(name));
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();

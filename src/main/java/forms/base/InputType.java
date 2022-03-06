@@ -1,5 +1,5 @@
 package forms.base;
 
 public enum InputType {
-    TEXT, PASSWORD
+    TEXT, PASSWORD, NUMBER, DATE
 }

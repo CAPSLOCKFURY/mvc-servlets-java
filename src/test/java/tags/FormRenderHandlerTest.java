@@ -52,7 +52,12 @@ public class FormRenderHandlerTest {
                                                            "<input type=\"text\" name=\"field3Name\" placeholder=\"field3 placeholder\" >"),
                 Arguments.of("tags.resources.LocalizedTestForm", "<input type=\"text\" name=\"login\" placeholder=\"Login\" >\n" +
                                                                  "<input type=\"password\" name=\"password\" placeholder=\"Password\" >\n" +
-                                                                 "<input type=\"text\" name=\"someField\" placeholder=\"some non localized field\" >")
+                                                                 "<input type=\"text\" name=\"someField\" placeholder=\"some non localized field\" >"),
+                Arguments.of("tags.resources.TestSelectForm", "<input type=\"text\" name=\"testField\" >\n" +
+                                                              "<select name=\"select\" >\n" +
+                                                                    "\t<option value=\"Second\">2</option>\n" +
+                                                                    "\t<option value=\"One\">1</option>\n" +
+                                                              "</select>")
         );
     }
 
