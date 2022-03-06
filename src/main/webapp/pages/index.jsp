@@ -9,9 +9,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h1>Main Page</h1>
-<h1>Welcome user: ${sessionScope.user.login}</h1>
-<h2>Id: ${sessionScope.user.id}</h2>
+<h1>All our rooms</h1>
 <c:forEach var="room" items="${rooms}">
     <hr>
     <h1>-------------Room info----------------</h1>

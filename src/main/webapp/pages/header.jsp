@@ -8,8 +8,13 @@
 <html>
 <body>
 <a href="<c:url value="/project"/>"><fmt:message key="header.home"/></a>
-<a href="<c:url value="/project/register"/>"><fmt:message key="header.register"/></a>
-<a href="<c:url value="/project/login"/>"><fmt:message key="header.login"/></a>
+<c:if test="${sessionScope.user == null}">
+    <a href="<c:url value="/project/register"/>"><fmt:message key="header.register"/></a>
+    <a href="<c:url value="/project/login"/>"><fmt:message key="header.login"/></a>
+</c:if>
+<c:if test="${sessionScope.user != null}">
+    <a href="<c:url value="/project/profile"/>">Your profile</a>
+</c:if>
 <form action="<c:url value="/project/change-language"/>" method="get">
     <select name="lang">
         <option value="en" <c:if test="${content_lang.equals(\"en\")}">selected</c:if>>English</option>

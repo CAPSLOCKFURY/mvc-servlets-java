@@ -1,6 +1,7 @@
 package commands;
 
 import commands.base.*;
+import commands.base.security.AuthenticatedOnly;
 import commands.base.security.NonAuthenticatedOnly;
 import commands.base.security.Security;
 import exceptions.CommandNotFoundException;
@@ -57,6 +58,19 @@ public final class CommandRegistry {
                     langCookie.setMaxAge(-1);
                     response.addCookie(langCookie);
                     return new CommandResult(request.getHeader("referer"), RequestDirection.REDIRECT);
+                }));
+        commandMap.put(new UrlBind("/profile", RequestMethod.GET),
+                ((request, response) -> {
+                    Security security = new AuthenticatedOnly();
+                    if(!security.doSecurity(request, response)){
+                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+                    }
+                    return new CommandResult("profile.jsp", RequestDirection.FORWARD);
+                }));
+        commandMap.put(new UrlBind("/logout", RequestMethod.GET),
+                ((request, response) -> {
+                    request.getSession().invalidate();
+                    return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
                 }));
     }
 
