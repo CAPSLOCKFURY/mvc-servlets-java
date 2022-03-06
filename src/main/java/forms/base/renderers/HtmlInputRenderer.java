@@ -11,7 +11,7 @@ public class HtmlInputRenderer {
     private final String placeholder;
     private final String localizedPlaceholder;
     private String id = "";
-    //TODO put this into Locale class
+
     private Locale locale = Locale.ROOT;
 
     public String render(){
