@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +20,7 @@ public class HtmlInputRendererTest {
                 .withName(name)
                 .withPlaceholder(placeholder)
                 .build();
-        String renderedInput = renderer.construct();
+        String renderedInput = renderer.render();
         assertEquals(expected, renderedInput);
     }
 
@@ -30,8 +31,8 @@ public class HtmlInputRendererTest {
                 .withName(name)
                 .withLocalizedPlaceholder(localizedPlaceholder)
                 .build();
-        renderer.setLocale(locale);
-        String renderedInput = renderer.construct();
+        renderer.setLocale(new Locale(locale));
+        String renderedInput = renderer.render();
         assertEquals(expected, renderedInput);
     }
 

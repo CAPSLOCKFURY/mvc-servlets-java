@@ -4,8 +4,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HtmlOption {
-    String value();
+public @interface HtmlLabel {
+    String forElement();
 
-    String name();
+    String text() default "";
+
+    String localizedText() default "non-localized";
 }

@@ -1,11 +1,9 @@
 package tags;
 
 import forms.base.*;
-import forms.base.annotations.HtmlInput;
-import forms.base.annotations.HtmlOption;
-import forms.base.annotations.HtmlSelect;
-import forms.base.annotations.HtmlTextArea;
+import forms.base.annotations.*;
 import forms.base.renderers.HtmlInputRenderer;
+import forms.base.renderers.HtmlLabelRenderer;
 import forms.base.renderers.HtmlSelectRenderer;
 import forms.base.renderers.HtmlTextAreaRenderer;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +14,7 @@ import utils.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -51,7 +50,6 @@ public class FormRenderHandler extends TagSupport {
                     }
                     if(field.isAnnotationPresent(HtmlTextArea.class)){
                         write(renderTextArea(field));
-                        return;
                     }
                 });
         return SKIP_BODY;
@@ -59,6 +57,7 @@ public class FormRenderHandler extends TagSupport {
 
     private String renderSelect(Field field){
         HtmlSelect htmlSelect = field.getDeclaredAnnotation(HtmlSelect.class);
+        renderLabel(htmlSelect.label());
         Map<String, String> options = Arrays.stream(htmlSelect.options())
                 .collect(Collectors.toMap(HtmlOption::value, HtmlOption::name));
         HtmlSelectRenderer renderer = new HtmlSelectRenderer.Builder()
@@ -68,6 +67,8 @@ public class FormRenderHandler extends TagSupport {
 
     private String renderInput(Field field){
         HtmlInput htmlInput = field.getDeclaredAnnotation(HtmlInput.class);
+        HtmlLabel label = htmlInput.label();
+        renderLabel(label);
         //TODO put this into another methods
         String name = htmlInput.name().equals("") ? field.getName() : htmlInput.name();
         String localizedPlaceholder = htmlInput.localizedPlaceholder().equals("non-localized") ? null : htmlInput.localizedPlaceholder();
@@ -77,17 +78,33 @@ public class FormRenderHandler extends TagSupport {
                 .withLocalizedPlaceholder(localizedPlaceholder)
                 .build();
         HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
-        inputRenderer.setLocale(LocaleUtils.getLocaleFromCookies(req.getCookies()));
-        return inputRenderer.construct();
+        String localeName = LocaleUtils.getLocaleFromCookies(req.getCookies());
+        inputRenderer.setLocale(new Locale(localeName));
+        return inputRenderer.render();
     }
 
     private String renderTextArea(Field field){
         HtmlTextArea htmlTextArea = field.getDeclaredAnnotation(HtmlTextArea.class);
+        renderLabel(htmlTextArea.label());
         HtmlTextAreaRenderer renderer = new HtmlTextAreaRenderer.Builder()
                 .withName(htmlTextArea.name())
                 .withRows(htmlTextArea.rows())
                 .withCols(htmlTextArea.cols()).build();
         return renderer.render();
+    }
+
+    private void renderLabel(HtmlLabel label) {
+        HttpServletRequest req  = (HttpServletRequest)pageContext.getRequest();
+        String localeName = LocaleUtils.getLocaleFromCookies(req.getCookies());
+        if(!label.forElement().equals("")){
+            HtmlLabelRenderer labelRenderer = new HtmlLabelRenderer.Builder()
+                    .withForElement(label.forElement())
+                    .withText(label.text())
+                    .withLocalizedText(label.localizedText())
+                    .build();
+            labelRenderer.setLocale(new Locale(localeName));
+            write(labelRenderer.render());
+        }
     }
 
     private void write(String content){

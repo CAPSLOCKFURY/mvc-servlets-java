@@ -8,7 +8,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface HtmlTextArea {
+    //TODO add placeholders
+    String id() default "";
+
     String name();
+
     String rows();
+
     String cols();
+
+    HtmlLabel label() default @HtmlLabel(forElement = "", text = "");
+
 }

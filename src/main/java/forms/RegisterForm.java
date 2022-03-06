@@ -3,6 +3,7 @@ package forms;
 import forms.base.Form;
 import forms.base.annotations.HtmlInput;
 import forms.base.InputType;
+import forms.base.annotations.HtmlLabel;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
@@ -14,7 +15,7 @@ public class RegisterForm extends Form {
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
     private final static Pattern namePattern = Pattern.compile("[а-яА-Я|a-zA-Z]+");
 
-    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
+    @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login")
     @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
 

@@ -9,5 +9,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface HtmlSelect {
     String name();
+
+    String id() default "";
+
     HtmlOption[] options();
+
+    HtmlLabel label() default @HtmlLabel(forElement = "", text = "");
+
 }

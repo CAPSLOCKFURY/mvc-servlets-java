@@ -10,22 +10,25 @@ public class HtmlInputRenderer {
     private final String name;
     private final String placeholder;
     private final String localizedPlaceholder;
-
+    private String id = "";
     //TODO put this into Locale class
-    private String locale = "ru_RU";
+    private Locale locale = Locale.ROOT;
 
-    public String construct(){
+    public String render(){
         //TODO break this into multiple methods
         StringBuilder sb = new StringBuilder();
         sb.append("<input ");
         sb.append(String.format("type=\"%s\" ", type.toString().toLowerCase()));
         sb.append(String.format("name=\"%s\" ", name));
+        if(!id.equals("")){
+            sb.append(String.format("id=\"%s\" ", id));
+        }
         if(!placeholder.equals("") && localizedPlaceholder == null){
             sb.append(String.format("placeholder=\"%s\" ", placeholder));
         }
         if(localizedPlaceholder != null){
             sb.append(String.format("placeholder=\"%s\" ",
-                    ResourceBundle.getBundle("forms", new Locale(locale))
+                    ResourceBundle.getBundle("forms", locale)
                             .getString("placeholder." + localizedPlaceholder)));
         }
         sb.append(">");
@@ -37,6 +40,7 @@ public class HtmlInputRenderer {
         private String name;
         private String placeholder = "";
         private String localizedPlaceholder;
+        private String id = "";
 
         public Builder(InputType type){
             this.type = type;
@@ -57,6 +61,11 @@ public class HtmlInputRenderer {
             return this;
         }
 
+        public Builder withId(String id){
+            this.id = id;
+            return this;
+        }
+
         public HtmlInputRenderer build(){
             return new HtmlInputRenderer(this);
         }
@@ -65,11 +74,12 @@ public class HtmlInputRenderer {
     private HtmlInputRenderer(Builder builder){
         type = builder.type;
         name = builder.name;
+        id = builder.id;
         placeholder = builder.placeholder;
         localizedPlaceholder = builder.localizedPlaceholder;
     }
 
-    public void setLocale(String locale){
+    public void setLocale(Locale locale){
         this.locale = locale;
     }
 }

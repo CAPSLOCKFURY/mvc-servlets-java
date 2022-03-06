@@ -1,11 +1,8 @@
 package forms;
 
 import forms.base.Form;
-import forms.base.annotations.HtmlInput;
-import forms.base.annotations.HtmlOption;
-import forms.base.annotations.HtmlSelect;
+import forms.base.annotations.*;
 import forms.base.InputType;
-import forms.base.annotations.HtmlTextArea;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
@@ -14,7 +11,8 @@ import java.sql.Date;
 public class RoomRequestForm extends Form {
 
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
-    @HtmlInput(name = "capacity", type = InputType.NUMBER)
+    @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER,
+            label = @HtmlLabel(forElement = "capacity", localizedText = "capacity"))
     private Integer capacity;
 
     @SqlColumn(columnName = "room_class", type = SqlType.STRING)

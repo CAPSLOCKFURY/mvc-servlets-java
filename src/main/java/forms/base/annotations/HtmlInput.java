@@ -14,7 +14,11 @@ public @interface HtmlInput {
 
     String name() default "";
 
+    String id() default "";
+
     String placeholder() default "";
 
     String localizedPlaceholder() default "non-localized";
+
+    HtmlLabel label() default @HtmlLabel(forElement = "", text = "");
 }
