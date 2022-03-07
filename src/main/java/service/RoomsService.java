@@ -1,7 +1,6 @@
 package service;
 
 import dao.dao.RoomsDao;
-import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
@@ -39,6 +38,15 @@ public class RoomsService {
             return roomsDao.getRoomById(id, locale);
         } catch (SQLException sqle){
             sqle.printStackTrace();
+            throw new DaoException();
+        }
+    }
+
+    public RoomExtendedInfo getExtendedRoomInfo(Long id, String locale){
+        try{
+            return roomsDao.getExtendedRoomInfoById(id , locale);
+        } catch (SQLException sqlException){
+            sqlException.printStackTrace();
             throw new DaoException();
         }
     }

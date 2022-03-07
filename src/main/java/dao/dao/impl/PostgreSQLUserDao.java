@@ -8,7 +8,8 @@ import models.User;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class PostgreSQLUserDao extends UserDao {

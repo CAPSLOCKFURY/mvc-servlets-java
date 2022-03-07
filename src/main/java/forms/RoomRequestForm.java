@@ -1,8 +1,11 @@
 package forms;
 
 import forms.base.Form;
-import forms.base.annotations.*;
 import forms.base.InputType;
+import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlLabel;
+import forms.base.annotations.HtmlSelect;
+import forms.base.annotations.HtmlTextArea;
 import models.base.SqlColumn;
 import models.base.SqlType;
 

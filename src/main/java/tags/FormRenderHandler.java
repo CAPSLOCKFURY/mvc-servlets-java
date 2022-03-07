@@ -1,6 +1,6 @@
 package tags;
 
-import forms.base.*;
+import forms.base.Form;
 import forms.base.annotations.*;
 import forms.base.renderers.HtmlInputRenderer;
 import forms.base.renderers.HtmlLabelRenderer;
@@ -14,7 +14,6 @@ import utils.LocaleUtils;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;

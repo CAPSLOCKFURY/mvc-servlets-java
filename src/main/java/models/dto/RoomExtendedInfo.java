@@ -5,6 +5,8 @@ import models.base.SqlType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RoomExtendedInfo {
 
@@ -32,6 +34,8 @@ public class RoomExtendedInfo {
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
     private java.sql.Date checkOutDate;
 
+    private List<RoomDate> dates = new LinkedList<>();
+
     public Long getId() {
         return id;
     }
@@ -46,6 +50,14 @@ public class RoomExtendedInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<RoomDate> getDates() {
+        return dates;
+    }
+
+    public void setDates(List<RoomDate> dates) {
+        this.dates = dates;
     }
 
     public Integer getNumber() {

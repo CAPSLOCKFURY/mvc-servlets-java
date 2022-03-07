@@ -1,9 +1,11 @@
 package listeners;
 
 import db.ConnectionPool;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionListener;
 
 @WebListener
 public class ConnectionPoolInitDestroyListener implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {

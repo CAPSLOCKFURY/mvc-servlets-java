@@ -1,7 +1,6 @@
 package filters;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;

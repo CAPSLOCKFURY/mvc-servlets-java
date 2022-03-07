@@ -14,4 +14,6 @@ public abstract class RoomsDao extends AbstractDao {
     public abstract Room getRoomById(Long id, String locale) throws SQLException;
 
     public abstract List<RoomClass> getAllRoomClasses(String locale) throws SQLException;
+
+    public abstract RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException;
 }

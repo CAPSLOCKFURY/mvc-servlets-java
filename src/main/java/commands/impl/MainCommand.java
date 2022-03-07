@@ -1,11 +1,9 @@
 package commands.impl;
 
 import commands.base.*;
-import dao.dao.RoomsDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Room;
-import models.dto.RoomExtendedInfo;
 import service.RoomsService;
 
 import java.util.List;

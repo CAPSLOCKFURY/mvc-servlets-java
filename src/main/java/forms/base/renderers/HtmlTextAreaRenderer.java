@@ -1,7 +1,5 @@
 package forms.base.renderers;
 
-import forms.base.annotations.HtmlTextArea;
-
 public class HtmlTextAreaRenderer {
     private final String id;
     private final String name;
