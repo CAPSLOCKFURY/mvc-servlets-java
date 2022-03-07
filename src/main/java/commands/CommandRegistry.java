@@ -86,6 +86,8 @@ public final class CommandRegistry {
                     List<RoomClass> roomClasses = new RoomsService().getRoomClasses(getLocaleFromCookies(request.getCookies()));
                     Map<String, String> options = roomClasses.stream().collect(Collectors.toMap(c -> String.valueOf(c.getId()), RoomClass::getName));
                     request.setAttribute("roomClassesMap", options);
+                    FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
+                    errorProcessor.processErrors(request, response);
                     return new CommandResult("room-request.jsp", RequestDirection.FORWARD);
                 }));
     }

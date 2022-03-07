@@ -2,12 +2,16 @@ package commands.impl;
 
 import commands.base.*;
 import forms.RoomRequestForm;
+import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.User;
 import service.RoomRequestService;
 
+import java.util.Locale;
+
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/room-request", method = RequestMethod.POST)
@@ -18,7 +22,12 @@ public class RoomRequestPostCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         RoomRequestForm form = new RoomRequestForm();
+        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         form.mapRequestToForm(request);
+        if(!form.isValid()){
+            response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+            return new CommandResult(getAbsoluteUrl("/room-request", request), RequestDirection.REDIRECT);
+        }
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("user");
         Long userId = user.getId();

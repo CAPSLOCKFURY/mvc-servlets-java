@@ -14,7 +14,7 @@ public class RoomRequestForm extends Form {
     private Long userId;
 
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
-    @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER,
+    @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER, literal = "min =\"1\"",
             label = @HtmlLabel(forElement = "capacity", localizedText = "capacity"))
     private Integer capacity;
 
@@ -40,6 +40,29 @@ public class RoomRequestForm extends Form {
             label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
     private String comment;
 
+    @Override
+    public boolean validate() {
+        if(checkInDate != null){
+            if(checkInDate.before(new Date(System.currentTimeMillis()))){
+                addLocalizedError("errors.CheckInDateInPast");
+            }
+        }
+        if(checkOutDate != null){
+            if(checkInDate.before(new Date(System.currentTimeMillis()))){
+                addLocalizedError("errors.CheckOutDateInPast");
+            }
+        }
+        if(checkOutDate != null && checkInDate != null) {
+            if (checkOutDate.before(checkInDate)) {
+                addLocalizedError("errors.CheckOutDateBeforeCheckIn");
+            }
+            if(checkOutDate.equals(checkInDate)){
+                addLocalizedError("errors.CheckOutDateIsCheckInDate");
+            }
+        }
+        return errors.size() == 0;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -53,7 +76,12 @@ public class RoomRequestForm extends Form {
     }
 
     public void setCapacity(String capacity) {
-        this.capacity = Integer.parseInt(capacity);
+        try {
+            this.capacity = Integer.parseInt(capacity);
+        } catch (NumberFormatException nfe){
+            addLocalizedError("errors.capacityNumberFormat");
+            this.capacity = 0;
+        }
     }
 
     public Integer getRoomClass() {
@@ -61,7 +89,15 @@ public class RoomRequestForm extends Form {
     }
 
     public void setRoomClass(String roomClass) {
-        this.roomClass = Integer.parseInt(roomClass);
+        try {
+            this.roomClass = Integer.parseInt(roomClass);
+            if(this.roomClass <= 0){
+                addLocalizedError("errors.roomClassNumberFormat");
+            }
+        } catch (NumberFormatException nfe){
+            addLocalizedError("errors.roomClassNumberFormat");
+            this.roomClass = 0;
+        }
     }
 
     public Date getCheckInDate() {
@@ -69,7 +105,12 @@ public class RoomRequestForm extends Form {
     }
 
     public void setCheckInDate(String checkInDate) {
-        this.checkInDate = Date.valueOf(checkInDate);
+        try {
+            this.checkInDate = Date.valueOf(checkInDate);
+        } catch (IllegalArgumentException iag){
+            addLocalizedError("errors.checkInDateIAG");
+            this.checkInDate = null;
+        }
     }
 
     public Date getCheckOutDate() {
@@ -77,7 +118,11 @@ public class RoomRequestForm extends Form {
     }
 
     public void setCheckOutDate(String checkOutDate) {
-        this.checkOutDate = Date.valueOf(checkOutDate);
+        try {
+            this.checkOutDate = Date.valueOf(checkOutDate);
+        } catch (IllegalArgumentException iag){
+            addLocalizedError("errors.checkOutDateIAG");
+        }
     }
 
     public String getComment() {
@@ -86,10 +131,5 @@ public class RoomRequestForm extends Form {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    @Override
-    public boolean validate() {
-        return true;
     }
 }

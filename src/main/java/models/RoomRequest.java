@@ -13,7 +13,7 @@ public class RoomRequest {
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
     private Integer capacity;
 
-    @SqlColumn(columnName = "room_class", type = SqlType.STRING)
+    @SqlColumn(columnName = "class_name", type = SqlType.STRING)
     private String roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)

@@ -10,6 +10,7 @@
 <h2>Email: ${sessionScope.user.email}</h2>
 <h2>Your balance: ${sessionScope.user.balance}</h2>
 <h3>Role: ${sessionScope.user.role}</h3>
+<a href="<c:url value="/project/profile/my-room-requests"/>">My Room Requests</a>
 <a href="<c:url value="/project/logout"/>">Logout</a>
 </body>
 </html>
