@@ -9,9 +9,9 @@ import java.util.List;
 
 public abstract class RoomsDao extends AbstractDao {
 
-    public abstract List<RoomExtendedInfo> getAllRooms(String locale) throws SQLException;
+    public abstract List<Room> getAllRooms(String locale) throws SQLException;
 
-    public abstract RoomExtendedInfo getRoomById(Long id, String locale) throws SQLException;
+    public abstract Room getRoomById(Long id, String locale) throws SQLException;
 
     public abstract List<RoomClass> getAllRoomClasses(String locale) throws SQLException;
 }

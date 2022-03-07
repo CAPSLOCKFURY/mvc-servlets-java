@@ -5,7 +5,7 @@
 </head>
 <body>
     <jsp:include page="header.jsp"/>
-    <jsp:useBean id="room" scope="request" class="models.dto.RoomExtendedInfo"/>
+    <jsp:useBean id="room" scope="request" class="models.Room"/>
     <h1>Room Number: ${room.number}</h1>
     <h1>Room name: ${room.name}</h1>
     <h1>Room class: ${room.className}</h1>

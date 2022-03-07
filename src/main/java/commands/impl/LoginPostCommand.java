@@ -1,6 +1,8 @@
 package commands.impl;
 
 import commands.base.*;
+import commands.base.security.NonAuthenticatedOnly;
+import commands.base.security.Security;
 import forms.LoginForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,10 @@ public class LoginPostCommand implements Command {
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
+        Security security = new NonAuthenticatedOnly();
+        if(!security.doSecurity(request, response)){
+            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+        }
         LoginForm form = new LoginForm();
         form.mapRequestToForm(request);
         form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));

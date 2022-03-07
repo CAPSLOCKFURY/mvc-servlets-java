@@ -22,9 +22,6 @@
     <h2><a href="<c:url value="/project/room">
                     <c:param name="id" value="${room.id}"/>
                  </c:url>">See room</a></h2>
-    <c:if test="${room.checkOutDate != null}">
-        <h1>Room will be free at: ${room.checkOutDate}</h1>
-    </c:if>
     <hr>
 </c:forEach>
 </body>

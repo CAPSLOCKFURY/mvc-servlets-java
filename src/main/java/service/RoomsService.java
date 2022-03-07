@@ -16,7 +16,7 @@ public class RoomsService {
 
     private final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
 
-    public List<RoomExtendedInfo> getAllRooms(String locale){
+    public List<Room> getAllRooms(String locale){
         try{
             return roomsDao.getAllRooms(locale);
         } catch (SQLException sqle){
@@ -34,7 +34,7 @@ public class RoomsService {
         }
     }
 
-    public RoomExtendedInfo getRoomById(Long id, String locale){
+    public Room getRoomById(Long id, String locale){
         try{
             return roomsDao.getRoomById(id, locale);
         } catch (SQLException sqle){

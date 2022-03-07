@@ -12,4 +12,6 @@ public abstract class RoomRequestDao extends AbstractDao {
 
     public abstract List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale) throws SQLException;
 
+    public abstract boolean disableRoomRequest(Long requestId, Long userId) throws SQLException;
+
 }

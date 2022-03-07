@@ -30,4 +30,13 @@ public class RoomRequestService {
             throw new DaoException();
         }
     }
+
+    public boolean disableRoomRequest(Long requestId, Long userId){
+        try{
+            return roomRequestDao.disableRoomRequest(requestId, userId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
+        }
+    }
 }

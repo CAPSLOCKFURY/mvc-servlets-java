@@ -14,6 +14,7 @@
     <h1>Check Out Date: ${roomRequest.checkOutDate}</h1>
     <h1>Your Comment: ${roomRequest.comment}</h1>
     <h1>Status: ${roomRequest.status}</h1>
+    <a href="<c:url value="/project/profile/my-room-requests/disable"><c:param name="id" value="${roomRequest.id}"/></c:url>">Disable</a>
     <hr>
 </c:forEach>
 </body>

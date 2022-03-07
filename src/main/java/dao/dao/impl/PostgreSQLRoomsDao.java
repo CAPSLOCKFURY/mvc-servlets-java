@@ -2,6 +2,7 @@ package dao.dao.impl;
 
 import dao.dao.RoomsDao;
 import db.ConnectionPool;
+import models.Room;
 import models.RoomClass;
 import models.base.SqlColumn;
 import models.base.SqlType;
@@ -30,19 +31,19 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     private final static String FIND_ALL_ROOM_CLASSES = "select class_id as id, name from room_class_translation where language = ?";
 
     @Override
-    public List<RoomExtendedInfo> getAllRooms(String locale) throws SQLException {
+    public List<Room> getAllRooms(String locale) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), RoomExtendedInfo.class);
+            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class);
         }
     }
 
     @Override
-    public RoomExtendedInfo getRoomById(Long id, String locale) throws SQLException {
+    public Room getRoomById(Long id, String locale) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -52,7 +53,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getEntityId() {return entityId;}
             }
-            return getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
+            return getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), Room.class);
         }
     }
 

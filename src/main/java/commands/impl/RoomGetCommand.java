@@ -23,7 +23,7 @@ public class RoomGetCommand implements Command {
         } catch (NumberFormatException nfe){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        RoomExtendedInfo room = roomsService.getRoomById(roomId, getLocaleFromCookies(request.getCookies()));
+        Room room = roomsService.getRoomById(roomId, getLocaleFromCookies(request.getCookies()));
         request.setAttribute("room", room);
         return new CommandResult("room.jsp", RequestDirection.FORWARD);
     }

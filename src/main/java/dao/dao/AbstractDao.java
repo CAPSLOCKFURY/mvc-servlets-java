@@ -103,4 +103,13 @@ public abstract class AbstractDao {
         rs.next();
         return rs.getLong(1);
     }
+
+    public <F> boolean updateEntityById(Connection connection, String sql, F form, Long id) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        PreparedStatementMapper<F> preparedStatementMapper = new PreparedStatementMapper<>(form, stmt);
+        preparedStatementMapper.mapToPreparedStatement();
+        int numberOfPlaceholders = (int) sql.chars().filter(ch -> ch == '?').count();
+        stmt.setLong(numberOfPlaceholders, id);
+        return stmt.executeUpdate() == 1;
+    }
 }
