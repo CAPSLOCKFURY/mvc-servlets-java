@@ -31,9 +31,6 @@ public class RoomExtendedInfo {
     @SqlColumn(columnName = "class_name", type = SqlType.STRING)
     private String className;
 
-    @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date checkOutDate;
-
     private List<RoomDate> dates = new LinkedList<>();
 
     public Long getId() {
@@ -100,11 +97,4 @@ public class RoomExtendedInfo {
         this.className = className;
     }
 
-    public Date getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public void setCheckOutDate(Date checkOutDate) {
-        this.checkOutDate = checkOutDate;
-    }
 }

@@ -1,6 +1,8 @@
 package commands.impl;
 
 import commands.base.*;
+import forms.base.prg.CookieFormErrorsPRG;
+import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.dto.RoomExtendedInfo;
@@ -22,6 +24,8 @@ public class RoomGetCommand implements Command {
         } catch (NumberFormatException nfe){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
+        FormErrorPRG errorsProcessor = new CookieFormErrorsPRG();
+        errorsProcessor.processErrors(request, response);
         RoomExtendedInfo room = roomsService.getExtendedRoomInfo(roomId, getLocaleFromCookies(request.getCookies()));
         request.setAttribute("room", room);
         return new CommandResult("room.jsp", RequestDirection.FORWARD);

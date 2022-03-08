@@ -86,16 +86,16 @@ public abstract class AbstractDao {
         }
     }
 
-    public boolean createEntity(Connection connection, String sql, Form form) throws SQLException{
+    public <F> boolean createEntity(Connection connection, String sql, F form) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
-        PreparedStatementMapper<Form> statementMapper = new PreparedStatementMapper<>(form, stmt);
+        PreparedStatementMapper<F> statementMapper = new PreparedStatementMapper<>(form, stmt);
         statementMapper.mapToPreparedStatement();
         return stmt.executeUpdate() == 1;
     }
 
-    public long createEntityAndGetId(Connection connection, String sql, Form form) throws SQLException{
+    public <F> long createEntityAndGetId(Connection connection, String sql, F form) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        PreparedStatementMapper<Form> statementMapper = new PreparedStatementMapper<>(form, stmt);
+        PreparedStatementMapper<F> statementMapper = new PreparedStatementMapper<>(form, stmt);
         statementMapper.mapToPreparedStatement();
         //TODO add check for successful update
         stmt.executeUpdate();

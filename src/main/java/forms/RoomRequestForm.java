@@ -64,7 +64,7 @@ public class RoomRequestForm extends Form {
             if (checkOutDate.before(checkInDate)) {
                 addLocalizedError("errors.CheckOutDateBeforeCheckIn");
             }
-            if(checkOutDate.equals(checkInDate)){
+            if(checkOutDate.compareTo(checkInDate) == 0){
                 addLocalizedError("errors.CheckOutDateIsCheckInDate");
             }
         }
