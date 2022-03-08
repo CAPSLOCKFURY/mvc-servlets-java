@@ -30,7 +30,8 @@ public class RoomRequestPostCommand implements Command {
         RoomRequestForm form = new RoomRequestForm();
         form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         form.mapRequestToForm(request);
-        if(!form.isValid()){
+        boolean isValid = form.validate();
+        if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new CommandResult(getAbsoluteUrl("/room-request", request), RequestDirection.REDIRECT);
         }

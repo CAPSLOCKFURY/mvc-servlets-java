@@ -10,6 +10,8 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Calendar;
 
 public class RoomRequestForm extends Form {
 
@@ -45,13 +47,16 @@ public class RoomRequestForm extends Form {
 
     @Override
     public boolean validate() {
+        LocalDate today = new Date(System.currentTimeMillis()).toLocalDate();
         if(checkInDate != null){
-            if(checkInDate.before(new Date(System.currentTimeMillis()))){
+            LocalDate checkInLocalDate = checkInDate.toLocalDate();
+            if (checkInLocalDate.isBefore(today)) {
                 addLocalizedError("errors.CheckInDateInPast");
             }
         }
         if(checkOutDate != null){
-            if(checkInDate.before(new Date(System.currentTimeMillis()))){
+            LocalDate checkOutLocalDate = checkOutDate.toLocalDate();
+            if(checkOutLocalDate.isBefore(today)){
                 addLocalizedError("errors.CheckOutDateInPast");
             }
         }
