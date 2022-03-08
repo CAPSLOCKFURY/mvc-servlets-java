@@ -4,6 +4,7 @@ import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;
 import models.User;
@@ -51,6 +52,16 @@ public class UserService {
             return userDao.getUserById(id);
         } catch (SQLException sqle){
             throw new DaoException();
+        }
+    }
+
+    public boolean addUserBalance(AddBalanceForm form, Long userId){
+        try {
+            return userDao.addUserBalance(form, userId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            form.addError("Database error");
+            return false;
         }
     }
 }

@@ -64,14 +64,6 @@ public final class CommandRegistry {
                     response.addCookie(langCookie);
                     return new CommandResult(request.getHeader("referer"), RequestDirection.REDIRECT);
                 }));
-        commandMap.put(new UrlBind("/profile", RequestMethod.GET),
-                ((request, response) -> {
-                    Security security = new AuthenticatedOnly();
-                    if(!security.doSecurity(request, response)){
-                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-                    }
-                    return new CommandResult("profile.jsp", RequestDirection.FORWARD);
-                }));
         commandMap.put(new UrlBind("/logout", RequestMethod.GET),
                 ((request, response) -> {
                     request.getSession().invalidate();
@@ -89,6 +81,16 @@ public final class CommandRegistry {
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
                     errorProcessor.processErrors(request, response);
                     return new CommandResult("room-request.jsp", RequestDirection.FORWARD);
+                }));
+        commandMap.put(new UrlBind("/profile/balance", RequestMethod.GET),
+                ((request, response) -> {
+                    Security security = new AuthenticatedOnly();
+                    if(!security.doSecurity(request, response)){
+                        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+                    }
+                    FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
+                    errorProcessor.processErrors(request, response);
+                    return new CommandResult("balance.jsp", RequestDirection.FORWARD);
                 }));
     }
 

@@ -6,11 +6,13 @@
     <title>Profile</title>
 </head>
 <body>
-<h1>Welcome: ${sessionScope.user.firstName} ${sessionScope.user.lastName}</h1>
-<h2>Email: ${sessionScope.user.email}</h2>
-<h2>Your balance: ${sessionScope.user.balance}</h2>
-<h3>Role: ${sessionScope.user.role}</h3>
+<jsp:useBean id="user" scope="request" class="models.User"/>
+<h1>Welcome: ${user.firstName} ${user.lastName}</h1>
+<h2>Email: ${user.email}</h2>
+<h2>Your balance: ${user.balance}</h2>
+<h3>Role: ${user.role}</h3>
 <a href="<c:url value="/project/profile/my-room-requests"/>">My Room Requests</a>
+<a href="<c:url value="/project/profile/balance"/>">Add balance</a>
 <c:if test="${sessionScope.user.role == 2}">
     <a href="<c:url value="/project/admin/room-requests"/>">Room Requests</a>
 </c:if>

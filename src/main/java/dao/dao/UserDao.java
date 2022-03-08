@@ -1,5 +1,6 @@
 package dao.dao;
 
+import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;
 import models.User;
@@ -19,4 +20,6 @@ public abstract class UserDao extends AbstractDao {
     public abstract User getUserByLogin(String login) throws SQLException;
 
     public abstract User getUserByLoginAndPassword(LoginForm form) throws SQLException;
+
+    public abstract boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException;
 }
