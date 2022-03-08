@@ -1,7 +1,6 @@
 package dao.dao;
 
 import exceptions.db.DaoException;
-import forms.base.Form;
 import models.base.PreparedStatementMapper;
 import models.base.SqlMapper;
 

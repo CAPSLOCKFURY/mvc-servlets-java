@@ -39,7 +39,7 @@ public class BookRoomPostCommand implements Command {
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         boolean isValid = form.validate();
-        if(isValid){
+        if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new CommandResult(getAbsoluteUrl("/room?id=" + roomId, request), RequestDirection.REDIRECT);
         }

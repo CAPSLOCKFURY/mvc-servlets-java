@@ -1,6 +1,7 @@
 package tags.resources;
 
-import forms.base.*;
+import forms.base.Form;
+import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlOption;
 import forms.base.annotations.HtmlSelect;

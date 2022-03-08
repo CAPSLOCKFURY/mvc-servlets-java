@@ -1,8 +1,8 @@
 package tags.resources;
 
 import forms.base.Form;
-import forms.base.annotations.HtmlInput;
 import forms.base.InputType;
+import forms.base.annotations.HtmlInput;
 
 public class TagTestForm extends Form {
 

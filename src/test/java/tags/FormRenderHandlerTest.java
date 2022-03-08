@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 public class FormRenderHandlerTest {
 

@@ -7,13 +7,14 @@ import models.Room;
 import models.RoomClass;
 import models.base.SqlColumn;
 import models.base.SqlType;
-import models.dto.*;
+import models.dto.OverlapCountDTO;
+import models.dto.RoomDate;
+import models.dto.RoomExtendedInfo;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.List;
 
 public class PostgreSQLRoomsDao extends RoomsDao {

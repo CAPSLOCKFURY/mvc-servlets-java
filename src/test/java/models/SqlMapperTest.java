@@ -1,7 +1,5 @@
 package models;
 
-import forms.resourses.StringIntPair;
-import forms.resourses.StringPair;
 import models.base.SqlMapper;
 import models.resources.TestModel;
 import models.resources.TypePair;
@@ -12,7 +10,6 @@ import org.mockito.Mockito;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

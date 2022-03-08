@@ -1,8 +1,8 @@
 package forms.resourses;
 
 import forms.base.Form;
-import forms.base.annotations.HtmlInput;
 import forms.base.InputType;
+import forms.base.annotations.HtmlInput;
 
 public class TestForm extends Form {
 
