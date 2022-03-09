@@ -60,6 +60,10 @@ public class PostgreSQLRoomsDao extends RoomsDao {
 
     private final static String ASSIGN_ROOM_TO_REQUEST = "update room_requests set room_id = ?, status = 'awaiting confirmation' where id = ?";
 
+    private final static String REMOVE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting'\n" +
+            "where room_id = ?\n" +
+            "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
+
     @Override
     public List<Room> getAllRooms(String locale) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
@@ -202,11 +206,24 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckOutDate() {return checkOutDate;}
             }
             boolean entityCreated = createEntity(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
-            if(entityCreated){
-                connection.commit();
-                return true;
+            if(!entityCreated){
+                connection.rollback();
+                return false;
             }
-            return false;
+            class RemoveAssignedRoomParams{
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = roomId;
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date checkInDate = form.getCheckInDate();
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date checkOutDate = form.getCheckOutDate();
+                public Long getId() {return id;}
+                public Date getCheckInDate() {return checkInDate;}
+                public Date getCheckOutDate() {return checkOutDate;}
+            }
+            updateEntityById(connection, REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
+            connection.commit();
+            return true;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             if(connection.getAutoCommit() == false) {
