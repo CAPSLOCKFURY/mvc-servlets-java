@@ -11,6 +11,7 @@ import models.RoomClass;
 import models.User;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
+import models.dto.RoomHistoryDTO;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -80,6 +81,15 @@ public class RoomsService {
             sqlException.printStackTrace();
             form.addError("Database Error");
             return false;
+        }
+    }
+
+    public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale){
+        try{
+            return roomsDao.getRoomHistory(userId, locale);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 

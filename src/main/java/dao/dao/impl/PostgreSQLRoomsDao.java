@@ -10,6 +10,7 @@ import models.base.SqlType;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomDate;
 import models.dto.RoomExtendedInfo;
+import models.dto.RoomHistoryDTO;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -39,11 +40,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             "where room_id = ? and (daterange(?::date, ?::date, '[]') &&\n" +
             "      daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]') )";
 
-    private final static String GET_USER_BALANCE = "select balance from users where id = ?";
-
     private final static String WITHDRAW_FROM_USER_BALANCE = "update users set balance = balance - ? where id = ?";
 
     private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
+
+    private final static String FIND_ROOM_HISTORY_BY_USER_ID = "select r.*, rct.name as class_name, room_registry.check_in_date, room_registry.check_out_date from room_registry\n" +
+            "    left outer join rooms r on room_registry.room_id = r.id\n" +
+            "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
+            "where user_id = ?";
 
     @Override
     public List<Room> getAllRooms(String locale) throws SQLException {
@@ -121,6 +125,20 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Long getId() {return id;}
             }
             return getOneByParams(connection, FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
+        }
+    }
+
+    public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale) throws SQLException {
+        try(Connection connection = ConnectionPool.getConnection()){
+            class Params{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private String lang = locale;
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private Long id = userId;
+                public String getLang() {return lang;}
+                public Long getId() {return id;}
+            }
+            return getAllByParams(connection, FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class);
         }
     }
 

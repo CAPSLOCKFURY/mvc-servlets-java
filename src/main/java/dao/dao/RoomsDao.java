@@ -5,6 +5,7 @@ import models.Room;
 import models.RoomClass;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
+import models.dto.RoomHistoryDTO;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -21,6 +22,8 @@ public abstract class RoomsDao extends AbstractDao {
     public abstract RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException;
 
     public abstract OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId) throws SQLException;
+
+    public abstract List<RoomHistoryDTO> getRoomHistory(Long userId, String locale) throws SQLException;
 
     public abstract boolean bookRoom(BookRoomForm form, BigDecimal moneyAmount, Long roomId, Long userId) throws SQLException;
 }

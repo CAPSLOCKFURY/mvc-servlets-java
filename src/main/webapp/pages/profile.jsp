@@ -12,6 +12,7 @@
 <h2>Your balance: ${user.balance}</h2>
 <h3>Role: ${user.role}</h3>
 <a href="<c:url value="/project/profile/my-room-requests"/>">My Room Requests</a>
+<a href="<c:url value="/project/profile/room-history"/>">Room history</a>
 <a href="<c:url value="/project/profile/balance"/>">Add balance</a>
 <c:if test="${sessionScope.user.role == 2}">
     <a href="<c:url value="/project/admin/room-requests"/>">Room Requests</a>
