@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class AbstractDao {
 
-    public <T> List<T> getAll(Connection connection, String sql, Class<T> model) throws SQLException {
+    protected final <T> List<T> getAll(Connection connection, String sql, Class<T> model) throws SQLException {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         List<T> result = new LinkedList<>();
@@ -29,7 +29,7 @@ public abstract class AbstractDao {
         return result;
     }
 
-    public <T> T getOneById(Connection connection, String sql, Long id, Class<T> model) throws SQLException{
+    protected final  <T> T getOneById(Connection connection, String sql, Long id, Class<T> model) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setLong(1, id);
         try{
@@ -47,7 +47,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public <T, P> T getOneByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException {
+    protected final  <T, P> T getOneByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<P> mapper = new PreparedStatementMapper<>(params, stmt);
         mapper.mapToPreparedStatement();
@@ -65,7 +65,7 @@ public abstract class AbstractDao {
         }
     }
 
-    public <T, P> List<T> getAllByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException{
+    protected final  <T, P> List<T> getAllByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<P> preparedStatementMapper = new PreparedStatementMapper<>(params, stmt);
         preparedStatementMapper.mapToPreparedStatement();
@@ -85,14 +85,14 @@ public abstract class AbstractDao {
         }
     }
 
-    public <F> boolean createEntity(Connection connection, String sql, F form) throws SQLException{
+    protected final  <F> boolean createEntity(Connection connection, String sql, F form) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<F> statementMapper = new PreparedStatementMapper<>(form, stmt);
         statementMapper.mapToPreparedStatement();
         return stmt.executeUpdate() == 1;
     }
 
-    public <F> long createEntityAndGetId(Connection connection, String sql, F form) throws SQLException{
+    protected final  <F> long createEntityAndGetId(Connection connection, String sql, F form) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         PreparedStatementMapper<F> statementMapper = new PreparedStatementMapper<>(form, stmt);
         statementMapper.mapToPreparedStatement();
@@ -103,7 +103,7 @@ public abstract class AbstractDao {
         return rs.getLong(1);
     }
 
-    public <F> boolean updateEntityById(Connection connection, String sql, F form, Long id) throws SQLException {
+    protected final  <F> boolean updateEntityById(Connection connection, String sql, F form, Long id) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<F> preparedStatementMapper = new PreparedStatementMapper<>(form, stmt);
         preparedStatementMapper.mapToPreparedStatement();
@@ -112,7 +112,7 @@ public abstract class AbstractDao {
         return stmt.executeUpdate() == 1;
     }
 
-    public <F> boolean updateEntityById(Connection connection, String sql, F form) throws SQLException {
+    protected final  <F> boolean updateEntityById(Connection connection, String sql, F form) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<F> preparedStatementMapper = new PreparedStatementMapper<>(form, stmt);
         preparedStatementMapper.mapToPreparedStatement();
