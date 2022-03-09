@@ -28,6 +28,9 @@ public class RoomRequest {
     @SqlColumn(columnName = "status", type = SqlType.STRING)
     private String status;
 
+    @SqlColumn(columnName = "room_id", type = SqlType.LONG)
+    private Long roomId;
+
     public Long getId() {
         return id;
     }
@@ -82,5 +85,13 @@ public class RoomRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 }
