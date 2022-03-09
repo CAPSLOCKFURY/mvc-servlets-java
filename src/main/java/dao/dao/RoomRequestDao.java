@@ -17,4 +17,6 @@ public abstract class RoomRequestDao extends AbstractDao {
 
     public abstract List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale) throws SQLException;
 
+    public abstract AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException;
+
 }

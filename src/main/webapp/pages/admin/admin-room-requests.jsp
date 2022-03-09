@@ -19,6 +19,7 @@
         <h1>User email: ${roomRequest.email}</h1>
         <h1>First name: ${roomRequest.firstName}</h1>
         <h1>Last name: ${roomRequest.lastName}</h1>
+        <h2><a href="<c:url value="/project/admin/room-request"><c:param name="id" value="${roomRequest.id}"/></c:url> ">See request</a></h2>
         <hr>
     </c:forEach>
 </body>

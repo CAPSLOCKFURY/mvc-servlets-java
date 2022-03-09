@@ -26,4 +26,8 @@ public abstract class RoomsDao extends AbstractDao {
     public abstract List<RoomHistoryDTO> getRoomHistory(Long userId, String locale) throws SQLException;
 
     public abstract boolean bookRoom(BookRoomForm form, BigDecimal moneyAmount, Long roomId, Long userId) throws SQLException;
+
+    public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate) throws SQLException;
+
+    public abstract boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException;
 }

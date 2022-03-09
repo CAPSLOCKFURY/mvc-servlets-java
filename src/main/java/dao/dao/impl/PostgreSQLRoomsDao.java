@@ -49,6 +49,17 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
             "where user_id = ?";
 
+    private final static String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
+            "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
+            "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
+            "where rooms.id not in (select room_id from room_requests where room_id is not null)\n" +
+            "group by rooms.id, rct.id\n" +
+            "having count(room_id) filter\n" +
+            "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0\n" +
+            "order by -rooms.id";
+
+    private final static String ASSIGN_ROOM_TO_REQUEST = "update room_requests set room_id = ?, status = 'awaiting confirmation' where id = ?";
+
     @Override
     public List<Room> getAllRooms(String locale) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
@@ -75,7 +86,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             return getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), Room.class);
         }
     }
-
+    @Override
     public RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
@@ -143,6 +154,24 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
+    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class Params{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String lang = locale;
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date startDate = checkInDate;
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date endDate = checkOutDate;
+                public String getLang() {return lang;}
+                public Date getStartDate() {return startDate;}
+                public Date getEndDate() {return endDate;}
+            }
+            return getAllByParams(connection, FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class);
+        }
+    }
+
+    @Override
     public boolean bookRoom(BookRoomForm form, BigDecimal moneyAmount, Long roomId, Long userId) throws SQLException {
         Connection connection = null;
         try {
@@ -189,6 +218,18 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 connection.setAutoCommit(true);
                 connection.close();
             }
+        }
+    }
+
+    @Override
+    public boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class Param{
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private Long room = roomId;
+                public Long getRoom() {return room;}
+            }
+            return updateEntityById(connection, ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
         }
     }
 }

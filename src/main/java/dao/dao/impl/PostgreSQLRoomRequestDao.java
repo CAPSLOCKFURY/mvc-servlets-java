@@ -30,6 +30,12 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
             "where room_requests.status = 'awaiting'\n" +
             "order by room_requests.id";
 
+    private final static String ADMIN_GET_ROOM_REQUEST_BY_ID = "select room_requests.id, capacity, rct.name as class_name, comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
+            "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
+            "    left outer join users u on room_requests.user_id = u.id\n" +
+            "where room_requests.id = ?\n" +
+            "order by room_requests.id";
+
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
@@ -71,6 +77,21 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getLang() {return lang;}
             }
             return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class);
+        }
+    }
+
+    @Override
+    public AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class Params{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String lang = locale;
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = requestId;
+                public String getLang() {return lang;}
+                public Long getId() {return id;}
+            }
+            return getOneByParams(connection, ADMIN_GET_ROOM_REQUEST_BY_ID, new Params(), AdminRoomRequestDTO.class);
         }
     }
 
