@@ -30,7 +30,6 @@ public class BillingService {
 
     public boolean payBilling(Long userId, Long billingId, MessageTransport messageTransport){
         try{
-            //TODO add error showing for this
             ExtendedBillingDTO billing = billingDao.getBillingById(billingId);
             User user = userDao.getUserById(userId);
             if(billing.getPaid()){
