@@ -1,8 +1,10 @@
 package dao.factory.impl;
 
+import dao.dao.BillingDao;
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
 import dao.dao.UserDao;
+import dao.dao.impl.PostgreSQLBillingDao;
 import dao.dao.impl.PostgreSQLRoomRequestDao;
 import dao.dao.impl.PostgreSQLRoomsDao;
 import dao.dao.impl.PostgreSQLUserDao;
@@ -25,5 +27,8 @@ public class PostgreSQLDaoFactory extends DaoFactory {
         return new PostgreSQLRoomRequestDao();
     }
 
-
+    @Override
+    public BillingDao getBillingDao(){
+        return new PostgreSQLBillingDao();
+    }
 }

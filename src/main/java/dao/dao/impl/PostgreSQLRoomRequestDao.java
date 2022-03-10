@@ -1,6 +1,9 @@
 package dao.dao.impl;
 
+import dao.dao.BillingDao;
 import dao.dao.RoomRequestDao;
+import dao.factory.DaoAbstractFactory;
+import dao.factory.SqlDB;
 import db.ConnectionPool;
 import forms.RoomRequestForm;
 import models.RoomRequest;
@@ -8,12 +11,16 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 import models.dto.AdminRoomRequestDTO;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 public class PostgreSQLRoomRequestDao extends RoomRequestDao {
+
+    private final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
 
     private final static String INSERT_ROOM_REQUEST = "insert into room_requests (user_id, capacity, room_class, check_in_date, check_out_date, comment)\n" +
             "values (?, ?, ?, ?, ?, ?)";
@@ -36,10 +43,34 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
             "where room_requests.id = ?\n" +
             "order by room_requests.id";
 
+    private final static String CONFIRM_ROOM_REQUEST = "update room_requests set status = 'awaiting payment' where id=?";
+
+    private final static String FIND_ROOM_REQUEST_BY_ID = "select room_requests.*, rct.name as class_name from room_requests\n" +
+            "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
+            "    where room_requests.id = ?";
+
+    private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
+
+
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             return createEntity(connection, INSERT_ROOM_REQUEST, form);
+        }
+    }
+
+    @Override
+    public RoomRequest getRoomRequestById(Long requestId) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class Params{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String lang = "en";
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = requestId;
+                public String getLang() {return lang;}
+                public Long getId() {return id;}
+            }
+            return getOneByParams(connection, FIND_ROOM_REQUEST_BY_ID, new Params(), RoomRequest.class);
         }
     }
 
@@ -94,5 +125,61 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
             return getOneByParams(connection, ADMIN_GET_ROOM_REQUEST_BY_ID, new Params(), AdminRoomRequestDTO.class);
         }
     }
+
+   @Override
+   public boolean confirmRoomRequest(RoomRequest roomRequest, BigDecimal moneyAmount) throws SQLException{
+        Connection connection = null;
+        try{
+            connection = ConnectionPool.getConnection();
+            connection.setAutoCommit(false);
+            boolean billingCreated = billingDao.insertBilling(connection, roomRequest.getId(), moneyAmount);
+            if(!billingCreated){
+                connection.rollback();
+                return false;
+            }
+            class UpdateParam{
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = roomRequest.getId();
+                public Long getId() {return id;}
+            }
+            boolean requestConfirmed = updateEntity(connection, CONFIRM_ROOM_REQUEST, new UpdateParam());
+            if(!requestConfirmed){
+                connection.rollback();
+                return false;
+            }
+            class RoomRegistryInsert{
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long roomRegistryUserId = roomRequest.getUserId();
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long roomRegistryRoomId = roomRequest.getRoomId();
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date checkInDate = roomRequest.getCheckInDate();
+                @SqlColumn(columnName = "", type = SqlType.DATE)
+                private final java.sql.Date checkOutDate = roomRequest.getCheckOutDate();
+                public Long getRoomRegistryUserId() {return roomRegistryUserId;}
+                public Long getRoomRegistryRoomId() {return roomRegistryRoomId;}
+                public Date getCheckInDate() {return checkInDate;}
+                public Date getCheckOutDate() {return checkOutDate;}
+            }
+            boolean roomRegistryInserted = createEntity(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            if(!roomRegistryInserted){
+                connection.rollback();
+                return false;
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            if(connection.getAutoCommit() == false) {
+                connection.rollback();
+            }
+            return false;
+        } finally {
+            if(connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+   }
 
 }

@@ -10,6 +10,9 @@ public class RoomRequest {
     @SqlColumn(columnName = "id", type = SqlType.LONG)
     private Long id;
 
+    @SqlColumn(columnName = "user_id", type = SqlType.LONG)
+    private Long userId;
+
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
     private Integer capacity;
 
@@ -93,5 +96,13 @@ public class RoomRequest {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

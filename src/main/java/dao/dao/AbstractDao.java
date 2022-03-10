@@ -112,7 +112,7 @@ public abstract class AbstractDao {
         return stmt.executeUpdate() == 1;
     }
 
-    protected final  <F> boolean updateEntityById(Connection connection, String sql, F form) throws SQLException {
+    protected final  <F> boolean updateEntity(Connection connection, String sql, F form) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         PreparedStatementMapper<F> preparedStatementMapper = new PreparedStatementMapper<>(form, stmt);
         preparedStatementMapper.mapToPreparedStatement();

@@ -90,6 +90,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             return getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), Room.class);
         }
     }
+
     @Override
     public RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
@@ -189,6 +190,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             }
             boolean isUpdated = updateEntityById(connection, WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
             if(!isUpdated){
+                connection.rollback();
                 return false;
             }
             class RoomRegistryInsert {
@@ -221,7 +223,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            updateEntityById(connection, REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
+            updateEntity(connection, REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
             connection.commit();
             return true;
         } catch (SQLException sqle) {
