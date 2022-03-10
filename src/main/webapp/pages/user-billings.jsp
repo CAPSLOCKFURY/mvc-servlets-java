@@ -7,6 +7,9 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h1>My billings</h1>
+<c:forEach var="message" items="${messages}">
+    <h2 style="color:red">${message}</h2>
+</c:forEach>
     <c:forEach var="billing" items="${billings}">
         <hr>
         <h1>Price: ${billing.price}</h1>

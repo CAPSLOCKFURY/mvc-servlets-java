@@ -48,6 +48,8 @@ public class RoomRequestService {
 
     public boolean confirmRoomRequest(Long requestId){
         //TODO add validations
+        //TODO add error showing
+        //TODO add corresponding room registry id field to billing table
         try{
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             Room room = roomDao.getRoomById(roomRequest.getRoomId(), "en");

@@ -1,5 +1,6 @@
 package service;
 
+import commands.base.messages.MessageTransport;
 import dao.dao.BillingDao;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
@@ -27,18 +28,21 @@ public class BillingService {
         }
     }
 
-    public boolean payBilling(Long userId, Long billingId){
+    public boolean payBilling(Long userId, Long billingId, MessageTransport messageTransport){
         try{
             //TODO add error showing for this
             ExtendedBillingDTO billing = billingDao.getBillingById(billingId);
             User user = userDao.getUserById(userId);
             if(billing.getPaid()){
-                return false;
+                messageTransport.addLocalizedMessage("message.billingIsPaid");
             }
             if(!billing.getUserId().equals(userId)){
-                return false;
+                messageTransport.addLocalizedMessage("message.thisIsNotYourBilling");
             }
             if(user.getBalance().compareTo(billing.getPrice()) < 0){
+                messageTransport.addLocalizedMessage("message.billingNotEnoughMoney");
+            }
+            if(messageTransport.getMessages().size() != 0){
                 return false;
             }
             return billingDao.payBilling(userId, billing);

@@ -1,8 +1,11 @@
 package commands.impl;
 
 import commands.base.*;
+import commands.base.messages.CookieMessageTransport;
+import commands.base.messages.MessageTransport;
 import commands.base.security.AuthenticatedOnly;
 import commands.base.security.Security;
+import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +28,8 @@ public class UserBillingsGet implements Command {
         if(!security.doSecurity(request, response)){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
+        MessageTransport messageTransport = new CookieMessageTransport();
+        messageTransport.processMessages(request, response);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         List<Billing> billings = billingService.findBillingsByUserId(user.getId());
