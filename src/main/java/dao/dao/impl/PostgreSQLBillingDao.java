@@ -14,7 +14,7 @@ import java.util.List;
 
 public class PostgreSQLBillingDao extends BillingDao {
 
-    private final static String INSERT_BILLING = "insert into billing(request_id, price) values (?, ?)";
+    private final static String INSERT_BILLING = "insert into billing(request_id, price, room_registry_id) values (?, ?, ?)";
 
     private final static String FIND_ALL_BILLING_BY_USER_ID = "select * from billing \n" +
             "    left outer join room_requests rr on billing.request_id = rr.id\n" +
@@ -27,14 +27,17 @@ public class PostgreSQLBillingDao extends BillingDao {
             "where billing.id = ?";
 
     @Override
-    public boolean insertBilling(Connection connection, Long requestId, BigDecimal price) throws SQLException {
+    public boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long roomRegistryId) throws SQLException {
         class BillingForm{
             @SqlColumn(columnName = "", type = SqlType.LONG)
             private final Long reqId = requestId;
             @SqlColumn(columnName = "", type = SqlType.DECIMAL)
             private final BigDecimal billingPrice = price;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long roomRegistryInsertId = roomRegistryId;
             public Long getReqId() {return reqId;}
             public BigDecimal getBillingPrice() {return billingPrice;}
+            public Long getRoomRegistryInsertId() {return roomRegistryInsertId;}
         }
         return createEntity(connection, INSERT_BILLING, new BillingForm());
     }

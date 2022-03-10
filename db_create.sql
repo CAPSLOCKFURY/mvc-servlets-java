@@ -4,8 +4,8 @@ drop table if exists room_requests;
 drop table if exists users;
 drop table if exists roles;
 drop table if exists rooms;
-drop table if exists room_class;
 drop table if exists room_class_translation;
+drop table if exists room_class;
 drop type if exists room_status;
 drop type if exists request_status;
 drop domain if exists u_bigint;
@@ -30,11 +30,6 @@ create table if not exists users(
 
 create type room_status as enum ('unavailable', 'occupied', 'booked', 'free');
 
--- create table if not exists room_class(
---     id serial primary key,
---     name varchar(255) not null
--- );
-
 
 create table if not exists room_class(
     id serial primary key
@@ -57,7 +52,7 @@ create table if not exists rooms(
     class u_bigint references room_class(id) not null
 );
 
-create type request_status as enum ('closed', 'paid', 'awaiting payment', 'awaiting');
+create type request_status as enum ('closed', 'paid', 'awaiting payment', 'awaiting confirmation', 'awaiting');
 
 create table if not exists room_requests(
     id serial primary key,
@@ -67,21 +62,24 @@ create table if not exists room_requests(
     check_in_date date not null,
     check_out_date date not null,
     comment text,
-    status request_status default 'awaiting'
+    status request_status default 'awaiting',
+    room_id u_bigint references rooms(id) default null
+);
+
+create table if not exists room_registry(
+    id serial primary key,
+    user_id u_bigint references users(id),
+    room_id u_bigint references rooms(id),
+    check_in_date date,
+    check_out_date date,
+    archived boolean default false
 );
 
 create table if not exists billing(
     id serial primary key,
     request_id u_bigint unique references room_requests(id),
     price decimal(11, 2) not null,
-    pay_end_date date not null,
-    paid bool default false
-);
-
-create table if not exists room_registry(
-    user_id u_bigint references users(id),
-    room_id u_bigint references rooms(id),
-    check_in_date date,
-    check_out_date date,
-    archived boolean default false
+    pay_end_date date not null default current_date + interval '2 day',
+    paid bool default false,
+    room_registry_id u_bigint not null references room_registry(id)
 );

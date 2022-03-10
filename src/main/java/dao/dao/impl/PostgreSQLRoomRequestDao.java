@@ -132,11 +132,6 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            boolean billingCreated = billingDao.insertBilling(connection, roomRequest.getId(), moneyAmount);
-            if(!billingCreated){
-                connection.rollback();
-                return false;
-            }
             class UpdateParam{
                 @SqlColumn(columnName = "", type = SqlType.LONG)
                 private final Long id = roomRequest.getId();
@@ -161,8 +156,13 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            boolean roomRegistryInserted = createEntity(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
-            if(!roomRegistryInserted){
+            long roomRegistryInsertedId = createEntityAndGetId(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            if(roomRegistryInsertedId == 0){
+                connection.rollback();
+                return false;
+            }
+            boolean billingCreated = billingDao.insertBilling(connection, roomRequest.getId(), moneyAmount, roomRegistryInsertedId);
+            if(!billingCreated){
                 connection.rollback();
                 return false;
             }

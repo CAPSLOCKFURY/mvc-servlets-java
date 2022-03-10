@@ -96,7 +96,6 @@ public abstract class AbstractDao {
         PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         PreparedStatementMapper<F> statementMapper = new PreparedStatementMapper<>(form, stmt);
         statementMapper.mapToPreparedStatement();
-        //TODO add check for successful update
         stmt.executeUpdate();
         ResultSet rs = stmt.getGeneratedKeys();
         rs.next();
