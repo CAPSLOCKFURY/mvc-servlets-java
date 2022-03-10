@@ -10,9 +10,7 @@ import models.Billing;
 import models.User;
 import models.dto.ExtendedBillingDTO;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.List;
 
 public class BillingService {

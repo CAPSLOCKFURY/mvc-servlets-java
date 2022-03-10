@@ -2,12 +2,10 @@ package service;
 
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
-import dao.dao.impl.PostgreSQLRoomsDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import models.Room;
-import models.RoomRequest;
 import models.dto.AdminRoomRequestDTO;
 import models.dto.OverlapCountDTO;
 

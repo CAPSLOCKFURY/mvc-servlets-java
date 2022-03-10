@@ -1,11 +1,9 @@
 package service;
 
 import dao.dao.RoomRequestDao;
-import dao.dao.impl.PostgreSQLRoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
-import models.RoomRequest;
 import models.dto.AdminRoomRequestDTO;
 
 import java.sql.SQLException;
