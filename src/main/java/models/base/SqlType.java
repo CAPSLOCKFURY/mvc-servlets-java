@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public enum SqlType {
     INT(Integer.class), STRING(String.class), LONG(Long.class), DECIMAL(BigDecimal.class),
-    DATE(java.sql.Date.class);
+    DATE(java.sql.Date.class), BOOLEAN(Boolean.class);
 
     private final Class<?> typeClass;
 

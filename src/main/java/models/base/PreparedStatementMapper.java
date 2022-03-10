@@ -77,6 +77,15 @@ public class PreparedStatementMapper<T> {
                             return;
                         }
                     }
+                    if(sqlColumn.type().getTypeClass() == Boolean.class){
+                        try{
+                            Boolean value = (Boolean) getGetterMethod(f.getName()).invoke(form);
+                            stmt.setBoolean(stmtCursor.getAndIncrement(), value);
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
+                            e.printStackTrace();
+                            return;
+                        }
+                    }
                 });
     }
 

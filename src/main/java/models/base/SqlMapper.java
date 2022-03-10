@@ -41,6 +41,10 @@ public class SqlMapper<T> {
                         }
                         if(sqlColumn.type().getTypeClass() == java.sql.Date.class){
                             setterMethod.invoke(model, getDateFromRs(rs, sqlColumn.columnName()));
+                            return;
+                        }
+                        if(sqlColumn.type().getTypeClass() == Boolean.class){
+                            setterMethod.invoke(model, getBooleanFromRs(rs, sqlColumn.columnName()));
                         }
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
@@ -88,6 +92,15 @@ public class SqlMapper<T> {
         try {
             return rs.getDate(colName);
         } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Boolean getBooleanFromRs(ResultSet rs, String colName){
+        try{
+            return rs.getBoolean(colName);
+        } catch (SQLException e){
             e.printStackTrace();
             return null;
         }

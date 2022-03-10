@@ -47,6 +47,7 @@ public class RoomRequestService {
     }
 
     public boolean confirmRoomRequest(Long requestId){
+        //TODO add validations
         try{
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             Room room = roomDao.getRoomById(roomRequest.getRoomId(), "en");

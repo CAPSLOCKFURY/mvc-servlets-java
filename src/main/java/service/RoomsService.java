@@ -69,6 +69,7 @@ public class RoomsService {
             }
             User user = userDao.getUserById(userId);
             Room room = roomsDao.getRoomById(roomId, "en");
+            //TODO make function for this
             long differenceInDays = Duration.between(form.getCheckInDate().toLocalDate().atStartOfDay(), form.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             if(user.getBalance().compareTo(room.getPrice().multiply(decimalDifferenceInDays)) < 0){

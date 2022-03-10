@@ -11,6 +11,13 @@
         <hr>
         <h1>Price: ${billing.price}</h1>
         <h1>Pay end date: ${billing.payEndDate}</h1>
+        <h1>Paid: ${billing.paid}</h1>
+        <c:if test="${!billing.paid}">
+        <form method="post" action="<c:url value="/project/profile/my-billings/pay"/>">
+            <input type="hidden" name="billingId" value="${billing.id}">
+            <button type="submit">Pay billing</button>
+        </form>
+        </c:if>
         <hr>
     </c:forEach>
 </body>

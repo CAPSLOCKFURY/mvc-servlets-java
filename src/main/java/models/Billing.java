@@ -20,6 +20,9 @@ public class Billing {
     @SqlColumn(columnName = "pay_end_date", type = SqlType.DATE)
     private java.sql.Date payEndDate;
 
+    @SqlColumn(columnName = "paid", type = SqlType.BOOLEAN)
+    private Boolean paid;
+
     public Long getId() {return id;}
 
     public void setId(Long id) {this.id = id;}
@@ -35,4 +38,8 @@ public class Billing {
     public Date getPayEndDate() {return payEndDate;}
 
     public void setPayEndDate(Date payEndDate) {this.payEndDate = payEndDate;}
+
+    public Boolean getPaid() {return paid;}
+
+    public void setPaid(Boolean paid) {this.paid = paid;}
 }

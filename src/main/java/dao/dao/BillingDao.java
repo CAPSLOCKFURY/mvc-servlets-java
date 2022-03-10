@@ -1,6 +1,7 @@
 package dao.dao;
 
 import models.Billing;
+import models.dto.ExtendedBillingDTO;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -12,4 +13,8 @@ public abstract class BillingDao extends AbstractDao {
     public abstract boolean insertBilling(Connection connection, Long requestId, BigDecimal price) throws SQLException;
 
     public abstract List<Billing> getAllBillingsByUserId(Long userId) throws SQLException;
+
+    public abstract ExtendedBillingDTO getBillingById(Long billingId) throws SQLException;
+
+    public abstract boolean payBilling(Long userId, ExtendedBillingDTO billing) throws SQLException;
 }
