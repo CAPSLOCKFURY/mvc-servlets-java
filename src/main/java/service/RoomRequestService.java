@@ -1,5 +1,6 @@
 package service;
 
+import commands.base.messages.MessageTransport;
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
@@ -45,12 +46,14 @@ public class RoomRequestService {
         }
     }
 
-    public boolean confirmRoomRequest(Long requestId){
-        //TODO add validations
-        //TODO add error showing
+    public boolean confirmRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
         //TODO add corresponding room registry id field to billing table
         try{
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
+            if(!roomRequest.getUserId().equals(userId)){
+                messageTransport.addLocalizedMessage("message.notYourRequest");
+                return false;
+            }
             Room room = roomDao.getRoomById(roomRequest.getRoomId(), "en");
             long differenceInDays = Duration.between(roomRequest.getCheckInDate().toLocalDate().atStartOfDay(), roomRequest.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);

@@ -1,6 +1,8 @@
 package commands.impl;
 
 import commands.base.*;
+import commands.base.messages.CookieMessageTransport;
+import commands.base.messages.MessageTransport;
 import commands.base.security.AuthenticatedOnly;
 import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,8 @@ public class UserRoomRequestsGetCommand implements Command {
         }
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        MessageTransport messageTransport = new CookieMessageTransport();
+        messageTransport.processMessages(request, response);
         List<RoomRequest> roomRequestList = roomRequestService.getRoomRequestsByUserId(user.getId(), getLocaleFromCookies(request.getCookies()));
         request.setAttribute("roomRequests", roomRequestList);
         return new CommandResult("user-room-requests.jsp", RequestDirection.FORWARD);

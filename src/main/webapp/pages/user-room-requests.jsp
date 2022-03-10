@@ -6,6 +6,9 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
+<c:forEach var="message" items="${messages}">
+    <h2 style="color:red">${message}</h2>
+</c:forEach>
 <c:forEach var="roomRequest" items="${roomRequests}">
     <hr>
     <h1>Capacity: ${roomRequest.capacity}</h1>
