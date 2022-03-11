@@ -10,7 +10,7 @@ import service.AdminRoomsService;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/admin/room-request/assign", method = RequestMethod.POST)
-public class AssignRoomToRequestCommand implements Command {
+public class AssignRoomToRequest implements Command {
 
     private final AdminRoomsService roomsService = new AdminRoomsService();
 

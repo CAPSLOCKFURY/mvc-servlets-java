@@ -17,7 +17,7 @@ import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/profile/balance", method = RequestMethod.POST)
-public class BalancePostCommand implements Command {
+public class AddBalance implements Command {
 
     private final UserService userService = new UserService();
 

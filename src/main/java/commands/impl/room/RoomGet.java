@@ -12,7 +12,7 @@ import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/room", method = RequestMethod.GET)
-public class RoomGetCommand implements Command {
+public class RoomGet implements Command {
 
     private final RoomsService roomsService = new RoomsService();
 

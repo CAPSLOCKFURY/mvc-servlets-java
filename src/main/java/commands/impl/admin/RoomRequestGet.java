@@ -16,7 +16,7 @@ import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/admin/room-request", method = RequestMethod.GET)
-public class RoomRequestGetCommand implements Command {
+public class RoomRequestGet implements Command {
 
     private final AdminRoomRequestService roomRequestService = new AdminRoomRequestService();
     private final AdminRoomsService roomsService = new AdminRoomsService();

@@ -12,7 +12,7 @@ import service.UserService;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/profile", method = RequestMethod.GET)
-public class ProfileGetCommand implements Command {
+public class ProfileGet implements Command {
 
     private final UserService userService = new UserService();
 

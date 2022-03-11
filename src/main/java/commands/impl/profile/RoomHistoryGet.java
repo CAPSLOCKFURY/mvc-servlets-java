@@ -1,26 +1,24 @@
 package commands.impl.profile;
 
 import commands.base.*;
-import commands.base.messages.CookieMessageTransport;
-import commands.base.messages.MessageTransport;
 import commands.base.security.AuthenticatedOnly;
 import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import models.RoomRequest;
 import models.User;
-import service.RoomRequestService;
+import models.dto.RoomHistoryDTO;
+import service.RoomsService;
 
 import java.util.List;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
-@WebMapping(url = "/profile/my-room-requests", method = RequestMethod.GET)
-public class UserRoomRequestsGetCommand implements Command {
+@WebMapping(url = "/profile/room-history", method = RequestMethod.GET)
+public class RoomHistoryGet implements Command {
 
-    private final RoomRequestService roomRequestService = new RoomRequestService();
+    private final RoomsService roomsService = new RoomsService();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -30,10 +28,8 @@ public class UserRoomRequestsGetCommand implements Command {
         }
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.processMessages(request, response);
-        List<RoomRequest> roomRequestList = roomRequestService.getRoomRequestsByUserId(user.getId(), getLocaleFromCookies(request.getCookies()));
-        request.setAttribute("roomRequests", roomRequestList);
-        return new CommandResult("user-room-requests.jsp", RequestDirection.FORWARD);
+        List<RoomHistoryDTO> roomHistory = roomsService.getUserRoomHistory(user.getId(), getLocaleFromCookies(request.getCookies()));
+        request.setAttribute("rooms", roomHistory);
+        return new CommandResult("user-room-history.jsp", RequestDirection.FORWARD);
     }
 }

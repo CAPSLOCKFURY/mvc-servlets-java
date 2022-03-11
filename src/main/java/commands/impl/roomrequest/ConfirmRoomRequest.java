@@ -16,7 +16,7 @@ import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
-public class ConfirmRoomRequestCommand implements Command {
+public class ConfirmRoomRequest implements Command {
 
     private final RoomRequestService roomRequestService = new RoomRequestService();
 
