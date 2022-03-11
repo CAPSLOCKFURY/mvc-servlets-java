@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Title</title>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/set-min-date-today.js" defer></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -15,8 +16,5 @@
 <c:forEach var="error" items="${errors}">
     <h2 style="color:red">${error}</h2>
 </c:forEach>
-<script>
-    checkInDate.min = new Date().toISOString().split("T")[0];
-</script>
 </body>
 </html>

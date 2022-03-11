@@ -4,8 +4,7 @@
 <html>
 <head>
     <title>Title</title>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/room-price-calculator.js" defer>
-    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/room-price-calculator.js" defer></script>
 </head>
 <body>
     <jsp:include page="header.jsp"/>
@@ -19,6 +18,7 @@
     <h1>Order room:</h1>
     <input type="hidden" id="pricePerDay" value="${room.price}">
     <c:if test="${sessionScope.user != null}">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/set-min-date-today.js" defer></script>
         <form method="post">
             <form:renderForm formClassPath="forms.BookRoomForm"/>
             <h2>Estimated price:</h2>
