@@ -25,4 +25,6 @@ public abstract class RoomRequestDao extends AbstractDao {
     public abstract boolean confirmRoomRequest(RoomRequest roomRequest, BigDecimal moneyAmount) throws SQLException;
 
     public abstract boolean declineAssignedRoom(String comment, Long requestId) throws SQLException;
+
+    public abstract boolean adminCloseRequest(Long requestId, String comment) throws SQLException;
 }

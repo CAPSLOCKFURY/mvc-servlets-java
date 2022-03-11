@@ -31,13 +31,13 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
     private final static String DISABLE_REQUEST_BY_ID = "update room_requests set status = 'closed' where id = ? and user_id = ?";
 
-    private final static String ADMIN_GET_ROOM_REQUESTS = "select room_requests.id, capacity, rct.name as class_name, comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
+    private final static String ADMIN_GET_ROOM_REQUESTS = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
             "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
             "    left outer join users u on room_requests.user_id = u.id\n" +
             "where room_requests.status = 'awaiting'\n" +
             "order by room_requests.id";
 
-    private final static String ADMIN_GET_ROOM_REQUEST_BY_ID = "select room_requests.id, capacity, rct.name as class_name, comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
+    private final static String ADMIN_GET_ROOM_REQUEST_BY_ID = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
             "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
             "    left outer join users u on room_requests.user_id = u.id\n" +
             "where room_requests.id = ?\n" +
@@ -52,6 +52,8 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
 
     private final static String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
+
+    private final static String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed' where id=?";
 
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
@@ -192,6 +194,17 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getNewComment() {return newComment;}
             }
             return updateEntityById(connection, DECLINE_ASSIGNED_ROOM, new UpdateParams(), requestId);
+        }
+    }
+
+   public boolean adminCloseRequest(Long requestId, String comment) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class UpdateParam{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String managerComment = comment;
+                public String getManagerComment() {return managerComment;}
+            }
+            return updateEntityById(connection, ADMIN_CLOSE_REQUEST, new UpdateParam(), requestId);
         }
    }
 }

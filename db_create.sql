@@ -63,7 +63,8 @@ create table if not exists room_requests(
     check_out_date date not null,
     comment text,
     status request_status default 'awaiting',
-    room_id u_bigint references rooms(id) default null
+    room_id u_bigint references rooms(id) default null,
+    manager_comment text null
 );
 
 create table if not exists room_registry(

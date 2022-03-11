@@ -29,4 +29,13 @@ public class AdminRoomRequestService {
             throw new DaoException();
         }
     }
+
+    public boolean closeRoomRequest(Long requestId, String comment){
+        try{
+            return roomRequestDao.adminCloseRequest(requestId, comment);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return false;
+        }
+    }
 }

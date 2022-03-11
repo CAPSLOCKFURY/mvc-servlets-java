@@ -34,6 +34,9 @@ public class RoomRequest {
     @SqlColumn(columnName = "room_id", type = SqlType.LONG)
     private Long roomId;
 
+    @SqlColumn(columnName = "manager_comment", type = SqlType.STRING)
+    private String managerComment;
+
     public Long getId() {
         return id;
     }
@@ -104,5 +107,13 @@ public class RoomRequest {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getManagerComment() {
+        return managerComment;
+    }
+
+    public void setManagerComment(String managerComment) {
+        this.managerComment = managerComment;
     }
 }

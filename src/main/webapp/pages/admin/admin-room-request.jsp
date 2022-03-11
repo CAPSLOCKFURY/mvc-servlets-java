@@ -18,6 +18,11 @@
 <h1>First name: ${roomRequest.firstName}</h1>
 <h1>Last name: ${roomRequest.lastName}</h1>
 <hr>
+<form method="post" action="<c:url value="/project/admin/room-request/close"/>">
+    <input type="hidden" name="requestId" value="${roomRequest.id}">
+    <textarea name="managerComment"></textarea>
+    <button type="submit">Close this request</button>
+</form>
 <c:forEach var="room" items="${rooms}">
     <h1>Room number: ${room.number}</h1>
     <h1>Room name: ${room.name}</h1>

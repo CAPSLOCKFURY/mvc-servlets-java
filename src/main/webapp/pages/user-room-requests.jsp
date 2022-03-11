@@ -16,6 +16,7 @@
     <h1>Check In Date: ${roomRequest.checkInDate}</h1>
     <h1>Check Out Date: ${roomRequest.checkOutDate}</h1>
     <h1>Your Comment: ${roomRequest.comment}</h1>
+    <h1>Manager Comment: ${roomRequest.managerComment}</h1>
     <h1>Status: ${roomRequest.status}</h1>
     <c:if test="${roomRequest.roomId != 0}">
         <h1>Assigned room: <a href="<c:url value="/project/room"><c:param name="id" value="${roomRequest.roomId}"/></c:url> ">

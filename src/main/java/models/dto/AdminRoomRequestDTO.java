@@ -9,26 +9,39 @@ public class AdminRoomRequestDTO {
 
     @SqlColumn(columnName = "id", type = SqlType.LONG)
     private Long id;
+
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
     private Integer capacity;
+
     @SqlColumn(columnName = "class_name", type = SqlType.STRING)
     private String className;
+
     @SqlColumn(columnName = "comment", type = SqlType.STRING)
     private String comment;
+
     @SqlColumn(columnName = "status", type = SqlType.STRING)
     private String status;
+
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
     private java.sql.Date checkInDate;
+
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
     private java.sql.Date checkOutDate;
+
     @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
+
     @SqlColumn(columnName = "email", type = SqlType.STRING)
     private String email;
+
     @SqlColumn(columnName = "first_name", type = SqlType.STRING)
     private String firstName;
+
     @SqlColumn(columnName = "last_name", type = SqlType.STRING)
     private String lastName;
+
+    @SqlColumn(columnName = "manager_comment", type = SqlType.STRING)
+    private String managerComment;
 
     public Long getId() {
         return id;
@@ -116,5 +129,13 @@ public class AdminRoomRequestDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getManagerComment() {
+        return managerComment;
+    }
+
+    public void setManagerComment(String managerComment) {
+        this.managerComment = managerComment;
     }
 }
