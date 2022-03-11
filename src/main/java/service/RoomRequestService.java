@@ -37,8 +37,17 @@ public class RoomRequestService {
         }
     }
 
-    public boolean disableRoomRequest(Long requestId, Long userId){
+    public boolean disableRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
         try{
+            RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
+            if(!roomRequest.getUserId().equals(userId)){
+                messageTransport.addLocalizedMessage("message.notYourRequest");
+                return false;
+            }
+            if(!roomRequest.getStatus().equals("awaiting")){
+                messageTransport.addLocalizedMessage("message.disableRequestWrongStatus");
+                return false;
+            }
             return roomRequestDao.disableRoomRequest(requestId, userId);
         } catch (SQLException sqle){
             sqle.printStackTrace();
@@ -51,6 +60,10 @@ public class RoomRequestService {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if(!roomRequest.getUserId().equals(userId)){
                 messageTransport.addLocalizedMessage("message.notYourRequest");
+                return false;
+            }
+            if(!roomRequest.getStatus().equals("awaiting confirmation")){
+                messageTransport.addLocalizedMessage("message.confirmRequestWrongStatus");
                 return false;
             }
             Room room = roomDao.getRoomById(roomRequest.getRoomId(), "en");
@@ -72,7 +85,7 @@ public class RoomRequestService {
                 return false;
             }
             if(!roomRequest.getStatus().equals("awaiting confirmation")){
-                messageTransport.addLocalizedMessage("messages.wrongRequestStatus");
+                messageTransport.addLocalizedMessage("message.wrongRequestStatus");
                 return false;
             }
             return roomRequestDao.declineAssignedRoom(comment, requestId);

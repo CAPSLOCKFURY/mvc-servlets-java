@@ -14,10 +14,15 @@ public class CookieMessageTransport implements MessageTransport {
 
     private Locale locale = Locale.ROOT;
 
-    public Cookie getMessageCookie(HttpServletRequest request, HttpServletResponse response) {
+    public Cookie getMessageCookie() {
         String joinedMessages = String.join(";", messages);
         String urlSafeMessages = UTF8UrlCoder.encode(joinedMessages);
         return new Cookie("messages", urlSafeMessages);
+    }
+
+
+    public void setMessage(HttpServletRequest request, HttpServletResponse response) {
+        response.addCookie(getMessageCookie());
     }
 
     public List<String> getMessages(){

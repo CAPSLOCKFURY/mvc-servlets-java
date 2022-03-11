@@ -38,6 +38,7 @@ public class DeclineAssignedRoom implements Command {
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         roomRequestService.declineAssignedRoom(comment, user.getId(), requestId, messageTransport);
+        messageTransport.setMessage(request, response);
         return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 }

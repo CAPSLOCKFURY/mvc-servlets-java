@@ -36,7 +36,7 @@ public class PayBilling implements Command {
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean billingPaid = billingService.payBilling(userId, billingId, messageTransport);
-        response.addCookie(messageTransport.getMessageCookie(request, response));
+        messageTransport.setMessage(request, response);
         if(!billingPaid){
             return new CommandResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
         } else {

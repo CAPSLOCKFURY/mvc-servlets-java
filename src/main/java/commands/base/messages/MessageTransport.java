@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 public interface MessageTransport {
-    Cookie getMessageCookie(HttpServletRequest request, HttpServletResponse response);
+    void setMessage(HttpServletRequest request, HttpServletResponse response);
     void processMessages(HttpServletRequest request, HttpServletResponse response);
     void addMessage(String message);
     void addLocalizedMessage(String key);

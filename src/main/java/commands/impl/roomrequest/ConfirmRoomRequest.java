@@ -35,7 +35,7 @@ public class ConfirmRoomRequest implements Command {
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean isConfirmed = roomRequestService.confirmRoomRequest(requestId, ((User)request.getSession().getAttribute("user")).getId(), messageTransport);
-        response.addCookie(messageTransport.getMessageCookie(request, response));
+        messageTransport.setMessage(request, response);
         if(isConfirmed) {
             return new CommandResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
         } else {

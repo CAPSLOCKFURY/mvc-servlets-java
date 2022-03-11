@@ -1,6 +1,8 @@
 package commands.impl.roomrequest;
 
 import commands.base.*;
+import commands.base.messages.CookieMessageTransport;
+import commands.base.messages.MessageTransport;
 import commands.base.security.AuthenticatedOnly;
 import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +11,9 @@ import jakarta.servlet.http.HttpSession;
 import models.User;
 import service.RoomRequestService;
 
+import java.util.Locale;
+
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/profile/my-room-requests/disable", method = RequestMethod.GET)
@@ -32,7 +37,10 @@ public class DisableRoomRequest implements Command {
         } catch (NumberFormatException nfe){
             return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
         }
-        roomRequestService.disableRoomRequest(id, userId);
+        MessageTransport messageTransport = new CookieMessageTransport();
+        messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        roomRequestService.disableRoomRequest(id, userId, messageTransport);
+        messageTransport.setMessage(request, response);
         return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 }
