@@ -1,4 +1,4 @@
-package commands.impl;
+package commands.impl.billing;
 
 import commands.base.*;
 import commands.base.messages.CookieMessageTransport;

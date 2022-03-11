@@ -51,6 +51,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
     private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
 
+    private final static String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
 
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
@@ -182,4 +183,15 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
         }
    }
 
+
+   public boolean declineAssignedRoom(String comment, Long requestId) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class UpdateParams{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String newComment = comment;
+                public String getNewComment() {return newComment;}
+            }
+            return updateEntityById(connection, DECLINE_ASSIGNED_ROOM, new UpdateParams(), requestId);
+        }
+   }
 }

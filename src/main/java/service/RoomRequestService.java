@@ -47,7 +47,6 @@ public class RoomRequestService {
     }
 
     public boolean confirmRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
-        //TODO add corresponding room registry id field to billing table
         try{
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if(!roomRequest.getUserId().equals(userId)){
@@ -62,6 +61,24 @@ public class RoomRequestService {
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();
+        }
+    }
+
+    public boolean declineAssignedRoom(String comment, Long userId, Long requestId, MessageTransport messageTransport){
+        try{
+            RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
+            if(!roomRequest.getUserId().equals(userId)){
+                messageTransport.addLocalizedMessage("message.notYourRequest");
+                return false;
+            }
+            if(!roomRequest.getStatus().equals("awaiting confirmation")){
+                messageTransport.addLocalizedMessage("messages.wrongRequestStatus");
+                return false;
+            }
+            return roomRequestDao.declineAssignedRoom(comment, requestId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return false;
         }
     }
 }

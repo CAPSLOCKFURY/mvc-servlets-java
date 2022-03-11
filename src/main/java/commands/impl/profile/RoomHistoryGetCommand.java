@@ -1,25 +1,24 @@
-package commands.impl;
+package commands.impl.profile;
 
 import commands.base.*;
-import commands.base.messages.CookieMessageTransport;
-import commands.base.messages.MessageTransport;
 import commands.base.security.AuthenticatedOnly;
 import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import models.Billing;
 import models.User;
-import service.BillingService;
+import models.dto.RoomHistoryDTO;
+import service.RoomsService;
 
 import java.util.List;
 
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
-@WebMapping(url = "/profile/my-billings", method = RequestMethod.GET)
-public class UserBillingsGet implements Command {
+@WebMapping(url = "/profile/room-history", method = RequestMethod.GET)
+public class RoomHistoryGetCommand implements Command {
 
-    private final BillingService billingService = new BillingService();
+    private final RoomsService roomsService = new RoomsService();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
@@ -27,12 +26,10 @@ public class UserBillingsGet implements Command {
         if(!security.doSecurity(request, response)){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.processMessages(request, response);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        List<Billing> billings = billingService.findBillingsByUserId(user.getId());
-        request.setAttribute("billings", billings);
-        return new CommandResult("user-billings.jsp", RequestDirection.FORWARD);
+        List<RoomHistoryDTO> roomHistory = roomsService.getUserRoomHistory(user.getId(), getLocaleFromCookies(request.getCookies()));
+        request.setAttribute("rooms", roomHistory);
+        return new CommandResult("user-room-history.jsp", RequestDirection.FORWARD);
     }
 }

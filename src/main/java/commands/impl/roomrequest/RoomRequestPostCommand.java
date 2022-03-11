@@ -1,4 +1,4 @@
-package commands.impl;
+package commands.impl.roomrequest;
 
 import commands.base.*;
 import commands.base.security.AuthenticatedOnly;

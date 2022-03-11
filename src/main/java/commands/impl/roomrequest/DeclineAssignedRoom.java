@@ -1,4 +1,4 @@
-package commands.impl;
+package commands.impl.roomrequest;
 
 import commands.base.*;
 import commands.base.messages.CookieMessageTransport;
@@ -15,8 +15,8 @@ import java.util.Locale;
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
-@WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
-public class ConfirmRoomRequestCommand implements Command {
+@WebMapping(url = "/profile/my-room-requests/decline", method = RequestMethod.POST)
+public class DeclineAssignedRoom implements Command {
 
     private final RoomRequestService roomRequestService = new RoomRequestService();
 
@@ -27,19 +27,17 @@ public class ConfirmRoomRequestCommand implements Command {
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         Long requestId;
+        String comment;
         try{
             requestId = Long.parseLong(request.getParameter("requestId"));
+            comment = request.getParameter("comment");
         } catch (NumberFormatException nfe){
-            return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
+        User user = (User)request.getSession().getAttribute("user");
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
-        boolean isConfirmed = roomRequestService.confirmRoomRequest(requestId, ((User)request.getSession().getAttribute("user")).getId(), messageTransport);
-        response.addCookie(messageTransport.getMessageCookie(request, response));
-        if(isConfirmed) {
-            return new CommandResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
-        } else {
-            return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
-        }
+        roomRequestService.declineAssignedRoom(comment, user.getId(), requestId, messageTransport);
+        return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 }

@@ -1,47 +1,47 @@
-package commands.impl;
+package commands.impl.auth;
 
 import commands.base.*;
-import commands.base.security.AuthenticatedOnly;
+import commands.base.security.NonAuthenticatedOnly;
 import commands.base.security.Security;
-import forms.AddBalanceForm;
+import forms.LoginForm;
 import forms.base.prg.CookieFormErrorsPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.User;
 import service.UserService;
+import utils.LocaleUtils;
 
 import java.util.Locale;
 
-import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
-@WebMapping(url = "/profile/balance", method = RequestMethod.POST)
-public class BalancePostCommand implements Command {
+@WebMapping(url = "/login", method = RequestMethod.POST)
+public class LoginPostCommand implements Command {
 
     private final UserService userService = new UserService();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
-        Security security = new AuthenticatedOnly();
+        Security security = new NonAuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        AddBalanceForm form = new AddBalanceForm();
-        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        LoginForm form = new LoginForm();
         form.mapRequestToForm(request);
+        form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));
         boolean isValid = form.validate();
-        if(!isValid){
+        if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new CommandResult(getAbsoluteUrl("/profile/balance", request), RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("/login", request), RequestDirection.REDIRECT);
         }
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        userService.addUserBalance(form, user.getId());
+        User user = userService.loginUser(form);
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new CommandResult(getAbsoluteUrl("/profile/balance", request), RequestDirection.REDIRECT);
+            return new CommandResult(getAbsoluteUrl("/login", request), RequestDirection.REDIRECT);
         }
-        return new CommandResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
     }
 }

@@ -20,10 +20,17 @@
     <c:if test="${roomRequest.roomId != 0}">
         <h1>Assigned room: <a href="<c:url value="/project/room"><c:param name="id" value="${roomRequest.roomId}"/></c:url> ">
 ${roomRequest.roomId}</a></h1>
-        <form method="post" action="<c:url value="/project/profile/my-room-requests/confirm"/>">
-            <input type="hidden" name="requestId" value="${roomRequest.id}">
-            <button type="submit">Confirm request</button>
-        </form>
+        <c:if test="${roomRequest.status.equals('awaiting confirmation')}">
+            <form method="post" action="<c:url value="/project/profile/my-room-requests/confirm"/>">
+                <input type="hidden" name="requestId" value="${roomRequest.id}">
+                <button type="submit">Confirm request</button>
+            </form>
+            <form method="post" action="<c:url value="/project/profile/my-room-requests/decline"/>">
+                <textarea name="comment">${roomRequest.comment}</textarea>
+                <input type="hidden" name="requestId" value="${roomRequest.id}">
+                <button type="submit">Decline room</button>
+            </form>
+        </c:if>
     </c:if>
     <a href="<c:url value="/project/profile/my-room-requests/disable"><c:param name="id" value="${roomRequest.id}"/></c:url>">Disable</a>
     <hr>

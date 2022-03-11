@@ -1,4 +1,4 @@
-package commands.impl;
+package commands.impl.room;
 
 import commands.base.*;
 import forms.base.prg.CookieFormErrorsPRG;

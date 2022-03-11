@@ -1,4 +1,4 @@
-package commands.impl;
+package commands.impl.profile;
 
 import commands.base.*;
 import commands.base.security.AuthenticatedOnly;
