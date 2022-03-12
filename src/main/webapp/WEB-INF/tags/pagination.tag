@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="url" uri="/WEB-INF/tlds/urllib" %>
-<%@tag description="Pagination" pageEncoding="UTF-8"%>
+<%@ tag description="Pagination" pageEncoding="UTF-8"%>
 <%@ attribute name="page" required="true" type="java.lang.Integer" %>
 <%@ attribute name="entitiesPerPage" type="java.lang.Integer" required="true" %>
 <%@ attribute name="entitiesCount" type="java.lang.Integer" required="true" %>

@@ -11,6 +11,20 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h1>All our rooms</h1>
+<form method="get">
+    <select name="orderColName">
+        <option value="ID" <tags:selectedif test="${param.orderColName.equals('ID')}"/>>id</option>
+        <option value="PRICE" <tags:selectedif test="${param.orderColName.equals('PRICE')}"/>>price</option>
+        <option value="STATUS" <tags:selectedif test="${param.orderColName.equals('STATUS')}"/>>status</option>
+        <option value="CLASS" <tags:selectedif test="${param.orderColName.equals('CLASS')}"/>>room class</option>
+        <option value="CAPACITY" <tags:selectedif test="${param.orderColName.equals('CAPACITY')}"/>>capacity</option>
+    </select>
+    <select name="orderDirection">
+        <option value="ASC" <tags:selectedif test="${param.orderDirection.equals('ASC')}"/>>Ascending</option>
+        <option value="DESC" <tags:selectedif test="${param.orderDirection.equals('DESC')}"/>>Descending</option>
+    </select>
+    <button type="submit">Sort results</button>
+</form>
 <c:set var="page" value="${param.page == null ? 1 : param.page}"/>
 <tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
 <c:forEach var="room" items="${rooms}" begin="0" end="9" step="1">
