@@ -20,7 +20,7 @@ public class MainCommand implements Command {
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         //TODO add config for entities per page
-        Pageable pageable = Pageable.of(request, 10 + 1);
+        Pageable pageable = Pageable.of(request, 10, true);
         RoomOrdering roomOrdering = RoomOrdering.ID;
         OrderDirection orderDirection = OrderDirection.ASC;
         if(request.getParameter("orderColName") != null){

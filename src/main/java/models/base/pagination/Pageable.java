@@ -5,18 +5,32 @@ import jakarta.servlet.http.HttpServletRequest;
 public class Pageable {
 
     private final int page;
-    private final int entitiesPerPage;
+    private int entitiesPerPage;
+    private boolean lookAhead = false;
 
     public Pageable(int page, int entitiesPerPage){
         this.page = page;
         this.entitiesPerPage = entitiesPerPage;
     }
 
-    public String paginateQuery(String sql){
-        return sql.concat(String.format(" limit %d offset %d", entitiesPerPage, (page - 1) * entitiesPerPage));
+    public Pageable(int page, int entitiesPerPage, boolean lookAhead){
+        this.page = page;
+        this.entitiesPerPage = entitiesPerPage;
+        this.lookAhead = lookAhead;
+        if(lookAhead){
+            this.entitiesPerPage++;
+        }
     }
 
-    public static Pageable of(HttpServletRequest request, int entitiesPerPage){
+    public String paginateQuery(String sql){
+        int offset = (page - 1) * entitiesPerPage;
+        if(lookAhead && offset > 0){
+            offset--;
+        }
+        return sql.concat(String.format(" limit %d offset %d", entitiesPerPage, offset));
+    }
+
+    public static Pageable of(HttpServletRequest request, int entitiesPerPage, boolean lookAhead){
         int page = 1;
         if(request.getParameter("page") != null){
             try {
@@ -25,7 +39,7 @@ public class Pageable {
 
             }
         }
-        return new Pageable(page, entitiesPerPage);
+        return new Pageable(page, entitiesPerPage, lookAhead);
     }
 
 }

@@ -13,7 +13,7 @@
 <h1>All our rooms</h1>
 <c:set var="page" value="${param.page == null ? 1 : param.page}"/>
 <tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
-<c:forEach var="room" items="${rooms}" begin="0" end="10" step="1">
+<c:forEach var="room" items="${rooms}" begin="0" end="9" step="1">
     <hr>
     <h1>-------------Room info----------------</h1>
     <h1>Room number: ${room.number}</h1>
