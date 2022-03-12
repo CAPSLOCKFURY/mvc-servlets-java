@@ -7,6 +7,7 @@ import models.Room;
 import models.RoomClass;
 import models.base.SqlColumn;
 import models.base.SqlType;
+import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomDate;
 import models.dto.RoomExtendedInfo;
@@ -65,14 +66,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
 
     @Override
-    public List<Room> getAllRooms(String locale) throws SQLException {
+    public List<Room> getAllRooms(String locale, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class);
+            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class, pageable);
         }
     }
 

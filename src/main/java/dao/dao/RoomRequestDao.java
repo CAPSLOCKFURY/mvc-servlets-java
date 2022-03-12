@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class RoomRequestDao extends AbstractDao {
+public abstract class RoomRequestDao extends PageableAbstractDao {
 
     public abstract boolean createRoomRequest(RoomRequestForm form) throws SQLException;
 

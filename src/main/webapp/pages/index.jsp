@@ -2,6 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,9 @@
 <body>
 <jsp:include page="header.jsp"/>
 <h1>All our rooms</h1>
-<c:forEach var="room" items="${rooms}">
+<c:set var="page" value="${param.page == null ? 1 : param.page}"/>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
+<c:forEach var="room" items="${rooms}" begin="0" end="10" step="1">
     <hr>
     <h1>-------------Room info----------------</h1>
     <h1>Room number: ${room.number}</h1>
@@ -24,5 +27,6 @@
                  </c:url>">See room</a></h2>
     <hr>
 </c:forEach>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
 </body>
 </html>

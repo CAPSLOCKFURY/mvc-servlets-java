@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class BillingDao extends AbstractDao {
+public abstract class BillingDao extends PageableAbstractDao {
 
     public abstract boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long RoomRegistryId) throws SQLException;
 

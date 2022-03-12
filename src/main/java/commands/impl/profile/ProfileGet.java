@@ -10,7 +10,8 @@ import models.User;
 import service.UserService;
 
 import static utils.UrlUtils.getAbsoluteUrl;
-
+//TODO add ability to update profile
+//TODO add ability to change password
 @WebMapping(url = "/profile", method = RequestMethod.GET)
 public class ProfileGet implements Command {
 
