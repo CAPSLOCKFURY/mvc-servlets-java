@@ -8,7 +8,7 @@ import models.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class UserDao extends AbstractDao {
+public abstract class UserDao extends PageableAbstractDao {
     public abstract User getUserById(Long id) throws SQLException;
 
     public abstract List<User> getAllUsers() throws SQLException;
