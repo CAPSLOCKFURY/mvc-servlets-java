@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.RoomRequest;
 import models.User;
+import models.base.pagination.Pageable;
 import service.RoomRequestService;
 
 import java.util.List;
@@ -32,7 +33,8 @@ public class UserRoomRequestsGet implements Command {
         User user = (User) session.getAttribute("user");
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
-        List<RoomRequest> roomRequestList = roomRequestService.getRoomRequestsByUserId(user.getId(), getLocaleFromCookies(request.getCookies()));
+        Pageable pageable = Pageable.of(request, 10, true);
+        List<RoomRequest> roomRequestList = roomRequestService.getRoomRequestsByUserId(user.getId(), getLocaleFromCookies(request.getCookies()), pageable);
         request.setAttribute("roomRequests", roomRequestList);
         return new CommandResult("user-room-requests.jsp", RequestDirection.FORWARD);
     }

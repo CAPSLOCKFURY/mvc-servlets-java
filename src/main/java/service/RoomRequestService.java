@@ -9,6 +9,7 @@ import exceptions.db.DaoException;
 import forms.RoomRequestForm;
 import models.Room;
 import models.RoomRequest;
+import models.base.pagination.Pageable;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -28,9 +29,9 @@ public class RoomRequestService {
         }
     }
 
-    public List<RoomRequest> getRoomRequestsByUserId(Long userId, String locale){
+    public List<RoomRequest> getRoomRequestsByUserId(Long userId, String locale, Pageable pageable){
         try{
-            return roomRequestDao.getAllRoomRequestsByUserId(userId, locale);
+            return roomRequestDao.getAllRoomRequestsByUserId(userId, locale, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

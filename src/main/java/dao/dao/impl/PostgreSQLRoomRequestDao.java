@@ -9,6 +9,7 @@ import forms.RoomRequestForm;
 import models.RoomRequest;
 import models.base.SqlColumn;
 import models.base.SqlType;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 
 import java.math.BigDecimal;
@@ -78,7 +79,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     }
 
     @Override
-    public List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale) throws SQLException {
+    public List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -88,7 +89,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 private String getLang(){return lang;}
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ROOM_REQUESTS_BY_USER_ID, new Param(), RoomRequest.class);
+            return getAllByParams(connection, FIND_ROOM_REQUESTS_BY_USER_ID, new Param(), RoomRequest.class, pageable);
         }
     }
 

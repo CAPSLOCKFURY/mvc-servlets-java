@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,7 +10,9 @@
 <c:forEach var="message" items="${messages}">
     <h2 style="color:red">${message}</h2>
 </c:forEach>
-<c:forEach var="roomRequest" items="${roomRequests}">
+<c:set var="page" value="${param.page == null ? 1 : param.page}"/>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${roomRequests.size()}"/>
+<c:forEach var="roomRequest" items="${roomRequests}" begin="0" end="9" step="1">
     <hr>
     <h1>Capacity: ${roomRequest.capacity}</h1>
     <h1>Room class: ${roomRequest.roomClass}</h1>
@@ -38,5 +41,6 @@ ${roomRequest.roomId}</a></h1>
     </c:if>
     <hr>
 </c:forEach>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${roomRequests.size()}"/>
 </body>
 </html>

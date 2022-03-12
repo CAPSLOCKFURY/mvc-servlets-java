@@ -2,6 +2,7 @@ package dao.dao;
 
 import forms.RoomRequestForm;
 import models.RoomRequest;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public abstract class RoomRequestDao extends OrderableAbstractDao {
 
     public abstract RoomRequest getRoomRequestById(Long requestId) throws SQLException;
 
-    public abstract List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale) throws SQLException;
+    public abstract List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale, Pageable pageable) throws SQLException;
 
     public abstract boolean disableRoomRequest(Long requestId, Long userId) throws SQLException;
 
