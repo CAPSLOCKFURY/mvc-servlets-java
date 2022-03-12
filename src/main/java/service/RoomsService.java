@@ -9,6 +9,8 @@ import forms.BookRoomForm;
 import models.Room;
 import models.RoomClass;
 import models.User;
+import models.base.ordering.OrderDirection;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
@@ -25,9 +27,9 @@ public class RoomsService {
     private final static RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
     private final static UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
-    public List<Room> getAllRooms(String locale, Pageable pageable){
+    public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
         try{
-            return roomsDao.getAllRooms(locale, pageable);
+            return roomsDao.getAllRooms(locale, orderable, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

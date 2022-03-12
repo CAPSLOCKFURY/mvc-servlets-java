@@ -7,6 +7,7 @@ import models.Room;
 import models.RoomClass;
 import models.base.SqlColumn;
 import models.base.SqlType;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomDate;
@@ -25,8 +26,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     private final static String FIND_ALL_ROOMS = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
             "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms" +
             "    left outer join room_class rc on rooms.class = rc.id\n" +
-            "    left outer join room_class_translation rct on rc.id = rct.class_id and language = ?\n" +
-            "order by rc.id";
+            "    left outer join room_class_translation rct on rc.id = rct.class_id and language = ?";
 
     private final static String FIND_ROOM_BY_ID = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
             "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms\n" +
@@ -66,14 +66,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
 
     @Override
-    public List<Room> getAllRooms(String locale, Pageable pageable) throws SQLException {
+    public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class, pageable);
+            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
         }
     }
 
