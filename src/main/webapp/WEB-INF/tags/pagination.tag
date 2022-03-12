@@ -4,9 +4,11 @@
 <%@ attribute name="page" required="true" type="java.lang.Integer" %>
 <%@ attribute name="entitiesPerPage" type="java.lang.Integer" required="true" %>
 <%@ attribute name="entitiesCount" type="java.lang.Integer" required="true" %>
-<c:set var="getParams">
-    <url:joinGetParameters insertQuestionMark="false" ignoreParams="page"/>
-</c:set>
+<c:if test="${getParams != null}">
+    <c:set var="getParams">
+        <url:joinGetParameters insertQuestionMark="false" ignoreParams="page"/>
+    </c:set>
+</c:if>
 <c:if test="${page > 1}">
     <a href="?page=${page - 1}${getParams}">Previous page</a>
 </c:if>

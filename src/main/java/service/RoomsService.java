@@ -88,9 +88,9 @@ public class RoomsService {
         }
     }
 
-    public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale){
+    public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale, Pageable pageable){
         try{
-            return roomsDao.getRoomHistory(userId, locale);
+            return roomsDao.getRoomHistory(userId, locale, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

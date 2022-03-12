@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.User;
+import models.base.pagination.Pageable;
 import models.dto.RoomHistoryDTO;
 import service.RoomsService;
 
@@ -28,7 +29,8 @@ public class RoomHistoryGet implements Command {
         }
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        List<RoomHistoryDTO> roomHistory = roomsService.getUserRoomHistory(user.getId(), getLocaleFromCookies(request.getCookies()));
+        Pageable pageable = Pageable.of(request, 10, true);
+        List<RoomHistoryDTO> roomHistory = roomsService.getUserRoomHistory(user.getId(), getLocaleFromCookies(request.getCookies()), pageable);
         request.setAttribute("rooms", roomHistory);
         return new CommandResult("user-room-history.jsp", RequestDirection.FORWARD);
     }

@@ -4,6 +4,7 @@ import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 
 import java.sql.SQLException;
@@ -21,9 +22,9 @@ public class AdminRoomRequestService {
         }
     }
 
-    public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale){
+    public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale, Pageable pageable){
         try{
-            return roomRequestDao.getRoomRequestsForAdmin(locale);
+            return roomRequestDao.getRoomRequestsForAdmin(locale, pageable);
         } catch (SQLException sqlException){
             sqlException.printStackTrace();
             throw new DaoException();

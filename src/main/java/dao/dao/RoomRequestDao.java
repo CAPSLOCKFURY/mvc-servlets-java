@@ -19,7 +19,7 @@ public abstract class RoomRequestDao extends OrderableAbstractDao {
 
     public abstract boolean disableRoomRequest(Long requestId, Long userId) throws SQLException;
 
-    public abstract List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale) throws SQLException;
+    public abstract List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, Pageable pageable) throws SQLException;
 
     public abstract AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException;
 

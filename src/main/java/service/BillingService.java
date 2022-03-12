@@ -8,6 +8,7 @@ import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import models.Billing;
 import models.User;
+import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
 import java.sql.SQLException;
@@ -17,9 +18,9 @@ public class BillingService {
     private final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
     private final static UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
-    public List<Billing> findBillingsByUserId(Long userId){
+    public List<Billing> findBillingsByUserId(Long userId, Pageable pageable){
         try{
-            return billingDao.getAllBillingsByUserId(userId);
+            return billingDao.getAllBillingsByUserId(userId, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

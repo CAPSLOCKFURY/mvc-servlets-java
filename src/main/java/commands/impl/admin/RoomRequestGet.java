@@ -6,6 +6,7 @@ import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Room;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import service.AdminRoomRequestService;
 import service.AdminRoomsService;
@@ -36,7 +37,8 @@ public class RoomRequestGet implements Command {
         String locale = getLocaleFromCookies(request.getCookies());
         AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale);
         request.setAttribute("roomRequest", roomRequest);
-        List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate());
+        Pageable pageable = Pageable.of(request, 10, true);
+        List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), pageable);
         request.setAttribute("rooms", suitableRooms);
         return new CommandResult("/admin/admin-room-request.jsp", RequestDirection.FORWARD);
     }

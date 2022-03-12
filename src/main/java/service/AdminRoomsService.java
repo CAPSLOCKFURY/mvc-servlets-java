@@ -6,6 +6,7 @@ import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import models.Room;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import models.dto.OverlapCountDTO;
 
@@ -17,9 +18,9 @@ public class AdminRoomsService {
     private final static RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
     private final static RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
 
-    public List<Room> findSuitableRoomsForRequest(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate){
+    public List<Room> findSuitableRoomsForRequest(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable){
         try{
-            return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate);
+            return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

@@ -145,7 +145,8 @@ public class PostgreSQLRoomsDao extends RoomsDao {
         }
     }
 
-    public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale) throws SQLException {
+    @Override
+    public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -155,12 +156,12 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class);
+            return getAllByParams(connection, FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
         }
     }
 
     @Override
-    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate) throws SQLException{
+    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -173,7 +174,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getStartDate() {return startDate;}
                 public Date getEndDate() {return endDate;}
             }
-            return getAllByParams(connection, FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class);
+            return getAllByParams(connection, FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
         }
     }
 

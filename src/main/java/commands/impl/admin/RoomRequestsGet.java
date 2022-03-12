@@ -6,6 +6,7 @@ import commands.base.security.ManagerOnly;
 import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import service.AdminRoomRequestService;
 
@@ -25,7 +26,8 @@ public class RoomRequestsGet implements Command {
         if(!security.doSecurity(request, response)){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        List<AdminRoomRequestDTO> requests = roomRequestService.getAdminRoomRequests(getLocaleFromCookies(request.getCookies()));
+        Pageable pageable = Pageable.of(request, 10, true);
+        List<AdminRoomRequestDTO> requests = roomRequestService.getAdminRoomRequests(getLocaleFromCookies(request.getCookies()), pageable);
         request.setAttribute("roomRequests", requests);
         return new CommandResult("/admin/admin-room-requests.jsp", RequestDirection.FORWARD);
     }

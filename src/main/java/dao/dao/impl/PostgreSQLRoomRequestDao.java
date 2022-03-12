@@ -104,14 +104,14 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     }
 
     @Override
-    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale) throws SQLException{
+    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class);
+            return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, pageable);
         }
     }
 

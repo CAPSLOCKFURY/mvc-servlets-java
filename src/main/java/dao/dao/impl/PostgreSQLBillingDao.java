@@ -5,6 +5,7 @@ import db.ConnectionPool;
 import models.Billing;
 import models.base.SqlColumn;
 import models.base.SqlType;
+import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
 import java.math.BigDecimal;
@@ -50,14 +51,14 @@ public class PostgreSQLBillingDao extends BillingDao {
     }
 
     @Override
-    public List<Billing> getAllBillingsByUserId(Long userId) throws SQLException{
+    public List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.LONG)
                 private final Long id = userId;
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class);
+            return getAllByParams(connection, FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
         }
     }
 

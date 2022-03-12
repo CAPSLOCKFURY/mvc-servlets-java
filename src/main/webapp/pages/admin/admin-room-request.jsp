@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -23,7 +24,10 @@
     <textarea name="managerComment"></textarea>
     <button type="submit">Close this request</button>
 </form>
-<c:forEach var="room" items="${rooms}">
+<h1>Suitable rooms</h1>
+<c:set var="page" value="${param.page == null ? 1 : param.page}"/>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
+<c:forEach var="room" items="${rooms}" begin="0" end="9" step="1">
     <h1>Room number: ${room.number}</h1>
     <h1>Room name: ${room.name}</h1>
     <h1>Room class: ${room.className}</h1>
@@ -37,5 +41,6 @@
     </form>
     <hr>
 </c:forEach>
+<tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${rooms.size()}"/>
 </body>
 </html>

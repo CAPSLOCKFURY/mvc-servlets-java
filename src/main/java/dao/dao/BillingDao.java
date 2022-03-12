@@ -1,6 +1,7 @@
 package dao.dao;
 
 import models.Billing;
+import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ public abstract class BillingDao extends OrderableAbstractDao {
 
     public abstract boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long RoomRegistryId) throws SQLException;
 
-    public abstract List<Billing> getAllBillingsByUserId(Long userId) throws SQLException;
+    public abstract List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) throws SQLException;
 
     public abstract ExtendedBillingDTO getBillingById(Long billingId) throws SQLException;
 

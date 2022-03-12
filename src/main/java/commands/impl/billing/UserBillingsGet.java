@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.Billing;
 import models.User;
+import models.base.pagination.Pageable;
 import service.BillingService;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class UserBillingsGet implements Command {
         messageTransport.processMessages(request, response);
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        List<Billing> billings = billingService.findBillingsByUserId(user.getId());
+        Pageable pageable = Pageable.of(request, 10, true);
+        List<Billing> billings = billingService.findBillingsByUserId(user.getId(), pageable);
         request.setAttribute("billings", billings);
         return new CommandResult("user-billings.jsp", RequestDirection.FORWARD);
     }
