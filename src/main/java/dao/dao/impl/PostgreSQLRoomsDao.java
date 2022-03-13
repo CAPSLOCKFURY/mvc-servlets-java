@@ -22,7 +22,6 @@ import java.util.List;
 
 public class PostgreSQLRoomsDao extends RoomsDao {
 
-    //TODO add dynamic ordering
     private final static String FIND_ALL_ROOMS = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
             "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms" +
             "    left outer join room_class rc on rooms.class = rc.id\n" +

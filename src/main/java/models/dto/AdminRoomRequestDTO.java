@@ -28,6 +28,9 @@ public class AdminRoomRequestDTO {
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
     private java.sql.Date checkOutDate;
 
+    @SqlColumn(columnName = "room_id", type = SqlType.LONG)
+    private Long roomId;
+
     @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
 
@@ -137,5 +140,13 @@ public class AdminRoomRequestDTO {
 
     public void setManagerComment(String managerComment) {
         this.managerComment = managerComment;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 }

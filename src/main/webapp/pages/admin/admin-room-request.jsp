@@ -18,6 +18,10 @@
 <h1>User email: ${roomRequest.email}</h1>
 <h1>First name: ${roomRequest.firstName}</h1>
 <h1>Last name: ${roomRequest.lastName}</h1>
+<c:if test="${roomRequest.roomId != 0}">
+    <h1> Assigned room: <a target="_blank" href="<c:url value="/project/room"><c:param name="id" value="${roomRequest.roomId}"/></c:url>">
+            ${roomRequest.roomId}</a></h1>
+</c:if>
 <hr>
 <c:if test="${roomRequest.status.equals('awaiting') || roomRequest.status.equals('awaiting confirmation')}">
 <form method="post" action="<c:url value="/project/admin/room-request/close"/>">
