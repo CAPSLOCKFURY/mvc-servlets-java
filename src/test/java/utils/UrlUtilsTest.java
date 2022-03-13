@@ -22,11 +22,28 @@ public class UrlUtilsTest {
         assertEquals(expected, result);
     }
 
+    @ParameterizedTest
+    @MethodSource("getFullUrlCases")
+    public void testGetFullUrl(String url, String queryParams, String expected) {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        Mockito.when(request.getQueryString()).thenReturn(queryParams);
+        String fullUrl = UrlUtils.getFullUrl(request);
+        assertEquals(expected, fullUrl);
+    }
+
     public static Stream<Arguments> getAbsoluteUrlCases(){
         return Stream.of(
                 Arguments.of("", "/mockito/app"),
                 Arguments.of("/login", "/mockito/app/login"),
                 Arguments.of("/admin/panel", "/mockito/app/admin/panel")
+        );
+    }
+
+    public static Stream<Arguments> getFullUrlCases(){
+        return Stream.of(
+                Arguments.of("http://localhost:8080/project", null, "http://localhost:8080/project"),
+                Arguments.of("http://localhost:8080/project", "page=1&id=3", "http://localhost:8080/project?page=1&id=3")
         );
     }
 
