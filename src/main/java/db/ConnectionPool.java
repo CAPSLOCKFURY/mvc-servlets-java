@@ -72,7 +72,6 @@ public class ConnectionPool {
         if(connectionPool.size() == 0) {
             logger.error("Connection pool is empty");
             try {
-                // TODO add this value to config
                 Thread.sleep(FREE_CONNECTION_WAIT_TIME);
             } catch (InterruptedException e){
                 e.printStackTrace();
