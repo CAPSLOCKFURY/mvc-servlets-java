@@ -55,7 +55,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
     private final static String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
 
-    private final static String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed' where id=?";
+    private final static String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed', room_id = null where id=?";
 
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {

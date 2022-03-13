@@ -38,8 +38,10 @@ public class RoomRequestGet implements Command {
         AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale);
         request.setAttribute("roomRequest", roomRequest);
         Pageable pageable = Pageable.of(request, 10, true);
-        List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), pageable);
-        request.setAttribute("rooms", suitableRooms);
+        if(roomRequest.getStatus().equals("awaiting")) {
+            List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), pageable);
+            request.setAttribute("rooms", suitableRooms);
+        }
         return new CommandResult("/admin/admin-room-request.jsp", RequestDirection.FORWARD);
     }
 }

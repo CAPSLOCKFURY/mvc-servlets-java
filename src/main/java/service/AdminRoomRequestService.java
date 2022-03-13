@@ -34,11 +34,12 @@ public class AdminRoomRequestService {
     }
 
     public boolean closeRoomRequest(Long requestId, String comment){
-        try{
+        try {
             return roomRequestDao.adminCloseRequest(requestId, comment);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return false;
         }
     }
+
 }

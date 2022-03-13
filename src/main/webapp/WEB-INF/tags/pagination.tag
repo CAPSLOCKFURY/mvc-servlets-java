@@ -4,7 +4,7 @@
 <%@ attribute name="page" required="true" type="java.lang.Integer" %>
 <%@ attribute name="entitiesPerPage" type="java.lang.Integer" required="true" %>
 <%@ attribute name="entitiesCount" type="java.lang.Integer" required="true" %>
-<c:if test="${getParams != null}">
+<c:if test="${getParams == null}">
     <c:set var="getParams">
         <url:joinGetParameters insertQuestionMark="false" ignoreParams="page"/>
     </c:set>
