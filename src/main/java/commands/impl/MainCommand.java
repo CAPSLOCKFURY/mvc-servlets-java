@@ -21,14 +21,8 @@ public class MainCommand implements Command {
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         //TODO add config for entities per page
         Pageable pageable = Pageable.of(request, 10, true);
-        RoomOrdering roomOrdering = RoomOrdering.ID;
-        OrderDirection orderDirection = OrderDirection.ASC;
-        if(request.getParameter("orderColName") != null){
-            roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
-        }
-        if(request.getParameter("orderDirection") != null){
-            orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
-        }
+        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
+        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
         List<Room> rooms = roomsService.getAllRooms(getLocaleFromCookies(request.getCookies()), new Orderable(roomOrdering.toString().toLowerCase(), orderDirection), pageable);
         request.setAttribute("rooms", rooms);
         return new CommandResult("/index.jsp", RequestDirection.FORWARD);

@@ -4,6 +4,7 @@ import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import models.enums.RoomRequestStatus;
@@ -23,9 +24,9 @@ public class AdminRoomRequestService {
         }
     }
 
-    public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale, RoomRequestStatus requestStatus, Pageable pageable){
+    public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale, RoomRequestStatus requestStatus, Orderable orderable, Pageable pageable){
         try{
-            return roomRequestDao.getRoomRequestsForAdmin(locale, requestStatus.getColName(), pageable);
+            return roomRequestDao.getRoomRequestsForAdmin(locale, requestStatus.getColName(), orderable, pageable);
         } catch (SQLException sqlException){
             sqlException.printStackTrace();
             throw new DaoException();

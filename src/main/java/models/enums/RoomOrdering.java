@@ -15,6 +15,9 @@ public enum RoomOrdering {
 
     public static RoomOrdering valueOfOrDefault(String value){
         try{
+            if(value == null){
+                throw new IllegalArgumentException();
+            }
             return RoomOrdering.valueOf(value);
         } catch (IllegalArgumentException iag){
             return RoomOrdering.ID;

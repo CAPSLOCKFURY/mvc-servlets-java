@@ -9,6 +9,7 @@ import forms.RoomRequestForm;
 import models.RoomRequest;
 import models.base.SqlColumn;
 import models.base.SqlType;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import models.enums.RoomRequestStatus;
@@ -36,8 +37,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     private final static String ADMIN_GET_ROOM_REQUESTS = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
             "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
             "    left outer join users u on room_requests.user_id = u.id\n" +
-            "where room_requests.status = ?::request_status\n" +
-            "order by room_requests.id";
+            "where room_requests.status = ?::request_status";
 
     private final static String ADMIN_GET_ROOM_REQUEST_BY_ID = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, login, email, first_name, last_name from room_requests\n" +
             "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
@@ -105,7 +105,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     }
 
     @Override
-    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Pageable pageable) throws SQLException{
+    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Orderable orderable, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Param{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -115,7 +115,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getLang() {return lang;}
                 public String getStatus() {return status;}
             }
-            return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, pageable);
+            return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, orderable, pageable);
         }
     }
 

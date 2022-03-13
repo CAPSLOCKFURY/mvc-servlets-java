@@ -2,6 +2,7 @@ package dao.dao;
 
 import forms.RoomRequestForm;
 import models.RoomRequest;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import models.enums.RoomRequestStatus;
@@ -20,7 +21,7 @@ public abstract class RoomRequestDao extends OrderableAbstractDao {
 
     public abstract boolean disableRoomRequest(Long requestId, Long userId) throws SQLException;
 
-    public abstract List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Pageable pageable) throws SQLException;
+    public abstract List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Orderable orderable, Pageable pageable) throws SQLException;
 
     public abstract AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException;
 

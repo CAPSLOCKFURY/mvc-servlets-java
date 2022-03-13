@@ -15,6 +15,9 @@ public enum RoomRequestStatus {
 
     public static RoomRequestStatus valueOfOrDefault(String value){
         try {
+            if(value == null){
+                throw new IllegalArgumentException();
+            }
             return RoomRequestStatus.valueOf(value);
         } catch (IllegalArgumentException iag){
             return RoomRequestStatus.AWAITING;

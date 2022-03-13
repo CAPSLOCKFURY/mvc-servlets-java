@@ -16,6 +16,16 @@
             <option value="PAID" <tags:selectedif test="${param.requestStatus.equals('PAID')}"/>>paid</option>
             <option value="CLOSED" <tags:selectedif test="${param.requestStatus.equals('CLOSED')}"/>>closed</option>
         </select>
+        <select name="requestOrdering">
+            <option value="ID" <tags:selectedif test="${param.requestOrdering.equals('ID')}"/>>id</option>
+            <option value="CHECK_IN_DATE" <tags:selectedif test="${param.requestOrdering.equals('CHECK_IN_DATE')}"/>>check in date</option>
+            <option value="CHECK_OUT_DATE" <tags:selectedif test="${param.requestOrdering.equals('CHECK_OUT_DATE')}"/>>check out date</option>
+            <option value="CAPACITY" <tags:selectedif test="${param.requestOrdering.equals('CAPACITY')}"/>>capacity</option>
+        </select>
+        <select name="orderDirection">
+            <option value="ASC" <tags:selectedif test="${param.orderDirection.equals('ASC')}"/>>ascending</option>
+            <option value="DESC" <tags:selectedif test="${param.orderDirection.equals('DESC')}"/>>descending</option>
+        </select>
         <button type="submit">filter requests</button>
     </form>
     <c:set var="page" value="${param.page == null ? 1 : param.page}"/>
