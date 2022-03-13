@@ -25,7 +25,7 @@ public class Pageable {
     public String paginateQuery(String sql){
         int offset = (page - 1) * entitiesPerPage;
         if(lookAhead && offset > 0){
-            offset--;
+            offset -= page - 1;
         }
         return sql.concat(String.format(" limit %d offset %d", entitiesPerPage, offset));
     }
