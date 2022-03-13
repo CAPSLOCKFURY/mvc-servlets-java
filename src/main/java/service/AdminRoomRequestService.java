@@ -13,7 +13,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class AdminRoomRequestService {
+
     private final static RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
+
+    private AdminRoomRequestService(){
+
+    }
+
+    private static final class SingletonHolder{
+        static final AdminRoomRequestService instance = new AdminRoomRequestService();
+    }
+
+    public static AdminRoomRequestService getInstance(){
+        return AdminRoomRequestService.SingletonHolder.instance;
+    }
+
 
     public AdminRoomRequestDTO getAdminRoomRequestById(Long requestId, String locale){
         try{

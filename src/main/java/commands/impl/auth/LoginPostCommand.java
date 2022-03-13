@@ -19,7 +19,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/login", method = RequestMethod.POST)
 public class LoginPostCommand implements Command {
 
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

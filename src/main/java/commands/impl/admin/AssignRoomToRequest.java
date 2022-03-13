@@ -12,7 +12,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/admin/room-request/assign", method = RequestMethod.POST)
 public class AssignRoomToRequest implements Command {
 
-    private final AdminRoomsService roomsService = new AdminRoomsService();
+    private final AdminRoomsService roomsService = AdminRoomsService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

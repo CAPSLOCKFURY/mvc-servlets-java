@@ -18,7 +18,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/my-billings/pay", method = RequestMethod.POST)
 public class PayBilling implements Command {
 
-    private final BillingService billingService = new BillingService();
+    private final BillingService billingService = BillingService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

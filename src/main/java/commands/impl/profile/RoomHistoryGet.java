@@ -19,7 +19,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/room-history", method = RequestMethod.GET)
 public class RoomHistoryGet implements Command {
 
-    private final RoomsService roomsService = new RoomsService();
+    private final RoomsService roomsService = RoomsService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

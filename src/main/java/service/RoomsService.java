@@ -9,7 +9,6 @@ import forms.BookRoomForm;
 import models.Room;
 import models.RoomClass;
 import models.User;
-import models.base.ordering.OrderDirection;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
@@ -23,9 +22,20 @@ import java.util.List;
 
 public class RoomsService {
 
-    //TODO make this all static and class should be singleton
     private final static RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
     private final static UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+
+    private RoomsService(){
+
+    }
+
+    private static final class SingletonHolder {
+        static final RoomsService instance = new RoomsService();
+    }
+
+    public static RoomsService getInstance(){
+        return SingletonHolder.instance;
+    }
 
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
         try{

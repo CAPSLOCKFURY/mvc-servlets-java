@@ -18,7 +18,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/my-room-requests/decline", method = RequestMethod.POST)
 public class DeclineAssignedRoom implements Command {
 
-    private final RoomRequestService roomRequestService = new RoomRequestService();
+    private final RoomRequestService roomRequestService = RoomRequestService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

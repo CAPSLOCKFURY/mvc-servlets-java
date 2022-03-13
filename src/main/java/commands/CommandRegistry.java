@@ -75,7 +75,7 @@ public final class CommandRegistry {
                     if(!security.doSecurity(request, response)){
                         return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
                     }
-                    List<RoomClass> roomClasses = new RoomsService().getRoomClasses(getLocaleFromCookies(request.getCookies()));
+                    List<RoomClass> roomClasses = RoomsService.getInstance().getRoomClasses(getLocaleFromCookies(request.getCookies()));
                     Map<String, String> options = roomClasses.stream().collect(Collectors.toMap(c -> String.valueOf(c.getId()), RoomClass::getName));
                     request.setAttribute("roomClassesMap", options);
                     FormErrorPRG errorProcessor = new CookieFormErrorsPRG();

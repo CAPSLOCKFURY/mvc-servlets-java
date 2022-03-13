@@ -16,7 +16,7 @@ import static utils.LocaleUtils.getLocaleFromCookies;
 
 @WebMapping(url = "", method = RequestMethod.GET)
 public class MainCommand implements Command {
-    private final RoomsService roomsService = new RoomsService();
+    private final RoomsService roomsService = RoomsService.getInstance();
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         //TODO add config for entities per page

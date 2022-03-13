@@ -17,7 +17,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/register", method = RequestMethod.POST)
 public class RegisterPostCommand implements Command {
 
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

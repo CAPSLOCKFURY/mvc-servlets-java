@@ -15,8 +15,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class BillingService {
+
     private final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
     private final static UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+
+    private BillingService(){
+
+    }
+
+    private static final class SingletonHolder{
+        static final BillingService instance = new BillingService();
+    }
+
+    public static BillingService getInstance(){
+        return BillingService.SingletonHolder.instance;
+    }
 
     public List<Billing> findBillingsByUserId(Long userId, Pageable pageable){
         try{

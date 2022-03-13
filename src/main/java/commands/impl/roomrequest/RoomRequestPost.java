@@ -19,7 +19,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/room-request", method = RequestMethod.POST)
 public class RoomRequestPost implements Command {
 
-    private final RoomRequestService roomRequestService = new RoomRequestService();
+    private final RoomRequestService roomRequestService = RoomRequestService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

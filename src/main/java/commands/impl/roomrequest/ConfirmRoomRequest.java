@@ -18,7 +18,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
 public class ConfirmRoomRequest implements Command {
 
-    private final RoomRequestService roomRequestService = new RoomRequestService();
+    private final RoomRequestService roomRequestService = RoomRequestService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

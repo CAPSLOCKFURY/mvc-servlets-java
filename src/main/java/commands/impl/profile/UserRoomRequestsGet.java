@@ -21,7 +21,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/my-room-requests", method = RequestMethod.GET)
 public class UserRoomRequestsGet implements Command {
 
-    private final RoomRequestService roomRequestService = new RoomRequestService();
+    private final RoomRequestService roomRequestService = RoomRequestService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

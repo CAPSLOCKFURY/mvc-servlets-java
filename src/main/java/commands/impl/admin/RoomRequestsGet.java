@@ -22,7 +22,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/admin/room-requests", method = RequestMethod.GET)
 public class RoomRequestsGet implements Command {
 
-    private final AdminRoomRequestService roomRequestService = new AdminRoomRequestService();
+    private final AdminRoomRequestService roomRequestService = AdminRoomRequestService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

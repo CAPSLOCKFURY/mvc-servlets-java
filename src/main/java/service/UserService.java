@@ -14,6 +14,18 @@ import java.sql.SQLException;
 public class UserService {
     private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
+    private UserService(){
+
+    }
+
+    private static final class SingletonHolder{
+        static final UserService instance = new UserService();
+    }
+
+    public static UserService getInstance(){
+        return UserService.SingletonHolder.instance;
+    }
+
     public long createUser(RegisterForm form) {
         try {
             if(userDao.getUserByEmail(form.getEmail()).getEmail() != null){

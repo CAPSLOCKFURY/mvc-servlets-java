@@ -20,7 +20,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/profile/my-billings", method = RequestMethod.GET)
 public class UserBillingsGet implements Command {
 
-    private final BillingService billingService = new BillingService();
+    private final BillingService billingService = BillingService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {

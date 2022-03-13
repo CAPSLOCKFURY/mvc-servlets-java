@@ -18,6 +18,18 @@ public class AdminRoomsService {
     private final static RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
     private final static RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
 
+    private AdminRoomsService(){
+
+    }
+
+    private static final class SingletonHolder{
+        static final AdminRoomsService instance = new AdminRoomsService();
+    }
+
+    public static AdminRoomsService getInstance(){
+        return AdminRoomsService.SingletonHolder.instance;
+    }
+
     public List<Room> findSuitableRoomsForRequest(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable){
         try{
             return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, pageable);

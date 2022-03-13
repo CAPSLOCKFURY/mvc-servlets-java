@@ -20,6 +20,18 @@ public class RoomRequestService {
     private final RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
     private final static RoomsDao roomDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
 
+    private RoomRequestService(){
+
+    }
+
+    private static final class SingletonHolder{
+        static final RoomRequestService instance = new RoomRequestService();
+    }
+
+    public static RoomRequestService getInstance(){
+        return RoomRequestService.SingletonHolder.instance;
+    }
+
     public boolean createRoomRequest(RoomRequestForm form){
         try{
             return roomRequestDao.createRoomRequest(form);
