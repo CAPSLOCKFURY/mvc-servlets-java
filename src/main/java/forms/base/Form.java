@@ -43,7 +43,6 @@ public abstract class Form {
     }
 
     private String getFieldName(Field field){
-        //TODO probably refactor
         if(field.isAnnotationPresent(HtmlInput.class)){
             HtmlInput input = field.getDeclaredAnnotation(HtmlInput.class);
             return input.name().equals("") ? field.getName() : input.name();

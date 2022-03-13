@@ -18,12 +18,11 @@ public class ConnectionPool {
 
     private static final Logger logger = LogManager.getLogger();
 
-    //TODO write constants in jcc style
-    private static String url;
-    private static String user;
-    private static String password;
-    private static String driverName;
-    private static int poolSize;
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+    private static String DRIVER_NAME;
+    private static int POOL_SIZE;
     private static int FREE_CONNECTION_WAIT_TIME;
 
     private static BlockingQueue<Connection> connectionPool;
@@ -35,14 +34,14 @@ public class ConnectionPool {
     private ConnectionPool(){
         initializeProperties();
         try {
-            Class.forName(driverName);
+            Class.forName(DRIVER_NAME);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new IncorrectDriverPath(driverName);
+            throw new IncorrectDriverPath(DRIVER_NAME);
         }
-        connectionPool = new ArrayBlockingQueue<>(poolSize);
-        usedConnections = new ArrayBlockingQueue<>(poolSize);
-        for (int i = 0; i < poolSize; i++) {
+        connectionPool = new ArrayBlockingQueue<>(POOL_SIZE);
+        usedConnections = new ArrayBlockingQueue<>(POOL_SIZE);
+        for (int i = 0; i < POOL_SIZE; i++) {
             connectionPool.add(createConnection());
         }
         POOL_INITIALIZED = true;
@@ -62,7 +61,7 @@ public class ConnectionPool {
 
     private PooledConnection createConnection(){
         try {
-            return new PooledConnection(DriverManager.getConnection(url, user, password));
+            return new PooledConnection(DriverManager.getConnection(URL, USER, PASSWORD));
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new ConnectionCreationException();
@@ -102,11 +101,11 @@ public class ConnectionPool {
 
     private void initializeProperties() {
         ResourceBundle properties = ResourceBundle.getBundle("database");
-        url = properties.getString("database.url");
-        user = properties.getString("database.user");
-        password = properties.getString("database.password");
-        driverName = properties.getString("driver.name");
-        poolSize = Integer.parseInt(properties.getString("pool.size"));
+        URL = properties.getString("database.url");
+        USER = properties.getString("database.user");
+        PASSWORD = properties.getString("database.password");
+        DRIVER_NAME = properties.getString("driver.name");
+        POOL_SIZE = Integer.parseInt(properties.getString("pool.size"));
         FREE_CONNECTION_WAIT_TIME = Integer.parseInt(properties.getString("pool.freeConnectionWaitTime"));
     }
 
