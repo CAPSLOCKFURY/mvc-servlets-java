@@ -23,7 +23,6 @@ public class ProfileGet implements Command {
         if(!security.doSecurity(request, response)) {
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        //TODO probably add method for getting user id from session
         HttpSession session = request.getSession();
         Long userId;
         User user = (User) session.getAttribute("user");

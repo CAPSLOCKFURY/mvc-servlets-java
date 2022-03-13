@@ -19,7 +19,6 @@ public class MainCommand implements Command {
     private final RoomsService roomsService = RoomsService.getInstance();
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
-        //TODO add config for entities per page
         Pageable pageable = Pageable.of(request, 10, true);
         RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
         OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));

@@ -34,7 +34,6 @@ public final class CommandRegistry {
     private final Map<UrlBind, Command> commandMap = new HashMap<>();
 
     private CommandRegistry(){
-        //TODO make config file for this
         List<Class<? extends Command>> commands = ClassUtils.getAnnotatedCommandClassesInPackage("commands.impl");
         registerAnnotatedCommands(commands);
         commandMap.put(new UrlBind("/register", RequestMethod.GET),
