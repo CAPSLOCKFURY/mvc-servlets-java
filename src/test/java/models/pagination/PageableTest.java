@@ -1,9 +1,12 @@
 package models.pagination;
 
+import jakarta.servlet.http.HttpServletRequest;
 import models.base.pagination.Pageable;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 import java.util.stream.Stream;
 
@@ -25,6 +28,25 @@ public class PageableTest {
         Pageable pageable = new Pageable(page, entitiesPerPage, true);
         String paginatedSql = pageable.paginateQuery(sql);
         assertEquals(expectedSql, paginatedSql);
+    }
+
+    @Test
+    public void testPageableStaticFactory(){
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getParameter("page")).thenReturn("1");
+        Pageable pageable1 = Pageable.of(request, 10, true);
+        String paginatedSql = pageable1.paginateQuery("select 1 + 1");
+        assertEquals("select 1 + 1 limit 11 offset 0", paginatedSql);
+
+        Mockito.when(request.getParameter("page")).thenReturn("abc");
+        Pageable pageable2 = Pageable.of(request, 10, true);
+        String paginatedSql2 = pageable2.paginateQuery("select 1 + 1");
+        assertEquals("select 1 + 1 limit 11 offset 0", paginatedSql2);
+
+        Mockito.when(request.getParameter("page")).thenReturn(null);
+        Pageable pageable3 = Pageable.of(request, 10, false);
+        String paginatedSql3 = pageable3.paginateQuery("select 1 + 1");
+        assertEquals("select 1 + 1 limit 10 offset 0", paginatedSql3);
     }
 
     public static Stream<Arguments> simplePageableCases(){
