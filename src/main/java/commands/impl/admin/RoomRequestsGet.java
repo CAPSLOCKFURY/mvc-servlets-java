@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
+import models.enums.RoomRequestStatus;
 import service.AdminRoomRequestService;
 
 import java.util.List;
@@ -26,8 +27,12 @@ public class RoomRequestsGet implements Command {
         if(!security.doSecurity(request, response)){
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
+        RoomRequestStatus requestStatusFilter = RoomRequestStatus.AWAITING;
+        if(request.getParameter("requestStatus") != null){
+            requestStatusFilter = RoomRequestStatus.valueOf(request.getParameter("requestStatus"));
+        }
         Pageable pageable = Pageable.of(request, 10, true);
-        List<AdminRoomRequestDTO> requests = roomRequestService.getAdminRoomRequests(getLocaleFromCookies(request.getCookies()), pageable);
+        List<AdminRoomRequestDTO> requests = roomRequestService.getAdminRoomRequests(getLocaleFromCookies(request.getCookies()), requestStatusFilter, pageable);
         request.setAttribute("roomRequests", requests);
         return new CommandResult("/admin/admin-room-requests.jsp", RequestDirection.FORWARD);
     }

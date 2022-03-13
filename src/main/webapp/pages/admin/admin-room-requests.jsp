@@ -8,6 +8,16 @@
 <body>
     <jsp:include page="/pages/header.jsp"/>
     <h1>Admin room requests</h1>
+    <form method="get">
+        <select name="requestStatus">
+            <option value="AWAITING" <tags:selectedif test="${param.requestStatus.equals('AWAITING')}"/>>awaiting</option>
+            <option value="AWAITING_CONFIRMATION" <tags:selectedif test="${param.requestStatus.equals('AWAITING_CONFIRMATION')}"/>>awaiting confirmation</option>
+            <option value="AWAITING_PAYMENT" <tags:selectedif test="${param.requestStatus.equals('AWAITING_PAYMENT')}"/>>awaiting payment</option>
+            <option value="PAID" <tags:selectedif test="${param.requestStatus.equals('PAID')}"/>>paid</option>
+            <option value="CLOSED" <tags:selectedif test="${param.requestStatus.equals('CLOSED')}"/>>closed</option>
+        </select>
+        <button type="submit">filter requests</button>
+    </form>
     <c:set var="page" value="${param.page == null ? 1 : param.page}"/>
     <tags:pagination page="${page}" entitiesPerPage="10" entitiesCount="${roomRequests.size()}"/>
     <c:forEach var="roomRequest" items="${roomRequests}" begin="0" end="9" step="1">
