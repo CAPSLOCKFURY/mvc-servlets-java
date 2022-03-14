@@ -29,11 +29,6 @@ public class ConnectionPoolTest {
         ConnectionPool.releaseAllConnections();
     }
 
-    @AfterAll
-    public static void tearDown(){
-        ConnectionPool.closeAllConnections();
-    }
-
     @Test
     public void testConnectionPoolTrowsWhenEmpty(){
         for (int i = 0; i < POOL_SIZE; i++) {
