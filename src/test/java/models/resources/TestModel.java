@@ -3,6 +3,8 @@ package models.resources;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
+import java.util.Objects;
+
 public class TestModel {
 
     @SqlColumn(columnName = "field", type = SqlType.STRING)
@@ -13,6 +15,16 @@ public class TestModel {
 
     @SqlColumn(columnName = "stringField", type = SqlType.STRING)
     public String field1;
+
+    public TestModel(){
+
+    }
+
+    public TestModel(String field, Integer intField, String field1) {
+        this.field = field;
+        this.intField = intField;
+        this.field1 = field1;
+    }
 
     public String getField() {
         return field;
@@ -39,11 +51,15 @@ public class TestModel {
     }
 
     @Override
-    public String toString() {
-        return "TestModel{" +
-                "field='" + field + '\'' +
-                ", intField='" + intField + '\'' +
-                ", field1='" + field1 + '\'' +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TestModel testModel = (TestModel) o;
+        return Objects.equals(field, testModel.field) && Objects.equals(intField, testModel.intField) && Objects.equals(field1, testModel.field1);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(field, intField, field1);
     }
 }

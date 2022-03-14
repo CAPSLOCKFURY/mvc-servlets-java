@@ -28,14 +28,14 @@ public class FormRequestMapperTest {
 
     public static Stream<Arguments> mapperCases(){
         return Stream.of(
-            Arguments.of(new StringPair[]{new StringPair("testField", "test123"), new StringPair("testName", "testNameTest"), new StringPair("stringField", "fieeeeld")},
-                    "TestForm{testField='test123', testNameField='testNameTest', stringField='fieeeeld'}"
+            Arguments.of(new StringPair[]{new StringPair("testField", "test123"), new StringPair("testName", "testNameTest"), new StringPair("stringField", "fieeeeld"), new StringPair("selectField", "1")},
+                    "TestForm{testField='test123', testNameField='testNameTest', stringField='fieeeeld', selectField='1'}"
             ),
-            Arguments.of(new StringPair[]{new StringPair("testField", "testField"), new StringPair("testName", "testNameTest12345"), new StringPair("stringField", "fieeeeld"), new StringPair("nonExistingField", "value")},
-                    "TestForm{testField='testField', testNameField='testNameTest12345', stringField='fieeeeld'}"
+            Arguments.of(new StringPair[]{new StringPair("testField", "testField"), new StringPair("testName", "testNameTest12345"), new StringPair("stringField", "fieeeeld"), new StringPair("nonExistingField", "value"), new StringPair("selectField", "2")},
+                    "TestForm{testField='testField', testNameField='testNameTest12345', stringField='fieeeeld', selectField='2'}"
             ),
-            Arguments.of(new StringPair[]{new StringPair("testField", "4"), new StringPair("testName", "testNameTest123")},
-                    "TestForm{testField='4', testNameField='testNameTest123', stringField='null'}"
+            Arguments.of(new StringPair[]{new StringPair("testField", "4"), new StringPair("testName", "testNameTest123"),  new StringPair("selectField", "3")},
+                    "TestForm{testField='4', testNameField='testNameTest123', stringField='null', selectField='3'}"
             )
         );
     }

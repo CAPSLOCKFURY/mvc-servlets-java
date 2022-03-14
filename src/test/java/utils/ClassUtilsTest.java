@@ -11,6 +11,10 @@ import utils.testfolders.case1.CCase1;
 import utils.testfolders.case3.ACommandCase3;
 import utils.testfolders.case3.BCommandCase3;
 import utils.testfolders.case3.CCommandNoAnnotationCase3;
+import utils.testfolders.case3.inner.DCommandCase3;
+import utils.testfolders.case3.inner.ECase3;
+import utils.testfolders.case3.inner.inner.FCase3;
+import utils.testfolders.case3.inner.inner.HCommandCase3;
 import utils.testfolders.case4.ACase4;
 import utils.testfolders.case4.BCase4;
 import utils.testfolders.case4.CCase4;
@@ -47,7 +51,7 @@ public class ClassUtilsTest {
 
                 )),
                 Arguments.of("utils.testfolders.case3", new ArrayList<>(
-                        Arrays.asList(ACommandCase3.class, BCommandCase3.class, CCommandNoAnnotationCase3.class)
+                        Arrays.asList(ACommandCase3.class, BCommandCase3.class, CCommandNoAnnotationCase3.class, DCommandCase3.class, ECase3.class, FCase3.class, HCommandCase3.class)
                 )),
                 Arguments.of("utils.testfolders.case4", new ArrayList<>(
                         Arrays.asList(ACase4.class, BCase4.class, CCase4.class)
@@ -64,7 +68,7 @@ public class ClassUtilsTest {
 
                 )),
                 Arguments.of("utils.testfolders.case3", new ArrayList<>(
-                        Arrays.asList(ACommandCase3.class, BCommandCase3.class)
+                        Arrays.asList(ACommandCase3.class, BCommandCase3.class, DCommandCase3.class, HCommandCase3.class)
                 )),
                 Arguments.of("utils.testfolders.case4", new ArrayList<>(
 

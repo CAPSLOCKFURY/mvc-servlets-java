@@ -3,17 +3,27 @@ package forms.resourses;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlOption;
+import forms.base.annotations.HtmlSelect;
+import forms.base.annotations.HtmlTextArea;
 
 public class TestForm extends Form {
 
     @HtmlInput(type = InputType.TEXT)
     private String testField;
 
-    @HtmlInput(type = InputType.TEXT, name = "testName")
+    @HtmlTextArea(name = "testName", rows = "100", cols = "200")
     private String testNameField;
 
     @HtmlInput(type = InputType.PASSWORD)
     private String stringField;
+
+    @HtmlSelect(name = "selectField", options = {
+            @HtmlOption(value = "1", name = "1"),
+            @HtmlOption(value = "2", name = "2"),
+            @HtmlOption(value = "3", name = "3")
+    })
+    private String selectField;
 
     @Override
     public boolean validate() {
@@ -44,12 +54,21 @@ public class TestForm extends Form {
         this.stringField = stringField;
     }
 
+    public String getSelectField() {
+        return selectField;
+    }
+
+    public void setSelectField(String selectField) {
+        this.selectField = selectField;
+    }
+
     @Override
     public String toString() {
         return "TestForm{" +
                 "testField='" + testField + '\'' +
                 ", testNameField='" + testNameField + '\'' +
                 ", stringField='" + stringField + '\'' +
+                ", selectField='" + selectField + '\'' +
                 '}';
     }
 }

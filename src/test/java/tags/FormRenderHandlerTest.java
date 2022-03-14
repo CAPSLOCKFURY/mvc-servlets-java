@@ -57,7 +57,10 @@ public class FormRenderHandlerTest {
                                                               "<select name=\"select\" >\n" +
                                                                     "\t<option value=\"Second\">2</option>\n" +
                                                                     "\t<option value=\"One\">1</option>\n" +
-                                                              "</select>")
+                                                              "</select>"),
+                Arguments.of("tags.resources.TextAreaForm", "<textarea name=\"area\" rows=\"10\" cols=\"10\" >\n</textarea>"),
+                Arguments.of("tags.resources.InputWithLabelsForm", "<label for=\"id\" >label</label>\n<input type=\"text\" name=\"input\" id=\"id\" >"),
+                Arguments.of("NonExistingClass", "<h1 style=\"color:red\">Form Class not found</h1>")
         );
     }
 
