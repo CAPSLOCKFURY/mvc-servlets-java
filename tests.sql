@@ -123,7 +123,8 @@ insert into roles(name) values ('user'), ('manager');
 
 insert into users(login, email, password, first_name, last_name)
 values ('vadim', 'vadim@gmail.com', md5('123'), 'Vadim', 'Demb'),
-       ('test', 'test@gmail.com', md5('12345'), 'Test', 'Testovich');
+       ('test', 'test@gmail.com', md5('12345'), 'Test', 'Testovich'),
+       ('test2', 'test2@gmail.com', md5('test2'), 'Test2', 'Testovich2');
 
 update users set balance = 100000 where id = 2;
 
@@ -131,3 +132,15 @@ insert into users(login, email, password, role, first_name, last_name)
 values ('admin', 'admin@gmail.com', md5('333'), 2, 'Admin', 'Adminsky');
 
 insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (1, 1, date(now()), date(now()) + interval '7 day');
+
+insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment)
+    values (2, 2, 1, date(now()), date(now()) + interval '7 day', 'comment');
+
+insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment, status, room_id)
+    values (3, 2, 1, date(now()), date(now()) + interval '7 day', 'comment', 'awaiting confirmation', 5);
+
+insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment, status, room_id)
+    values (3, 2, 1, date(now()), date(now()) + interval '7 day', 'comment', 'awaiting confirmation', 6);
+
+insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment)
+    values (3, 2, 1, date(now()), date(now()) + interval '7 day', 'comment');
