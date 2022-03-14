@@ -1,5 +1,5 @@
 package commands.base;
 
 public enum RequestDirection {
-    FORWARD, REDIRECT
+    FORWARD, REDIRECT, VOID
 }
