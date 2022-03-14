@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractDaoTest {
 
@@ -92,6 +93,66 @@ public class AbstractDaoTest {
             for (DaoTestModel model : models) {
                 assertEquals(startAge++, model.getAge());
             }
+        }
+    }
+
+    @Test
+    public void createEntityTest() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class InsertParams{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String name = "testIns";
+                @SqlColumn(columnName = "", type = SqlType.INT)
+                private final Integer age = 15;
+                public String getName() {return name;}
+                public Integer getAge() {return age;}
+            }
+            boolean result = dao.abstractCreateEntity(connection, "insert into dao_test_insert(name, age) values (?, ?)", new InsertParams());
+            assertTrue(result);
+        }
+    }
+
+    @Test
+    public void createEntityAndGetIdTest() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class InsertParams{
+                @SqlColumn(columnName = "", type = SqlType.STRING)
+                private final String name = "testInsId";
+                @SqlColumn(columnName = "", type = SqlType.INT)
+                private final Integer age = 16;
+                public String getName() {return name;}
+                public Integer getAge() {return age;}
+            }
+            long id = dao.abstractCreateEntityAndGetId(connection, "insert into dao_test_insert(name, age) values (?, ?)", new InsertParams());
+            assertTrue(id > 0);
+        }
+    }
+
+    @Test
+    public void updateEntityByIdTest() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class UpdateParams{
+                @SqlColumn(columnName = "", type = SqlType.INT)
+                private final Integer age = 20;
+                public Integer getAge() {return age;}
+            }
+            boolean result = dao.abstractUpdateEntityById(connection, "update dao_test_insert set age = ? where id = ?", new UpdateParams(), 1L);
+            assertTrue(result);
+        }
+    }
+
+    @Test
+    public void updateEntityTest() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            class UpdateParams{
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = 1L;
+                @SqlColumn(columnName = "", type = SqlType.INT)
+                private final Integer age = 21;
+                public Integer getAge() {return age;}
+                public Long getId() {return id;}
+            }
+            boolean result = dao.abstractUpdateEntity(connection, "update dao_test_insert set age = ? where id = ?", new UpdateParams());
         }
     }
 }
