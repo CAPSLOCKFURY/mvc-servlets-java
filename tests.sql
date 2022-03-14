@@ -150,8 +150,10 @@ insert into room_requests(user_id, capacity, room_class, check_in_date, check_ou
     values (3, 5, 2, date(now()), date(now()) + interval '7 day', 'comment', 'awaiting payment', 10, null);
 insert into room_registry(user_id, room_id, check_in_date, check_out_date)
     values (3, 10, date(now()), date(now()) + interval '7 day');
+insert into room_registry(user_id, room_id, check_in_date, check_out_date)
+    values (3, 10, date(now()), date(now()) + interval '7 day');
 insert into billing(request_id, price, room_registry_id)
     values (5, 1000, 1);
 
 insert into room_registry(user_id, room_id, check_in_date, check_out_date)
-    values (3, 14, date(now()), date(now()) + interval '14 day')
+    values (3, 14, date(now()), date(now()) + interval '14 day');
