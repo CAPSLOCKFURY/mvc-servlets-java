@@ -9,14 +9,12 @@ import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -30,6 +28,11 @@ public class RoomsServiceTest {
     @BeforeAll
     public static void setUp(){
         ConnectionPool.initPool();
+    }
+
+    @AfterEach
+    public void tearDownAfterTest(){
+        ConnectionPool.releaseAllConnections();
     }
 
     @Test
