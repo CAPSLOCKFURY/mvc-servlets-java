@@ -2,12 +2,10 @@ package service;
 
 import commands.base.messages.CookieMessageTransport;
 import commands.base.messages.MessageTransport;
+import db.ConnectionPool;
 import models.Billing;
 import models.base.pagination.Pageable;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
@@ -18,6 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BillingServiceTest {
 
     private final static BillingService service = BillingService.getInstance();
+
+    @BeforeAll
+    public static void setUp(){
+        ConnectionPool.initPool();
+    }
+
+    @AfterEach
+    public void tearDownAfterTest(){
+        ConnectionPool.releaseAllConnections();
+    }
 
     @Test
     @Order(1)
