@@ -127,6 +127,7 @@ values ('vadim', 'vadim@gmail.com', md5('123'), 'Vadim', 'Demb'),
        ('test2', 'test2@gmail.com', md5('test2'), 'Test2', 'Testovich2');
 
 update users set balance = 100000 where id = 2;
+update users set balance = 1000 where id = 3;
 
 insert into users(login, email, password, role, first_name, last_name)
 values ('admin', 'admin@gmail.com', md5('333'), 2, 'Admin', 'Adminsky');
@@ -144,3 +145,10 @@ insert into room_requests(user_id, capacity, room_class, check_in_date, check_ou
 
 insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment)
     values (3, 2, 1, date(now()), date(now()) + interval '7 day', 'comment');
+
+insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment, status, room_id, manager_comment)
+    values (3, 5, 2, date(now()), date(now()) + interval '7 day', 'comment', 'awaiting payment', 10, null);
+insert into room_registry(user_id, room_id, check_in_date, check_out_date)
+    values (3, 10, date(now()), date(now()) + interval '7 day');
+insert into billing(request_id, price, room_registry_id)
+    values (5, 1000, 1);
