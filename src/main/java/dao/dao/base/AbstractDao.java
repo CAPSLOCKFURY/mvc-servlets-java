@@ -1,4 +1,4 @@
-package dao.dao;
+package dao.dao.base;
 
 import exceptions.db.DaoException;
 import models.base.PreparedStatementMapper;

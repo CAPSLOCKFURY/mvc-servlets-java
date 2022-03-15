@@ -1,5 +1,6 @@
 package dao.dao;
 
+import dao.dao.base.OrderableAbstractDao;
 import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;

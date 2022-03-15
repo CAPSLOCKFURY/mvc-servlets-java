@@ -38,6 +38,8 @@ public class ControllerServlet extends HttpServlet {
                 request.getRequestDispatcher("/pages/" + result.getJspPage()).forward(request, response);
             } else if(result.getDirection() == RequestDirection.REDIRECT){
                 response.sendRedirect(result.getJspPage());
+            } else if(result.getDirection() == RequestDirection.VOID){
+                //this intentionally left blank
             }
         } catch (CommandNotFoundException e){
             logger.error(e.getMessage());

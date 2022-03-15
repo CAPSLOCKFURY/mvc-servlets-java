@@ -1,6 +1,6 @@
 package dao.resources;
 
-import dao.dao.PageableAbstractDao;
+import dao.dao.base.PageableAbstractDao;
 import models.base.pagination.Pageable;
 
 import java.sql.Connection;

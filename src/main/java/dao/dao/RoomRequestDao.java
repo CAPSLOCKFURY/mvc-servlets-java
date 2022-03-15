@@ -1,11 +1,11 @@
 package dao.dao;
 
+import dao.dao.base.OrderableAbstractDao;
 import forms.RoomRequestForm;
 import models.RoomRequest;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
-import models.enums.RoomRequestStatus;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

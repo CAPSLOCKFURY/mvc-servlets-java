@@ -1,5 +1,6 @@
 package dao.dao;
 
+import dao.dao.base.OrderableAbstractDao;
 import models.Billing;
 import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
