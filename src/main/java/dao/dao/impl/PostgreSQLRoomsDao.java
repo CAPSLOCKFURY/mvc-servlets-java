@@ -254,9 +254,46 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport() throws SQLException{
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
         try(Connection connection =  ConnectionPool.getConnection()){
-            return getAll(connection, FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class);
+            String sql = FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
+            if(checkInDate != null || checkOutDate != null){
+                sql = sql.concat(" where ");
+                if(checkInDate != null && checkOutDate != null){
+                    class TwoDatesParam{
+                        @SqlColumn(columnName = "", type = SqlType.DATE)
+                        private final java.sql.Date checkIn = checkInDate;
+                        @SqlColumn(columnName = "", type = SqlType.DATE)
+                        private final java.sql.Date checkOut = checkOutDate;
+                        public Date getCheckIn() {return checkIn;}
+                        public Date getCheckOut() {return checkOut;}
+                    }
+                    sql = sql.concat(" check_in_date >= ? and check_out_date <= ? ");
+                    System.out.println(checkInDate);
+                    System.out.println(checkOutDate);
+                    System.out.println(sql);
+                    return getAllByParams(connection, sql, new TwoDatesParam(), RoomRegistryPdfReportDto.class, pageable);
+                } else if (checkInDate != null){
+                    class SingleInDateParam{
+                        @SqlColumn(columnName = "", type = SqlType.DATE)
+                        private final java.sql.Date checkIn = checkInDate;
+                        public Date getCheckIn() {return checkIn;}
+                    }
+                    sql = sql.concat(" check_in_date >= ? ");
+                    System.out.println(sql);
+                    return getAllByParams(connection, sql, new SingleInDateParam(), RoomRegistryPdfReportDto.class, pageable);
+                } else {
+                    class SingleOutDateParam{
+                        @SqlColumn(columnName = "", type = SqlType.DATE)
+                        private final java.sql.Date checkOut = checkOutDate;
+                        public Date getCheckOut() {return checkOut;}
+                    }
+                    sql = sql.concat(" check_out_date <= ? ");
+                    System.out.println(sql);
+                    return getAllByParams(connection, sql, new SingleOutDateParam(), RoomRegistryPdfReportDto.class, pageable);
+                }
+            }
+            return getAll(connection, FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
         }
     }
 }

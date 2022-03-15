@@ -6,6 +6,7 @@ import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import forms.BookRoomForm;
+import forms.ReportConfigurationForm;
 import models.Room;
 import models.RoomClass;
 import models.User;
@@ -108,9 +109,9 @@ public class RoomsService {
         }
     }
 
-    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(){
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){
         try{
-            return roomsDao.findDataForRoomRegistryReport();
+            return roomsDao.findDataForRoomRegistryReport(form.getCheckInDate(), form.getCheckOutDate(), pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return Collections.emptyList();
