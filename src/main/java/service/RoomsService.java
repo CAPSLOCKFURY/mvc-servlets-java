@@ -109,6 +109,7 @@ public class RoomsService {
         }
     }
 
+    //TODO move this to admin service
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){
         try{
             return roomsDao.findDataForRoomRegistryReport(form.getCheckInDate(), form.getCheckOutDate(), pageable);

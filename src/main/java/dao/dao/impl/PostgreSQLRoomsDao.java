@@ -269,9 +269,6 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                         public Date getCheckOut() {return checkOut;}
                     }
                     sql = sql.concat(" check_in_date >= ? and check_out_date <= ? ");
-                    System.out.println(checkInDate);
-                    System.out.println(checkOutDate);
-                    System.out.println(sql);
                     return getAllByParams(connection, sql, new TwoDatesParam(), RoomRegistryPdfReportDto.class, pageable);
                 } else if (checkInDate != null){
                     class SingleInDateParam{
@@ -280,7 +277,6 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                         public Date getCheckIn() {return checkIn;}
                     }
                     sql = sql.concat(" check_in_date >= ? ");
-                    System.out.println(sql);
                     return getAllByParams(connection, sql, new SingleInDateParam(), RoomRegistryPdfReportDto.class, pageable);
                 } else {
                     class SingleOutDateParam{
@@ -289,7 +285,6 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                         public Date getCheckOut() {return checkOut;}
                     }
                     sql = sql.concat(" check_out_date <= ? ");
-                    System.out.println(sql);
                     return getAllByParams(connection, sql, new SingleOutDateParam(), RoomRegistryPdfReportDto.class, pageable);
                 }
             }
