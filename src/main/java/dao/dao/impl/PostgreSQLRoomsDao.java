@@ -9,10 +9,7 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
-import models.dto.OverlapCountDTO;
-import models.dto.RoomDate;
-import models.dto.RoomExtendedInfo;
-import models.dto.RoomHistoryDTO;
+import models.dto.*;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -63,6 +60,9 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     private final static String REMOVE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting'\n" +
             "where room_id = ?\n" +
             "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
+
+    private final static String FIND_DATA_FOR_ROOM_REGISTRY_REPORT = "select user_id, u.first_name, u.last_name, check_in_date, check_out_date, room_id from room_registry " +
+            "join users u on room_registry.user_id = u.id";
 
     @Override
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) throws SQLException {
@@ -250,6 +250,13 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Long getRoom() {return room;}
             }
             return updateEntityById(connection, ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
+        }
+    }
+
+    @Override
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport() throws SQLException{
+        try(Connection connection =  ConnectionPool.getConnection()){
+            return getAll(connection, FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class);
         }
     }
 }

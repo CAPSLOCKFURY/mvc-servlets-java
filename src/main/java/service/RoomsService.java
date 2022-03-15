@@ -14,10 +14,12 @@ import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
+import models.dto.RoomRegistryPdfReportDto;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 public class RoomsService {
@@ -103,6 +105,15 @@ public class RoomsService {
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();
+        }
+    }
+
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(){
+        try{
+            return roomsDao.findDataForRoomRegistryReport();
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return Collections.emptyList();
         }
     }
 

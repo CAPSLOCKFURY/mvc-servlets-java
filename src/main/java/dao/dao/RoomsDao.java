@@ -1,5 +1,6 @@
 package dao.dao;
 
+import dao.dao.base.OrderableAbstractDao;
 import forms.BookRoomForm;
 import models.Room;
 import models.RoomClass;
@@ -8,6 +9,7 @@ import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
+import models.dto.RoomRegistryPdfReportDto;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -32,4 +34,6 @@ public abstract class RoomsDao extends OrderableAbstractDao {
     public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException;
 
     public abstract boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException;
+
+    public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport() throws SQLException;
 }

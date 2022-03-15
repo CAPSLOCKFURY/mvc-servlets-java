@@ -1,6 +1,6 @@
 package dao.resources;
 
-import dao.dao.AbstractDao;
+import dao.dao.base.AbstractDao;
 
 import java.sql.*;
 import java.util.List;

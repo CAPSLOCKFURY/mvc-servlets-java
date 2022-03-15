@@ -7,22 +7,22 @@ import java.sql.Date;
 
 public class RoomRegistryPdfReportDto {
 
-    @SqlColumn(columnName = "userId", type = SqlType.LONG)
+    @SqlColumn(columnName = "user_id", type = SqlType.LONG)
     private Long userId;
 
-    @SqlColumn(columnName = "firstName", type = SqlType.STRING)
+    @SqlColumn(columnName = "first_name", type = SqlType.STRING)
     private String firstName;
 
-    @SqlColumn(columnName = "lastName", type = SqlType.STRING)
+    @SqlColumn(columnName = "last_name", type = SqlType.STRING)
     private String lastName;
 
-    @SqlColumn(columnName = "checkInDate", type = SqlType.DATE)
+    @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
     private java.sql.Date checkInDate;
 
-    @SqlColumn(columnName = "checkOutDate", type = SqlType.DATE)
+    @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
     private java.sql.Date checkOutDate;
 
-    @SqlColumn(columnName = "roomId", type = SqlType.LONG)
+    @SqlColumn(columnName = "room_id", type = SqlType.LONG)
     private Long roomId;
 
     public RoomRegistryPdfReportDto(Long userId, String firstName, String lastName, Date checkInDate, Date checkOutDate, Long roomId) {

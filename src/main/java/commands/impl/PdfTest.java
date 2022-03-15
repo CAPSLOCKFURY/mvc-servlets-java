@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.dto.RoomRegistryPdfReportDto;
 import pdf.RoomRegistryPDFReport;
+import service.RoomsService;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -23,6 +24,9 @@ import java.util.List;
 
 @WebMapping(url = "/pdf", method = RequestMethod.GET)
 public class PdfTest implements Command {
+
+    private final RoomsService roomsService = RoomsService.getInstance();
+
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
         ServletOutputStream out = null;
@@ -31,9 +35,7 @@ public class PdfTest implements Command {
         } catch (IOException ioException){
             ioException.printStackTrace();
         }
-        List<RoomRegistryPdfReportDto> data = new LinkedList<>();
-        data.add(new RoomRegistryPdfReportDto(1L, "Vadim", "Demb", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), 2L));
-        data.add(new RoomRegistryPdfReportDto(2L, "Вадим", "Демб", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), 1L));
+        List<RoomRegistryPdfReportDto> data = roomsService.findDataForRoomRegistryReport();
         RoomRegistryPDFReport pdfReport = new RoomRegistryPDFReport(out, data, request);
         pdfReport.buildDocument();
         return new CommandResult("", RequestDirection.VOID);

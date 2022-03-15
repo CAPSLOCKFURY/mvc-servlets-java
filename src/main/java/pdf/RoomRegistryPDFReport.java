@@ -40,15 +40,15 @@ public class RoomRegistryPDFReport {
         this.out = out;
         this.data = data;
         this.request = request;
+    }
+
+    public void buildDocument(){
+        PdfWriter writer = new PdfWriter(out);
         try {
             font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
         } catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    public void buildDocument(){
-        PdfWriter writer = new PdfWriter(out);
         PdfDocument pdfDocument = new PdfDocument(writer);
         addMetaData(pdfDocument.getDocumentInfo());
         Document document = new Document(pdfDocument);
@@ -75,13 +75,7 @@ public class RoomRegistryPDFReport {
         checkOutDateCol.add(new Paragraph("Check Out Date"));
         Cell roomIdCol = new Cell();
         roomIdCol.add(new Paragraph("Room Id"));
-
-        table.addCell(userIdCol);
-        table.addCell(fistNameCol);
-        table.addCell(lastNameCol);
-        table.addCell(checkInDateCol);
-        table.addCell(checkOutDateCol);
-        table.addCell(roomIdCol);
+        table.addCell(userIdCol).addCell(fistNameCol).addCell(lastNameCol).addCell(checkInDateCol).addCell(checkOutDateCol).addCell(roomIdCol);
     }
 
 
