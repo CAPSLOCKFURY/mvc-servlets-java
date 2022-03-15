@@ -5,12 +5,15 @@ import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import forms.ReportConfigurationForm;
 import models.Room;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 import models.dto.OverlapCountDTO;
+import models.dto.RoomRegistryPdfReportDto;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 public class AdminRoomsService {
@@ -50,6 +53,15 @@ public class AdminRoomsService {
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();
+        }
+    }
+
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){
+        try{
+            return roomsDao.findDataForRoomRegistryReport(form.getCheckInDate(), form.getCheckOutDate(), pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }

@@ -17,6 +17,7 @@
 <a href="<c:url value="/project/profile/balance"/>">Add balance</a>
 <c:if test="${sessionScope.user.role == 2}">
     <a href="<c:url value="/project/admin/room-requests"/>">Room Requests</a>
+    <a href="<c:url value="/project/admin/report"/>">Generate Pdf Report</a>
 </c:if>
 <a href="<c:url value="/project/logout"/>">Logout</a>
 </body>

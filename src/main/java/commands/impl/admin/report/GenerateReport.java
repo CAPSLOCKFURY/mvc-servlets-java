@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.base.pagination.Pageable;
 import models.dto.RoomRegistryPdfReportDto;
 import pdf.RoomRegistryPDFReport;
+import service.AdminRoomsService;
 import service.RoomsService;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import static utils.UrlUtils.getAbsoluteUrl;
 @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
 public class GenerateReport implements Command {
 
-    private final RoomsService roomsService = RoomsService.getInstance();
+    private final AdminRoomsService roomsService = AdminRoomsService.getInstance();
 
     @Override
     public CommandResult execute(HttpServletRequest request, HttpServletResponse response) {
