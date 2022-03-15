@@ -5,6 +5,7 @@ import db.ConnectionPool;
 import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;
+import forms.UserUpdateProfileForm;
 import models.User;
 import models.base.SqlColumn;
 import models.base.SqlType;
@@ -22,6 +23,7 @@ public class PostgreSQLUserDao extends UserDao {
     private final static String FIND_BY_EMAIL = "select * from users where email = ?";
     private final static String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = md5(?)";
     private final static String ADD_USER_BALANCE = "update users set balance = balance + ? where id = ?";
+    private final static String UPDATE_USER = "update users set first_name = ?, last_name = ? where id = ?";
 
     @Override
     public User getUserById(Long id) throws SQLException {
@@ -95,6 +97,13 @@ public class PostgreSQLUserDao extends UserDao {
     public boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntityById(connection, ADD_USER_BALANCE, form, userId);
+        }
+    }
+
+    @Override
+    public boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            return updateEntityById(connection, UPDATE_USER, form, userId);
         }
     }
 

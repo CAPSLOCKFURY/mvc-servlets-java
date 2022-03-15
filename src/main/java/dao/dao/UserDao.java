@@ -4,6 +4,7 @@ import dao.dao.base.OrderableAbstractDao;
 import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;
+import forms.UserUpdateProfileForm;
 import models.User;
 
 import java.sql.SQLException;
@@ -23,4 +24,6 @@ public abstract class UserDao extends OrderableAbstractDao {
     public abstract User getUserByLoginAndPassword(LoginForm form) throws SQLException;
 
     public abstract boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException;
+
+    public abstract boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException;
 }

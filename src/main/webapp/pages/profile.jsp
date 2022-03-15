@@ -11,6 +11,7 @@
 <h2>Email: ${user.email}</h2>
 <h2>Your balance: ${user.balance}</h2>
 <h3>Role: ${user.role}</h3>
+<a href="<c:url value="/project/profile/update"/>">Update Profile</a>
 <a href="<c:url value="/project/profile/my-room-requests"/>">My Room Requests</a>
 <a href="<c:url value="/project/profile/my-billings"/>">My billings</a>
 <a href="<c:url value="/project/profile/room-history"/>">Room history</a>

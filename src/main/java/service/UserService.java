@@ -7,6 +7,7 @@ import exceptions.db.DaoException;
 import forms.AddBalanceForm;
 import forms.LoginForm;
 import forms.RegisterForm;
+import forms.UserUpdateProfileForm;
 import models.User;
 
 import java.sql.SQLException;
@@ -70,6 +71,16 @@ public class UserService {
     public boolean addUserBalance(AddBalanceForm form, Long userId){
         try {
             return userDao.addUserBalance(form, userId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            form.addError("Database error");
+            return false;
+        }
+    }
+
+    public boolean updateUser(UserUpdateProfileForm form, Long userId){
+        try{
+            return userDao.updateUser(form, userId);
         } catch (SQLException sqle){
             sqle.printStackTrace();
             form.addError("Database error");
