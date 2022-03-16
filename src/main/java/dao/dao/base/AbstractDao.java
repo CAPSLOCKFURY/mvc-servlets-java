@@ -118,4 +118,8 @@ public abstract class AbstractDao {
         return stmt.executeUpdate() == 1;
     }
 
+    protected final int updatePlain(Connection connection, String sql) throws SQLException{
+        Statement statement = connection.createStatement();
+        return statement.executeUpdate(sql);
+    }
 }

@@ -27,6 +27,14 @@ public class PostgreSQLBillingDao extends BillingDao {
             "    left outer join room_requests rr on billing.request_id = rr.id\n" +
             "where billing.id = ?";
 
+    private final static String DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING = "delete from room_requests where id in\n" +
+            "(select request_id from billing where pay_end_date < date(now()) and paid = false)";
+
+    private final static String DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING = "delete from room_registry where id in\n" +
+            "(select room_registry_id from billing where pay_end_date < date(now()) and paid = false)";
+
+    private final static String DELETE_OLD_BILLINGS = "delete from billing where pay_end_date < date(now()) and paid = false";
+
     @Override
     public boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long roomRegistryId) throws SQLException {
         class BillingForm{
@@ -110,6 +118,29 @@ public class PostgreSQLBillingDao extends BillingDao {
         } finally {
             connection.setAutoCommit(true);
             connection.close();
+        }
+    }
+
+    @Override
+    public boolean deleteOldBillings() throws SQLException {
+        Connection connection = null;
+        try{
+            connection = ConnectionPool.getConnection();
+            connection.setAutoCommit(false);
+            updatePlain(connection, DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, DELETE_OLD_BILLINGS);
+            connection.commit();
+            return true;
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            connection.rollback();
+            return false;
+        } finally {
+            if(connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
         }
     }
 }
