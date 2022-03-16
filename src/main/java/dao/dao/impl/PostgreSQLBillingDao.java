@@ -1,5 +1,6 @@
 package dao.dao.impl;
 
+import constants.SqlConstants;
 import dao.dao.BillingDao;
 import db.ConnectionPool;
 import models.Billing;
@@ -15,26 +16,6 @@ import java.util.List;
 
 public class PostgreSQLBillingDao extends BillingDao {
 
-    private final static String INSERT_BILLING = "insert into billing(request_id, price, room_registry_id) values (?, ?, ?)";
-
-    private final static String FIND_ALL_BILLING_BY_USER_ID = "select * from billing \n" +
-            "    left outer join room_requests rr on billing.request_id = rr.id\n" +
-            "where rr.user_id = ?";
-
-    private final static String PAY_BILLING = "update billing set paid = true where id = ?";
-
-    private final static String GET_BILLING_BY_ID = "select *, rr.id as request_id, rr.user_id as user_id from billing \n" +
-            "    left outer join room_requests rr on billing.request_id = rr.id\n" +
-            "where billing.id = ?";
-
-    private final static String DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING = "delete from room_requests where id in\n" +
-            "(select request_id from billing where pay_end_date < date(now()) and paid = false)";
-
-    private final static String DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING = "delete from room_registry where id in\n" +
-            "(select room_registry_id from billing where pay_end_date < date(now()) and paid = false)";
-
-    private final static String DELETE_OLD_BILLINGS = "delete from billing where pay_end_date < date(now()) and paid = false";
-
     @Override
     public boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long roomRegistryId) throws SQLException {
         class BillingForm{
@@ -48,13 +29,13 @@ public class PostgreSQLBillingDao extends BillingDao {
             public BigDecimal getBillingPrice() {return billingPrice;}
             public Long getRoomRegistryInsertId() {return roomRegistryInsertId;}
         }
-        return createEntity(connection, INSERT_BILLING, new BillingForm());
+        return createEntity(connection, SqlConstants.Billing.INSERT_BILLING, new BillingForm());
     }
 
     @Override
     public ExtendedBillingDTO getBillingById(Long billingId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            return getOneById(connection, GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
+            return getOneById(connection, SqlConstants.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
         }
     }
 
@@ -66,7 +47,7 @@ public class PostgreSQLBillingDao extends BillingDao {
                 private final Long id = userId;
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
+            return getAllByParams(connection, SqlConstants.Billing.FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
         }
     }
 
@@ -94,7 +75,7 @@ public class PostgreSQLBillingDao extends BillingDao {
                 private final Long id = billing.getId();
                 public Long getId() {return id;}
             }
-            boolean billingUpdated = updateEntity(connection, PAY_BILLING, new Param());
+            boolean billingUpdated = updateEntity(connection, SqlConstants.Billing.PAY_BILLING, new Param());
             if(!billingUpdated){
                 connection.rollback();
                 return false;
@@ -127,9 +108,9 @@ public class PostgreSQLBillingDao extends BillingDao {
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            updatePlain(connection, DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, DELETE_OLD_BILLINGS);
+            updatePlain(connection, SqlConstants.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, SqlConstants.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, SqlConstants.Billing.DELETE_OLD_BILLINGS);
             connection.commit();
             return true;
         } catch (SQLException sqle){

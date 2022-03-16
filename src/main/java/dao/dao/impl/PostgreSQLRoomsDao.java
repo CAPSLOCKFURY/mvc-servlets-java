@@ -1,5 +1,6 @@
 package dao.dao.impl;
 
+import constants.SqlConstants;
 import dao.dao.RoomsDao;
 import db.ConnectionPool;
 import forms.BookRoomForm;
@@ -19,51 +20,6 @@ import java.util.List;
 
 public class PostgreSQLRoomsDao extends RoomsDao {
 
-    private final static String FIND_ALL_ROOMS = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
-            "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms" +
-            "    left outer join room_class rc on rooms.class = rc.id\n" +
-            "    left outer join room_class_translation rct on rc.id = rct.class_id and language = ?";
-
-    private final static String FIND_ROOM_BY_ID = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
-            "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms\n" +
-            "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
-            "where rooms.id = ?";
-
-    private final static String FIND_ALL_ROOM_CLASSES = "select class_id as id, name from room_class_translation where language = ?";
-
-    private final static String FIND_ROOM_DATES_BY_ID = "select check_in_date, check_out_date from room_registry where room_id = ? and archived = false";
-
-    private final static String FIND_OVERLAPPING_DATES_COUNT = "select count('*') as cnt from room_registry\n" +
-            "where room_id = ? and (daterange(?::date, ?::date, '[]') &&\n" +
-            "      daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]') )";
-
-    private final static String WITHDRAW_FROM_USER_BALANCE = "update users set balance = balance - ? where id = ?";
-
-    private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
-
-    private final static String FIND_ROOM_HISTORY_BY_USER_ID = "select r.*, rct.name as class_name, room_registry.check_in_date, room_registry.check_out_date from room_registry\n" +
-            "    left outer join rooms r on room_registry.room_id = r.id\n" +
-            "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
-            "where user_id = ?";
-
-    private final static String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
-            "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
-            "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
-            "where rooms.id not in (select room_id from room_requests where room_id is not null)\n" +
-            "group by rooms.id, rct.id\n" +
-            "having count(room_id) filter\n" +
-            "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0\n" +
-            "order by -rooms.id";
-
-    private final static String ASSIGN_ROOM_TO_REQUEST = "update room_requests set room_id = ?, status = 'awaiting confirmation' where id = ?";
-
-    private final static String REMOVE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting'\n" +
-            "where room_id = ?\n" +
-            "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
-
-    private final static String FIND_DATA_FOR_ROOM_REGISTRY_REPORT = "select user_id, u.first_name, u.last_name, check_in_date, check_out_date, room_id from room_registry " +
-            "join users u on room_registry.user_id = u.id";
-
     @Override
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
@@ -72,7 +28,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
+            return getAllByParams(connection, SqlConstants.Room.FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
         }
     }
 
@@ -87,7 +43,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getEntityId() {return entityId;}
             }
-            return getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), Room.class);
+            return getOneByParams(connection, SqlConstants.Room.FIND_ROOM_BY_ID, new Param(), Room.class);
         }
     }
 
@@ -107,8 +63,8 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final Long roomId = id;
                 public Long getRoomId() {return roomId;}
             }
-            RoomExtendedInfo room = getOneByParams(connection, FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
-            List<RoomDate> roomDates = getAllByParams(connection, FIND_ROOM_DATES_BY_ID, new DatesParam(), RoomDate.class);
+            RoomExtendedInfo room = getOneByParams(connection, SqlConstants.Room.FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
+            List<RoomDate> roomDates = getAllByParams(connection, SqlConstants.Room.FIND_ROOM_DATES_BY_ID, new DatesParam(), RoomDate.class);
             room.setDates(roomDates);
             return room;
         }
@@ -122,7 +78,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, FIND_ALL_ROOM_CLASSES, new Param(), RoomClass.class);
+            return getAllByParams(connection, SqlConstants.Room.FIND_ALL_ROOM_CLASSES, new Param(), RoomClass.class);
         }
     }
 
@@ -140,7 +96,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckOutDateParam() {return checkOutDateParam;}
                 public Long getId() {return id;}
             }
-            return getOneByParams(connection, FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
+            return getOneByParams(connection, SqlConstants.Room.FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
         }
     }
 
@@ -155,7 +111,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
+            return getAllByParams(connection, SqlConstants.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
         }
     }
 
@@ -173,7 +129,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getStartDate() {return startDate;}
                 public Date getEndDate() {return endDate;}
             }
-            return getAllByParams(connection, FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
+            return getAllByParams(connection, SqlConstants.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
         }
     }
 
@@ -189,7 +145,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public BigDecimal getAmount() {return amount;}
                 public void setAmount(BigDecimal amount) {this.amount = amount;}
             }
-            boolean isUpdated = updateEntityById(connection, WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
+            boolean isUpdated = updateEntityById(connection, SqlConstants.Room.WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
             if(!isUpdated){
                 connection.rollback();
                 return false;
@@ -208,7 +164,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            boolean entityCreated = createEntity(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            boolean entityCreated = createEntity(connection, SqlConstants.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
             if(!entityCreated){
                 connection.rollback();
                 return false;
@@ -224,7 +180,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            updateEntity(connection, REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
+            updateEntity(connection, SqlConstants.Room.REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
             connection.commit();
             return true;
         } catch (SQLException sqle) {
@@ -249,14 +205,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private Long room = roomId;
                 public Long getRoom() {return room;}
             }
-            return updateEntityById(connection, ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
+            return updateEntityById(connection, SqlConstants.Room.ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
         }
     }
 
     @Override
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
         try(Connection connection =  ConnectionPool.getConnection()){
-            String sql = FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
+            String sql = SqlConstants.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
             if(checkInDate != null || checkOutDate != null){
                 sql = sql.concat(" where ");
                 if(checkInDate != null && checkOutDate != null){
@@ -288,7 +244,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                     return getAllByParams(connection, sql, new SingleOutDateParam(), RoomRegistryPdfReportDto.class, pageable);
                 }
             }
-            return getAll(connection, FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
+            return getAll(connection, SqlConstants.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
         }
     }
 }

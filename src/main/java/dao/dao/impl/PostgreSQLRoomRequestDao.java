@@ -1,5 +1,6 @@
 package dao.dao.impl;
 
+import constants.SqlConstants;
 import dao.dao.BillingDao;
 import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
@@ -25,42 +26,10 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
     private final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
 
-    private final static String INSERT_ROOM_REQUEST = "insert into room_requests (user_id, capacity, room_class, check_in_date, check_out_date, comment)\n" +
-            "values (?, ?, ?, ?, ?, ?)";
-
-    private final static String FIND_ROOM_REQUESTS_BY_USER_ID = "select room_requests.*, rct.name as class_name from room_requests\n" +
-            "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
-            "    where user_id = ? order by -room_requests.id";
-
-    private final static String DISABLE_REQUEST_BY_ID = "update room_requests set status = 'closed' where id = ? and user_id = ?";
-
-    private final static String ADMIN_GET_ROOM_REQUESTS = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, room_id, login, email, first_name, last_name from room_requests\n" +
-            "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
-            "    left outer join users u on room_requests.user_id = u.id\n" +
-            "where room_requests.status = ?::request_status";
-
-    private final static String ADMIN_GET_ROOM_REQUEST_BY_ID = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, room_id, login, email, first_name, last_name from room_requests\n" +
-            "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
-            "    left outer join users u on room_requests.user_id = u.id\n" +
-            "where room_requests.id = ?\n" +
-            "order by room_requests.id";
-
-    private final static String CONFIRM_ROOM_REQUEST = "update room_requests set status = 'awaiting payment' where id=?";
-
-    private final static String FIND_ROOM_REQUEST_BY_ID = "select room_requests.*, rct.name as class_name from room_requests\n" +
-            "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
-            "    where room_requests.id = ?";
-
-    private final static String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
-
-    private final static String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
-
-    private final static String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed', room_id = null where id=?";
-
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return createEntity(connection, INSERT_ROOM_REQUEST, form);
+            return createEntity(connection, SqlConstants.RoomRequest.INSERT_ROOM_REQUEST, form);
         }
     }
 
@@ -75,7 +44,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getLang() {return lang;}
                 public Long getId() {return id;}
             }
-            return getOneByParams(connection, FIND_ROOM_REQUEST_BY_ID, new Params(), RoomRequest.class);
+            return getOneByParams(connection, SqlConstants.RoomRequest.FIND_ROOM_REQUEST_BY_ID, new Params(), RoomRequest.class);
         }
     }
 
@@ -90,14 +59,14 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 private String getLang(){return lang;}
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, FIND_ROOM_REQUESTS_BY_USER_ID, new Param(), RoomRequest.class, pageable);
+            return getAllByParams(connection, SqlConstants.RoomRequest.FIND_ROOM_REQUESTS_BY_USER_ID, new Param(), RoomRequest.class, pageable);
         }
     }
 
     @Override
     public boolean disableRoomRequest(Long requestId, Long userId) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            PreparedStatement stmt = connection.prepareStatement(DISABLE_REQUEST_BY_ID);
+            PreparedStatement stmt = connection.prepareStatement(SqlConstants.RoomRequest.DISABLE_REQUEST_BY_ID);
             stmt.setLong(1, requestId);
             stmt.setLong(2, userId);
             return stmt.executeUpdate() == 1;
@@ -115,7 +84,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getLang() {return lang;}
                 public String getStatus() {return status;}
             }
-            return getAllByParams(connection, ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, orderable, pageable);
+            return getAllByParams(connection, SqlConstants.RoomRequest.ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, orderable, pageable);
         }
     }
 
@@ -130,7 +99,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public String getLang() {return lang;}
                 public Long getId() {return id;}
             }
-            return getOneByParams(connection, ADMIN_GET_ROOM_REQUEST_BY_ID, new Params(), AdminRoomRequestDTO.class);
+            return getOneByParams(connection, SqlConstants.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Params(), AdminRoomRequestDTO.class);
         }
     }
 
@@ -145,7 +114,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 private final Long id = roomRequest.getId();
                 public Long getId() {return id;}
             }
-            boolean requestConfirmed = updateEntity(connection, CONFIRM_ROOM_REQUEST, new UpdateParam());
+            boolean requestConfirmed = updateEntity(connection, SqlConstants.RoomRequest.CONFIRM_ROOM_REQUEST, new UpdateParam());
             if(!requestConfirmed){
                 connection.rollback();
                 return false;
@@ -164,7 +133,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            long roomRegistryInsertedId = createEntityAndGetId(connection, INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            long roomRegistryInsertedId = createEntityAndGetId(connection, SqlConstants.RoomRequest.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
             if(roomRegistryInsertedId == 0){
                 connection.rollback();
                 return false;
@@ -198,7 +167,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 private final String newComment = comment;
                 public String getNewComment() {return newComment;}
             }
-            return updateEntityById(connection, DECLINE_ASSIGNED_ROOM, new UpdateParams(), requestId);
+            return updateEntityById(connection, SqlConstants.RoomRequest.DECLINE_ASSIGNED_ROOM, new UpdateParams(), requestId);
         }
     }
 
@@ -209,7 +178,7 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
                 private final String managerComment = comment;
                 public String getManagerComment() {return managerComment;}
             }
-            return updateEntityById(connection, ADMIN_CLOSE_REQUEST, new UpdateParam(), requestId);
+            return updateEntityById(connection, SqlConstants.RoomRequest.ADMIN_CLOSE_REQUEST, new UpdateParam(), requestId);
         }
    }
 }
