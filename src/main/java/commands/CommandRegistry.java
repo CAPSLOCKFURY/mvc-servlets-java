@@ -34,7 +34,7 @@ public final class CommandRegistry {
     private final Map<UrlBind, Command> commandMap = new HashMap<>();
 
     private CommandRegistry(){
-        List<Class<? extends Command>> commands = ClassUtils.getAnnotatedCommandClassesInPackage("commands.impl");
+        List<Class<Command>> commands = ClassUtils.getAnnotatedCommandClassesInPackage("commands.impl");
         registerAnnotatedCommands(commands);
         commandMap.put(new UrlBind("/register", RequestMethod.GET),
                 (request, response) -> {
@@ -115,7 +115,7 @@ public final class CommandRegistry {
         return pathInfo.replaceAll(request.getServerName(), "");
     }
 
-    private void registerAnnotatedCommands(List<Class<? extends Command>> commands){
+    private void registerAnnotatedCommands(List<? extends Class<? extends Command>> commands){
         commands.forEach(c ->{
             try {
                 WebMapping webMapping = c.getAnnotation(WebMapping.class);

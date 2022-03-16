@@ -1,16 +1,16 @@
 package utils;
 
 import commands.base.Command;
+import commands.base.CommandResult;
 import commands.base.WebMapping;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ClassUtils {
@@ -28,12 +28,12 @@ public final class ClassUtils {
         return getClassFiles(files, packageName);
     }
 
-    public static List<Class<? extends Command>> getAnnotatedCommandClassesInPackage(String packageName){
+    public static List<Class<Command>> getAnnotatedCommandClassesInPackage(String packageName){
         List<Class<?>> classes = getClassesInPackage(packageName);
         List<Class<?>> filteredClasses = classes.stream()
                 .filter(c -> Command.class.isAssignableFrom(c) && c.isAnnotationPresent(WebMapping.class))
                 .collect(Collectors.toList());
-        return (List<Class<? extends Command>>)(List<?>) filteredClasses;
+        return (List<Class<Command>>)(List<?>) filteredClasses;
     }
 
     private static List<Class<?>> getClassFiles(File[] files, String packageName){
