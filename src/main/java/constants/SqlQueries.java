@@ -58,8 +58,6 @@ public final class SqlQueries {
 
     public final static class RoomRequest {
 
-        public final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
-
         public final static String INSERT_ROOM_REQUEST = "insert into room_requests (user_id, capacity, room_class, check_in_date, check_out_date, comment)\n" +
                 "values (?, ?, ?, ?, ?, ?)";
 
