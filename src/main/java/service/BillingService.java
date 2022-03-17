@@ -63,12 +63,12 @@ public class BillingService {
         }
     }
 
-    public boolean deleteOldBillings(){
+    public int deleteOldBillings(){
         try{
             return billingDao.deleteOldBillings();
         } catch (SQLException sqle){
             sqle.printStackTrace();
-            return false;
+            return -1;
         }
     }
 }

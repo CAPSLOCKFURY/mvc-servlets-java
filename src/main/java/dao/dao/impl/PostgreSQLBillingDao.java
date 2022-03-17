@@ -103,20 +103,20 @@ public class PostgreSQLBillingDao extends BillingDao {
     }
 
     @Override
-    public boolean deleteOldBillings() throws SQLException {
+    public int deleteOldBillings() throws SQLException {
         Connection connection = null;
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
             updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
             updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, SqlQueries.Billing.DELETE_OLD_BILLINGS);
+            int affectedRows = updatePlain(connection, SqlQueries.Billing.DELETE_OLD_BILLINGS);
             connection.commit();
-            return true;
+            return affectedRows;
         } catch (SQLException sqle){
             sqle.printStackTrace();
             connection.rollback();
-            return false;
+            return -1;
         } finally {
             if(connection != null) {
                 connection.setAutoCommit(true);

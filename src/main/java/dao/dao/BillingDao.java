@@ -20,5 +20,5 @@ public abstract class BillingDao extends OrderableAbstractDao {
 
     public abstract boolean payBilling(Long userId, ExtendedBillingDTO billing) throws SQLException;
 
-    public abstract boolean deleteOldBillings() throws SQLException;
+    public abstract int deleteOldBillings() throws SQLException;
 }
