@@ -116,7 +116,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
+    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -129,7 +129,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getStartDate() {return startDate;}
                 public Date getEndDate() {return endDate;}
             }
-            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, orderable, pageable);
         }
     }
 

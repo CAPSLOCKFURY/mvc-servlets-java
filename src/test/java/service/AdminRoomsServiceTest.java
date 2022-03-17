@@ -2,7 +2,10 @@ package service;
 
 import db.ConnectionPool;
 import models.Room;
+import models.base.ordering.OrderDirection;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
+import models.enums.RoomOrdering;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,9 +45,11 @@ public class AdminRoomsServiceTest {
         LocalDateTime todayPlus7 = today.plusDays(7);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        List<Room> rooms = service.findSuitableRoomsForRequest("en", Date.valueOf(today.format(dateFormat)), Date.valueOf(todayPlus7.format(dateFormat)), pageable);
+        Orderable orderable = new Orderable(RoomOrdering.ID.getColName(), OrderDirection.ASC);
+
+        List<Room> rooms = service.findSuitableRoomsForRequest("en", Date.valueOf(today.format(dateFormat)), Date.valueOf(todayPlus7.format(dateFormat)), orderable, pageable);
         assertEquals(9, rooms.size());
-        List<Room> rooms2 = service.findSuitableRoomsForRequest("en", Date.valueOf(today.plusDays(14).format(dateFormat)), Date.valueOf(todayPlus7.plusDays(36).format(dateFormat)), pageable);
+        List<Room> rooms2 = service.findSuitableRoomsForRequest("en", Date.valueOf(today.plusDays(14).format(dateFormat)), Date.valueOf(todayPlus7.plusDays(36).format(dateFormat)), orderable, pageable);
         assertEquals(10, rooms2.size());
     }
 

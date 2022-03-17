@@ -6,8 +6,11 @@ import commands.base.security.Security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.Room;
+import models.base.ordering.OrderDirection;
+import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
+import models.enums.RoomOrdering;
 import service.AdminRoomRequestService;
 import service.AdminRoomsService;
 
@@ -38,8 +41,11 @@ public class RoomRequestGet implements Command {
         AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale);
         request.setAttribute("roomRequest", roomRequest);
         Pageable pageable = Pageable.of(request, 10, true);
+        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
+        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
+        Orderable orderable = new Orderable(roomOrdering.getColName(), orderDirection);
         if(roomRequest.getStatus().equals("awaiting")) {
-            List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), pageable);
+            List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), orderable, pageable);
             request.setAttribute("rooms", suitableRooms);
         }
         return new CommandResult("/admin/admin-room-request.jsp", RequestDirection.FORWARD);

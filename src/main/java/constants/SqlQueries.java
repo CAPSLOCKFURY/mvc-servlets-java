@@ -1,9 +1,5 @@
 package constants;
 
-import dao.dao.BillingDao;
-import dao.factory.DaoAbstractFactory;
-import dao.factory.SqlDB;
-
 public final class SqlQueries {
 
     public final static class Room {
@@ -41,8 +37,7 @@ public final class SqlQueries {
                 "where rooms.id not in (select room_id from room_requests where room_id is not null)\n" +
                 "group by rooms.id, rct.id\n" +
                 "having count(room_id) filter\n" +
-                "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0\n" +
-                "order by -rooms.id";
+                "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0";
 
         public final static String ASSIGN_ROOM_TO_REQUEST = "update room_requests set room_id = ?, status = 'awaiting confirmation' where id = ?";
 
@@ -90,8 +85,6 @@ public final class SqlQueries {
 
         public final static String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed', room_id = null where id=?";
 
-
-
         private RoomRequest(){}
     }
 
@@ -113,7 +106,7 @@ public final class SqlQueries {
 
         public final static String UPDATE_USER = "update users set first_name = ?, last_name = ? where id = ?";
 
-
+        private User(){}
     }
 
     public final static class Billing {
@@ -138,10 +131,8 @@ public final class SqlQueries {
 
         public final static String DELETE_OLD_BILLINGS = "delete from billing where pay_end_date < date(now()) and paid = false";
 
+        private Billing(){}
     }
-
-
-
 
     private SqlQueries(){
 

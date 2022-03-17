@@ -1,7 +1,7 @@
 package models.enums;
 
 public enum RoomOrdering {
-    ID("id"), PRICE("price"), STATUS("status"), CAPACITY("status"), CLASS("room_class");
+    ID("id"), PRICE("price"), STATUS("status"), CAPACITY("capacity"), CLASS("class");
 
     private final String colName;
 

@@ -22,7 +22,7 @@ public class MainCommand implements Command {
         Pageable pageable = Pageable.of(request, 10, true);
         RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
         OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
-        List<Room> rooms = roomsService.getAllRooms(getLocaleFromCookies(request.getCookies()), new Orderable(roomOrdering.toString().toLowerCase(), orderDirection), pageable);
+        List<Room> rooms = roomsService.getAllRooms(getLocaleFromCookies(request.getCookies()), new Orderable(roomOrdering.getColName(), orderDirection), pageable);
         request.setAttribute("rooms", rooms);
         return new CommandResult("/index.jsp", RequestDirection.FORWARD);
     }
