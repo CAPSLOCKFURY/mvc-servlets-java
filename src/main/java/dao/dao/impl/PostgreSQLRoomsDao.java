@@ -248,9 +248,17 @@ public class PostgreSQLRoomsDao extends RoomsDao {
         }
     }
 
+    @Override
     public int archiveOldRoomRegistries() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             return updatePlain(connection, SqlQueries.Room.ARCHIVE_OLD_ROOM_REGISTRIES);
+        }
+    }
+
+    @Override
+    public int updateRoomStatus() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            return updatePlain(connection, SqlQueries.Room.UPDATE_ROOM_STATUS);
         }
     }
 }

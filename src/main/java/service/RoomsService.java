@@ -118,4 +118,13 @@ public class RoomsService {
         }
     }
 
+    public int updateRoomsStatus(){
+        try{
+            return roomsDao.updateRoomStatus();
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return -1;
+        }
+    }
+
 }

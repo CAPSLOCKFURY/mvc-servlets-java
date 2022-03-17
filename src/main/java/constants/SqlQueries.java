@@ -50,6 +50,13 @@ public final class SqlQueries {
 
         public final static String ARCHIVE_OLD_ROOM_REGISTRIES = "update room_registry set archived = false where check_out_date <= date(now())";
 
+        public final static String UPDATE_ROOM_STATUS = "update rooms set status =\n" +
+                "    case\n" +
+                "        when id in (select room_id from room_registry where check_out_date = date(now()) and archived = false) then 'free'::room_status\n" +
+                "        when id in (select room_id from room_registry where check_in_date = date(now()) and archived = false) then 'occupied'::room_status\n" +
+                "        else 'free'::room_status\n" +
+                "    end";
+
         private Room(){}
     }
 

@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import tasks.ArchiveOldRoomRegistriesTask;
 import tasks.DeleteOldBillingsTask;
+import tasks.UpdateRoomStatusTask;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,6 +21,7 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(new DeleteOldBillingsTask(), 0, 24, TimeUnit.HOURS);
         scheduler.scheduleAtFixedRate(new ArchiveOldRoomRegistriesTask(), 0, 24, TimeUnit.HOURS);
+        scheduler.scheduleAtFixedRate(new UpdateRoomStatusTask(), 0, 2, TimeUnit.HOURS);
     }
 
     @Override
