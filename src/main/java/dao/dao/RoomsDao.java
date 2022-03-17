@@ -36,4 +36,6 @@ public abstract class RoomsDao extends OrderableAbstractDao {
     public abstract boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException;
 
     public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException;
+
+    public abstract int archiveOldRoomRegistries() throws SQLException;
 }

@@ -109,4 +109,13 @@ public class RoomsService {
         }
     }
 
+    public int archiveOldRoomRegistries(){
+        try{
+            return roomsDao.archiveOldRoomRegistries();
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return -1;
+        }
+    }
+
 }

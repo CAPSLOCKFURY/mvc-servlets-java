@@ -247,4 +247,10 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             return getAll(connection, SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
         }
     }
+
+    public int archiveOldRoomRegistries() throws SQLException{
+        try(Connection connection = ConnectionPool.getConnection()){
+            return updatePlain(connection, SqlQueries.Room.ARCHIVE_OLD_ROOM_REGISTRIES);
+        }
+    }
 }
