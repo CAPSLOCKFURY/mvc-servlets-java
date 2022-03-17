@@ -1,6 +1,6 @@
 package dao.dao.impl;
 
-import constants.SqlConstants;
+import constants.SqlQueries;
 import dao.dao.RoomsDao;
 import db.ConnectionPool;
 import forms.BookRoomForm;
@@ -28,7 +28,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, SqlConstants.Room.FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
         }
     }
 
@@ -43,7 +43,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getEntityId() {return entityId;}
             }
-            return getOneByParams(connection, SqlConstants.Room.FIND_ROOM_BY_ID, new Param(), Room.class);
+            return getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Param(), Room.class);
         }
     }
 
@@ -63,8 +63,8 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final Long roomId = id;
                 public Long getRoomId() {return roomId;}
             }
-            RoomExtendedInfo room = getOneByParams(connection, SqlConstants.Room.FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
-            List<RoomDate> roomDates = getAllByParams(connection, SqlConstants.Room.FIND_ROOM_DATES_BY_ID, new DatesParam(), RoomDate.class);
+            RoomExtendedInfo room = getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
+            List<RoomDate> roomDates = getAllByParams(connection, SqlQueries.Room.FIND_ROOM_DATES_BY_ID, new DatesParam(), RoomDate.class);
             room.setDates(roomDates);
             return room;
         }
@@ -78,7 +78,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private final String lang = locale;
                 public String getLang() {return lang;}
             }
-            return getAllByParams(connection, SqlConstants.Room.FIND_ALL_ROOM_CLASSES, new Param(), RoomClass.class);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOM_CLASSES, new Param(), RoomClass.class);
         }
     }
 
@@ -96,7 +96,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckOutDateParam() {return checkOutDateParam;}
                 public Long getId() {return id;}
             }
-            return getOneByParams(connection, SqlConstants.Room.FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
+            return getOneByParams(connection, SqlQueries.Room.FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
         }
     }
 
@@ -111,7 +111,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public String getLang() {return lang;}
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, SqlConstants.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
         }
     }
 
@@ -129,7 +129,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getStartDate() {return startDate;}
                 public Date getEndDate() {return endDate;}
             }
-            return getAllByParams(connection, SqlConstants.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, pageable);
         }
     }
 
@@ -145,7 +145,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public BigDecimal getAmount() {return amount;}
                 public void setAmount(BigDecimal amount) {this.amount = amount;}
             }
-            boolean isUpdated = updateEntityById(connection, SqlConstants.Room.WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
+            boolean isUpdated = updateEntityById(connection, SqlQueries.Room.WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
             if(!isUpdated){
                 connection.rollback();
                 return false;
@@ -164,7 +164,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            boolean entityCreated = createEntity(connection, SqlConstants.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            boolean entityCreated = createEntity(connection, SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
             if(!entityCreated){
                 connection.rollback();
                 return false;
@@ -180,7 +180,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 public Date getCheckInDate() {return checkInDate;}
                 public Date getCheckOutDate() {return checkOutDate;}
             }
-            updateEntity(connection, SqlConstants.Room.REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
+            updateEntity(connection, SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
             connection.commit();
             return true;
         } catch (SQLException sqle) {
@@ -205,14 +205,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 private Long room = roomId;
                 public Long getRoom() {return room;}
             }
-            return updateEntityById(connection, SqlConstants.Room.ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
+            return updateEntityById(connection, SqlQueries.Room.ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
         }
     }
 
     @Override
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
         try(Connection connection =  ConnectionPool.getConnection()){
-            String sql = SqlConstants.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
+            String sql = SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
             if(checkInDate != null || checkOutDate != null){
                 sql = sql.concat(" where ");
                 if(checkInDate != null && checkOutDate != null){
@@ -244,7 +244,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                     return getAllByParams(connection, sql, new SingleOutDateParam(), RoomRegistryPdfReportDto.class, pageable);
                 }
             }
-            return getAll(connection, SqlConstants.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
+            return getAll(connection, SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
         }
     }
 }

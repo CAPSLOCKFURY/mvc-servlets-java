@@ -4,7 +4,7 @@ import dao.dao.BillingDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 
-public final class SqlConstants {
+public final class SqlQueries {
 
     public final static class Room {
 
@@ -145,7 +145,7 @@ public final class SqlConstants {
 
 
 
-    private SqlConstants(){
+    private SqlQueries(){
 
     }
 }

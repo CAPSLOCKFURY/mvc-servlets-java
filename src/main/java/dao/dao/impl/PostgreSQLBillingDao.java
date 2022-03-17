@@ -1,6 +1,6 @@
 package dao.dao.impl;
 
-import constants.SqlConstants;
+import constants.SqlQueries;
 import dao.dao.BillingDao;
 import db.ConnectionPool;
 import models.Billing;
@@ -29,13 +29,13 @@ public class PostgreSQLBillingDao extends BillingDao {
             public BigDecimal getBillingPrice() {return billingPrice;}
             public Long getRoomRegistryInsertId() {return roomRegistryInsertId;}
         }
-        return createEntity(connection, SqlConstants.Billing.INSERT_BILLING, new BillingForm());
+        return createEntity(connection, SqlQueries.Billing.INSERT_BILLING, new BillingForm());
     }
 
     @Override
     public ExtendedBillingDTO getBillingById(Long billingId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            return getOneById(connection, SqlConstants.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
+            return getOneById(connection, SqlQueries.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
         }
     }
 
@@ -47,7 +47,7 @@ public class PostgreSQLBillingDao extends BillingDao {
                 private final Long id = userId;
                 public Long getId() {return id;}
             }
-            return getAllByParams(connection, SqlConstants.Billing.FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
+            return getAllByParams(connection, SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
         }
     }
 
@@ -75,7 +75,7 @@ public class PostgreSQLBillingDao extends BillingDao {
                 private final Long id = billing.getId();
                 public Long getId() {return id;}
             }
-            boolean billingUpdated = updateEntity(connection, SqlConstants.Billing.PAY_BILLING, new Param());
+            boolean billingUpdated = updateEntity(connection, SqlQueries.Billing.PAY_BILLING, new Param());
             if(!billingUpdated){
                 connection.rollback();
                 return false;
@@ -108,9 +108,9 @@ public class PostgreSQLBillingDao extends BillingDao {
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            updatePlain(connection, SqlConstants.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, SqlConstants.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, SqlConstants.Billing.DELETE_OLD_BILLINGS);
+            updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
+            updatePlain(connection, SqlQueries.Billing.DELETE_OLD_BILLINGS);
             connection.commit();
             return true;
         } catch (SQLException sqle){

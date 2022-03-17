@@ -1,6 +1,6 @@
 package dao.dao.impl;
 
-import constants.SqlConstants;
+import constants.SqlQueries;
 import dao.dao.UserDao;
 import db.ConnectionPool;
 import forms.AddBalanceForm;
@@ -20,21 +20,21 @@ public class PostgreSQLUserDao extends UserDao {
     @Override
     public User getUserById(Long id) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-          return getOneById(connection, SqlConstants.User.FIND_USER_BY_ID, id, User.class);
+          return getOneById(connection, SqlQueries.User.FIND_USER_BY_ID, id, User.class);
         }
     }
 
     @Override
     public List<User> getAllUsers() throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return getAll(connection, SqlConstants.User.FIND_ALL_USERS, User.class);
+            return getAll(connection, SqlQueries.User.FIND_ALL_USERS, User.class);
         }
     }
 
     @Override
     public long createUser(RegisterForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return createEntityAndGetId(connection, SqlConstants.User.INSERT_USER, form);
+            return createEntityAndGetId(connection, SqlQueries.User.INSERT_USER, form);
         }
     }
 
@@ -54,7 +54,7 @@ public class PostgreSQLUserDao extends UserDao {
             }
         }
         try(Connection connection = ConnectionPool.getConnection()){
-            return getOneByParams(connection, SqlConstants.User.FIND_BY_EMAIL, new EmailParam(email), User.class);
+            return getOneByParams(connection, SqlQueries.User.FIND_BY_EMAIL, new EmailParam(email), User.class);
         }
     }
 
@@ -74,28 +74,28 @@ public class PostgreSQLUserDao extends UserDao {
             }
         }
         try(Connection connection = ConnectionPool.getConnection()){
-            return getOneByParams(connection, SqlConstants.User.FIND_BY_LOGIN, new LoginParam(login), User.class);
+            return getOneByParams(connection, SqlQueries.User.FIND_BY_LOGIN, new LoginParam(login), User.class);
         }
     }
 
     @Override
     public User getUserByLoginAndPassword(LoginForm form) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return getOneByParams(connection, SqlConstants.User.FIND_BY_LOGIN_AND_PASSWORD, form, User.class);
+            return getOneByParams(connection, SqlQueries.User.FIND_BY_LOGIN_AND_PASSWORD, form, User.class);
         }
     }
 
     @Override
     public boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntityById(connection, SqlConstants.User.ADD_USER_BALANCE, form, userId);
+            return updateEntityById(connection, SqlQueries.User.ADD_USER_BALANCE, form, userId);
         }
     }
 
     @Override
     public boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntityById(connection, SqlConstants.User.UPDATE_USER, form, userId);
+            return updateEntityById(connection, SqlQueries.User.UPDATE_USER, form, userId);
         }
     }
 
