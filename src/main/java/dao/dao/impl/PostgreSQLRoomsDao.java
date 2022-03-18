@@ -261,4 +261,57 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             return updatePlain(connection, SqlQueries.Room.UPDATE_ROOM_STATUS);
         }
     }
+
+    @Override
+    public boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException {
+        Connection connection = null;
+        class RefundParams{
+            @SqlColumn(columnName = "", type = SqlType.DATE)
+            private final java.sql.Date date = endDate;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = roomId;
+            @SqlColumn(columnName = "", type = SqlType.DATE)
+            private final java.sql.Date date1 = endDate;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id1 = roomId;
+            public Date getDate() {return date;}
+            public Long getId() {return id;}
+            public Date getDate1() {return date1;}
+            public Long getId1() {return id1;}
+        }
+        class IdParam{
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = roomId;
+            public Long getId() {return id;}
+        }
+        class DeleteParams{
+            @SqlColumn(columnName = "", type = SqlType.DATE)
+            private final java.sql.Date date = endDate;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = roomId;
+            public Date getDate() {return date;}
+            public Long getId() {return id;}
+        }
+        try{
+            connection = ConnectionPool.getConnection();
+            connection.setAutoCommit(false);
+            updateEntity(connection, SqlQueries.Room.SET_ROOM_UNAVAILABLE, new IdParam());
+            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_BILLINGS, new RefundParams());
+            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_ROOM_REGISTRY, new RefundParams());
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new DeleteParams());
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new DeleteParams());
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new DeleteParams());
+            connection.commit();
+            return true;
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            connection.rollback();
+            return false;
+        } finally {
+            if(connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+    }
 }

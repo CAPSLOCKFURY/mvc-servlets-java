@@ -78,6 +78,7 @@ public class RoomsService {
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
         try{
+            //TODO validate room status
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");

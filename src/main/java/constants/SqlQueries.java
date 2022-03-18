@@ -55,7 +55,58 @@ public final class SqlQueries {
                 "        when id in (select room_id from room_registry where check_out_date = date(now()) and archived = false) then 'free'::room_status\n" +
                 "        when id in (select room_id from room_registry where check_in_date = date(now()) and archived = false) then 'occupied'::room_status\n" +
                 "        else 'free'::room_status\n" +
-                "    end";
+                "    end where status <> 'unavailable'";
+
+        public final static String SET_ROOM_UNAVAILABLE = "update rooms set status = 'unavailable' where id = ?";
+
+        public final static String REFUND_MONEY_FROM_BILLINGS = "update users set balance = balance +\n" +
+                "(select sum(price) from billing\n" +
+                "    join room_registry rr on billing.room_registry_id = rr.id\n" +
+                "    join room_requests r on billing.request_id = r.id\n" +
+                "    where paid = true and\n" +
+                "    daterange(date(now()), ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')\n" +
+                "    and rr.room_id = ? and r.user_id = users.id\n" +
+                ")\n" +
+                "where users.id in (\n" +
+                "    select user_id from room_registry\n" +
+                "    inner join billing b on room_registry.id = b.room_registry_id\n" +
+                "    where daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]')\n" +
+                "    and room_id = ?\n" +
+                "    and archived = false and b.paid = true\n" +
+                ")";
+
+        public final static String REFUND_MONEY_FROM_ROOM_REGISTRY = "update users set balance = balance +\n" +
+                "(\n" +
+                "    select sum(r.price * extract(day from check_out_date::timestamp - check_in_date::timestamp))\n" +
+                "    from room_registry\n" +
+                "    join rooms r on room_registry.room_id = r.id\n" +
+                "    left outer join billing b on room_registry.id = b.room_registry_id\n" +
+                "    where daterange(date(now()), ?::date, '[]') && daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]')\n" +
+                "    and room_id = ? and room_registry.user_id = users.id and b is null\n" +
+                ")\n" +
+                "where users.id in (\n" +
+                "    select user_id from room_registry\n" +
+                "    left outer join billing b on room_registry.id = b.room_registry_id\n" +
+                "    where b is null and daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]')\n" +
+                "    and archived = false\n" +
+                "    and room_id = ?\n" +
+                ")";
+
+        public final static String DELETE_REFUNDED_ROOM_REQUESTS = "delete from room_requests where id in\n" +
+                "(select b.request_id from room_registry\n" +
+                "    left outer join billing b on room_registry.id = b.room_registry_id\n" +
+                "where daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]') and room_registry.room_id = ?\n" +
+                ")";
+
+        public final static String DELETE_REFUNDED_BILLINGS = "delete from billing where id in\n" +
+                "(select b.id from room_registry\n" +
+                "    left outer join billing b on room_registry.id = b.room_registry_id\n" +
+                "where daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]') and room_registry.room_id = ?\n" +
+                ")";
+
+        public final static String DELETE_REFUNDED_ROOM_REGISTRIES = "delete from room_registry where\n" +
+                "daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]')\n" +
+                " and room_registry.room_id = ? and archived = false";
 
         private Room(){}
     }

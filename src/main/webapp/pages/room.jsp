@@ -15,19 +15,31 @@
     <h1>Room capacity: ${room.capacity}</h1>
     <h1>Room status: ${room.status}</h1>
     <h1>Room price: ${room.price}</h1>
-    <h1>Order room:</h1>
-    <input type="hidden" id="pricePerDay" value="${room.price}">
-    <c:if test="${sessionScope.user != null}">
-        <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/set-min-date-today.js" defer></script>
-        <form method="post">
-            <form:renderForm formClassPath="forms.BookRoomForm"/>
-            <h2>Estimated price:</h2>
-            <h2 id="calculatedPrice"></h2>
-            <button type="submit">Book this room</button>
-        </form>
-        <c:forEach var="error" items="${errors}">
-            <h2 style="color:red">${error}</h2>
-        </c:forEach>
+    <c:if test="${!room.status.equals('unavailable')}">
+        <c:if test="${sessionScope.user != null}">
+            <h1>Order room:</h1>
+            <input type="hidden" id="pricePerDay" value="${room.price}">
+            <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/set-min-date-today.js" defer></script>
+            <form method="post">
+                <form:renderForm formClassPath="forms.BookRoomForm"/>
+                <h2>Estimated price:</h2>
+                <h2 id="calculatedPrice"></h2>
+                <button type="submit">Book this room</button>
+            </form>
+            <c:forEach var="error" items="${errors}">
+                <h2 style="color:red">${error}</h2>
+            </c:forEach>
+        </c:if>
+        <c:if test="${sessionScope.user.role == 2}">
+            <form method="post" action="<c:url value="/project/admin/room/close"/>">
+                <input type="hidden" name="id" value="${room.id}">
+                <form:renderForm formClassPath="forms.CloseRoomForm"/>
+                <button type="submit">Close this room</button>
+            </form>
+            <c:forEach var="error" items="${errors}">
+                <h2 style="color:red">${error}</h2>
+            </c:forEach>
+        </c:if>
     </c:if>
     <h1>Room Dates:</h1>
     <c:if test="${room.dates.size() == 0}">

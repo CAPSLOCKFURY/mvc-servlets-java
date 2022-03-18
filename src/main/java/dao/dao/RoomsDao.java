@@ -31,7 +31,7 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract boolean bookRoom(BookRoomForm form, BigDecimal moneyAmount, Long roomId, Long userId) throws SQLException;
 
-    public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable,Pageable pageable) throws SQLException;
+    public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) throws SQLException;
 
     public abstract boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException;
 
@@ -40,4 +40,7 @@ public abstract class RoomsDao extends OrderableAbstractDao {
     public abstract int archiveOldRoomRegistries() throws SQLException;
 
     public abstract int updateRoomStatus() throws SQLException;
+
+    public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException;
+
 }

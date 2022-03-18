@@ -5,6 +5,7 @@ import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
+import forms.CloseRoomForm;
 import forms.ReportConfigurationForm;
 import models.Room;
 import models.base.ordering.Orderable;
@@ -63,6 +64,16 @@ public class AdminRoomsService {
         } catch (SQLException sqle){
             sqle.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    public boolean closeRoom(Long id, CloseRoomForm form){
+        try{
+            return roomsDao.setRoomUnavailableAndRefundMoney(id, form.getEndDate());
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            form.addError("Database error");
+            return false;
         }
     }
 }
