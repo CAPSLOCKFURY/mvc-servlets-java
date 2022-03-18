@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
@@ -69,19 +70,16 @@ public class ConnectionPool {
     }
 
     public static Connection getConnection() {
-        if(connectionPool.size() == 0) {
-            logger.error("Connection pool is empty");
-            try {
-                Thread.sleep(FREE_CONNECTION_WAIT_TIME);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
+        Connection connection = null;
+        try {
+            connection = connectionPool.poll(FREE_CONNECTION_WAIT_TIME, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ie){
+            ie.printStackTrace();
         }
-        logger.debug("got connection");
-        Connection connection = connectionPool.poll();
         if(connection == null){
             throw new NoAvailableConnections();
         }
+        logger.debug("got connection");
         usedConnections.add(connection);
         return connection;
     }
