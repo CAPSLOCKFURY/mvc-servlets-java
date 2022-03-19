@@ -4,10 +4,7 @@ import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
-import forms.AddBalanceForm;
-import forms.LoginForm;
-import forms.RegisterForm;
-import forms.UserUpdateProfileForm;
+import forms.*;
 import models.User;
 
 import java.sql.SQLException;
@@ -84,6 +81,21 @@ public class UserService {
         } catch (SQLException sqle){
             sqle.printStackTrace();
             form.addError("Database error");
+            return false;
+        }
+    }
+
+    public boolean changeUserPassword(ChangePasswordForm form, Long userId){
+        try {
+            User user = userDao.findUserForPasswordChange(form.getOldPassword(), userId);
+            if(user.getId() == null){
+                form.addLocalizedError("errors.IncorrectOldPassword");
+                return false;
+            }
+            return userDao.changePassword(form.getNewPassword(), userId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            form.addError("Database Error");
             return false;
         }
     }

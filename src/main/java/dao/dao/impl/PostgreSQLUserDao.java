@@ -3,10 +3,7 @@ package dao.dao.impl;
 import constants.SqlQueries;
 import dao.dao.UserDao;
 import db.ConnectionPool;
-import forms.AddBalanceForm;
-import forms.LoginForm;
-import forms.RegisterForm;
-import forms.UserUpdateProfileForm;
+import forms.*;
 import models.User;
 import models.base.SqlColumn;
 import models.base.SqlType;
@@ -96,6 +93,35 @@ public class PostgreSQLUserDao extends UserDao {
     public boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntityById(connection, SqlQueries.User.UPDATE_USER, form, userId);
+        }
+    }
+
+    public User findUserForPasswordChange(String password, Long userId) throws SQLException{
+        class Params{
+            @SqlColumn(columnName = "", type = SqlType.STRING)
+            private final String pass = password;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = userId;
+            public String getPass() {return pass;}
+            public Long getId() {return id;}
+        }
+        try(Connection connection = ConnectionPool.getConnection()){
+            return getOneByParams(connection, SqlQueries.User.FIND_USER_FOR_PASSWORD_CHANGE, new Params(), User.class);
+        }
+    }
+
+    @Override
+    public boolean changePassword(String newPassword, Long userId) throws SQLException{
+        class UpdateParams{
+            @SqlColumn(columnName = "", type = SqlType.STRING)
+            private final String password = newPassword;
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = userId;
+            public String getPassword() {return password;}
+            public Long getId() {return id;}
+        }
+        try(Connection connection = ConnectionPool.getConnection()){
+            return updateEntity(connection, SqlQueries.User.CHANGE_PASSWORD, new UpdateParams());
         }
     }
 

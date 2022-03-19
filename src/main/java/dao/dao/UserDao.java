@@ -26,4 +26,9 @@ public abstract class UserDao extends OrderableAbstractDao {
     public abstract boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException;
 
     public abstract boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException;
+
+    public abstract boolean changePassword(String newPassword, Long userId) throws SQLException;
+
+    public abstract User findUserForPasswordChange(String password, Long userId) throws SQLException;
+
 }

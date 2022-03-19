@@ -168,6 +168,10 @@ public final class SqlQueries {
 
         public final static String UPDATE_USER = "update users set first_name = ?, last_name = ? where id = ?";
 
+        public final static String CHANGE_PASSWORD = "update users set password = md5(?) where id = ?";
+
+        public final static String FIND_USER_FOR_PASSWORD_CHANGE = "select * from users where password = md5(?) and id = ?";
+
         private User(){}
     }
 

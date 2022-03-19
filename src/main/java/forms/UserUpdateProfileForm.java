@@ -1,5 +1,6 @@
 package forms;
 
+import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
@@ -10,9 +11,7 @@ import java.util.regex.Pattern;
 
 public class UserUpdateProfileForm extends Form {
 
-    //TODO add class for pattern holder
-    private final static Pattern loginPattern = Pattern.compile("[a-zA-Z_0-9-]+");
-    private final static Pattern namePattern = Pattern.compile("[а-яА-Я|a-zA-Z]+");
+    private final static Pattern namePattern = RegexConstants.NAME_PATTERN;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
     @SqlColumn(columnName = "first_name", type = SqlType.STRING)

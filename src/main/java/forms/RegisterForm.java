@@ -1,5 +1,6 @@
 package forms;
 
+import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
@@ -9,10 +10,10 @@ import models.base.SqlType;
 import java.util.regex.Pattern;
 
 public class RegisterForm extends Form {
-    private final static Pattern loginPattern = Pattern.compile("[a-zA-Z_0-9-]+");
-    private final static Pattern emailPattern = Pattern.compile("[a-z0-9.]+@[a-z]+(\\.com|\\.net|\\.ukr|\\.ru|\\.ua)");
-    private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
-    private final static Pattern namePattern = Pattern.compile("[а-яА-Я|a-zA-Z]+");
+    private final static Pattern loginPattern = RegexConstants.LOGIN_PATTERN;
+    private final static Pattern emailPattern = RegexConstants.EMAIL_PATTERN;
+    private final static Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
+    private final static Pattern namePattern = RegexConstants.NAME_PATTERN;
 
     @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login")
     @SqlColumn(columnName = "login", type = SqlType.STRING)
