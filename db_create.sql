@@ -1,5 +1,5 @@
-drop table if exists room_registry;
 drop table if exists billing;
+drop table if exists room_registry;
 drop table if exists room_requests;
 drop table if exists users;
 drop table if exists roles;
@@ -29,7 +29,6 @@ create table if not exists users(
 );
 
 create type room_status as enum ('unavailable', 'occupied', 'booked', 'free');
-
 
 create table if not exists room_class(
     id serial primary key
@@ -78,9 +77,9 @@ create table if not exists room_registry(
 
 create table if not exists billing(
     id serial primary key,
-    request_id u_bigint unique references room_requests(id),
+    request_id u_bigint unique references room_requests(id) on delete set null ,
     price decimal(11, 2) not null,
     pay_end_date date not null default current_date + interval '2 day',
     paid bool default false,
-    room_registry_id u_bigint not null references room_registry(id)
+    room_registry_id u_bigint references room_registry(id) on delete set null
 );
