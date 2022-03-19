@@ -314,4 +314,16 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             }
         }
     }
+
+    @Override
+    public boolean openRoom(Long roomId) throws SQLException {
+        class IdParam{
+            @SqlColumn(columnName = "", type = SqlType.LONG)
+            private final Long id = roomId;
+            public Long getId() {return id;}
+        }
+        try(Connection connection = ConnectionPool.getConnection()){
+            return updateEntity(connection, SqlQueries.Room.OPEN_ROOM, new IdParam());
+        }
+    }
 }

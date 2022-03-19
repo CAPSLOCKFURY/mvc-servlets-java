@@ -108,6 +108,8 @@ public final class SqlQueries {
                 "daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]')\n" +
                 " and room_registry.room_id = ? and archived = false";
 
+        public final static String OPEN_ROOM = "update rooms set status = 'free' where id = ?";
+
         private Room(){}
     }
 

@@ -76,4 +76,13 @@ public class AdminRoomsService {
             return false;
         }
     }
+
+    public boolean openRoom(Long id){
+        try{
+            return roomsDao.openRoom(id);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            return false;
+        }
+    }
 }

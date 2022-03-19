@@ -41,6 +41,14 @@
             </c:forEach>
         </c:if>
     </c:if>
+    <c:if test="${room.status.equals('unavailable')}">
+        <c:if test="${sessionScope.user.role == 2}">
+            <form method="post" action="<c:url value="/project/admin/room/open"/>">
+                <input type="hidden" name="roomId" value="${room.id}">
+                <button type="submit">Open room</button>
+            </form>
+        </c:if>
+    </c:if>
     <h1>Room Dates:</h1>
     <c:if test="${room.dates.size() == 0}">
         <h2>Room is free for all dates</h2>

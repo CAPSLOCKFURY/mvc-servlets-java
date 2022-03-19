@@ -43,4 +43,6 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException;
 
+    public abstract boolean openRoom(Long roomId) throws SQLException;
+
 }
