@@ -78,7 +78,6 @@ public class RoomsService {
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
         try{
-            //TODO validate room status
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");
@@ -86,6 +85,10 @@ public class RoomsService {
             }
             User user = userDao.getUserById(userId);
             Room room = roomsDao.getRoomById(roomId, "en");
+            if(room.getStatus().equals("unavailable")){
+                form.addLocalizedError("errors.roomIsUnavailable");
+                return false;
+            }
             long differenceInDays = Duration.between(form.getCheckInDate().toLocalDate().atStartOfDay(), form.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             if(user.getBalance().compareTo(room.getPrice().multiply(decimalDifferenceInDays)) < 0){

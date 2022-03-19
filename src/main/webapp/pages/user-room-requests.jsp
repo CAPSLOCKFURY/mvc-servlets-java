@@ -7,6 +7,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
+<h1>My room requests</h1>
 <c:forEach var="message" items="${messages}">
     <h2 style="color:red">${message}</h2>
 </c:forEach>

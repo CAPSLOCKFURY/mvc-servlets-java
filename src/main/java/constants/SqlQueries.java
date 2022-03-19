@@ -34,7 +34,7 @@ public final class SqlQueries {
         public final static String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
                 "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
                 "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
-                "where rooms.id not in (select room_id from room_requests where room_id is not null)\n" +
+                "where rooms.id not in (select room_id from room_requests where room_id is not null) and rooms.status <> 'unavailable' \n" +
                 "group by rooms.id, rct.id\n" +
                 "having count(room_id) filter\n" +
                 "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0";
