@@ -11,7 +11,6 @@ import models.base.pagination.Pageable;
 import models.dto.RoomRegistryPdfReportDto;
 import pdf.RoomRegistryPDFReport;
 import service.AdminRoomsService;
-import service.RoomsService;
 
 import java.io.IOException;
 import java.util.List;

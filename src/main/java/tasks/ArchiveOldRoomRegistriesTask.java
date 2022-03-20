@@ -1,10 +1,10 @@
 package tasks;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.RoomsService;
 
 import java.util.TimerTask;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ArchiveOldRoomRegistriesTask extends TimerTask {
 

@@ -1,8 +1,10 @@
 package listeners;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionListener;
 import tasks.ArchiveOldRoomRegistriesTask;
 import tasks.DeleteOldBillingsTask;
 import tasks.UpdateRoomStatusTask;

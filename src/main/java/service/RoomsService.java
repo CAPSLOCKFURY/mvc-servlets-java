@@ -6,7 +6,6 @@ import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import forms.BookRoomForm;
-import forms.ReportConfigurationForm;
 import models.Room;
 import models.RoomClass;
 import models.User;
@@ -15,12 +14,10 @@ import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
-import models.dto.RoomRegistryPdfReportDto;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
 public class RoomsService {

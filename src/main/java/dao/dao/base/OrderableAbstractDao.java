@@ -1,6 +1,5 @@
 package dao.dao.base;
 
-import dao.dao.base.PageableAbstractDao;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 

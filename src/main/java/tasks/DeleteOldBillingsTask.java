@@ -1,10 +1,10 @@
 package tasks;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.BillingService;
 
 import java.util.TimerTask;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DeleteOldBillingsTask extends TimerTask {
 
