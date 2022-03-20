@@ -15,26 +15,26 @@ public class RegisterForm extends Form {
     private final static Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
     private final static Pattern namePattern = RegexConstants.NAME_PATTERN;
 
-    @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login")
+    @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "login", type = SqlType.STRING)
     private String login;
 
-    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "email", type = SqlType.STRING)
     private String email;
 
-    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "password", type = SqlType.STRING)
     private String password;
 
-    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword", literal = "class=\"form-control my-2\"")
     private String repeatPassword;
 
-    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "first_name", type = SqlType.STRING)
     private String firstName;
 
-    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "last_name", type = SqlType.STRING)
     private String lastName;
 

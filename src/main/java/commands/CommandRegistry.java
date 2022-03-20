@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
-
+//TODO add pages for errors
 /**
  * Class which holds all the {@link Command} mapped to particular url and method
  */

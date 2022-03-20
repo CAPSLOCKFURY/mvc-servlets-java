@@ -6,22 +6,41 @@
 <fmt:setLocale value="${content_lang}"/>
 <fmt:setBundle basename="pagecontent"/>
 <html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
 <body>
-<a href="<c:url value="/project"/>"><fmt:message key="header.home"/></a>
-<c:if test="${sessionScope.user == null}">
-    <a href="<c:url value="/project/register"/>"><fmt:message key="header.register"/></a>
-    <a href="<c:url value="/project/login"/>"><fmt:message key="header.login"/></a>
-</c:if>
-<c:if test="${sessionScope.user != null}">
-    <a href="<c:url value="/project/profile"/>"><fmt:message key="header.myProfile"/></a>
-    <a href="<c:url value="/project/room-request"/>"><fmt:message key="header.requestRoom"/></a>
-</c:if>
-<form action="<c:url value="/project/change-language"/>" method="get">
-    <select name="lang">
-        <option value="en" <c:if test="${content_lang.equals(\"en\")}">selected</c:if>>English</option>
-        <option value="ru" <c:if test="${content_lang.equals(\"ru\")}">selected</c:if>>Русский</option>
-    </select>
-    <button type="submit"><fmt:message key="header.changeLang"/></button>
-</form>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="<c:url value="/project"/>"><fmt:message key="header.home"/></a>
+    </div>
+    <div class="container-fluid justify-content-end">
+        <ul class="navbar-nav">
+            <c:if test="${sessionScope.user == null}">
+                <li class="nav-item">
+                    <a class="link-info me-2" href="<c:url value="/project/login"/>"><fmt:message key="header.login"/></a>
+                </li>
+                <li class="nav-item">
+                    <a class="link-info me-2" href="<c:url value="/project/register"/>"><fmt:message key="header.register"/></a>
+                </li>
+            </c:if>
+            <c:if test="${sessionScope.user != null}">
+                <li class="nav-item">
+                    <a class="link-info me-2" href="<c:url value="/project/profile"/>"><fmt:message key="header.myProfile"/></a>
+                </li>
+                <li class="link-info">
+                    <a class="nav-link me-2" href="<c:url value="/project/room-request"/>"><fmt:message key="header.requestRoom"/></a>
+                </li>
+            </c:if>
+        </ul>
+        <form class="d-flex my-0" action="<c:url value="/project/change-language"/>" method="get">
+            <select tabindex="-1" class="form-control me-2 form-select" name="lang">
+                <option value="en" <c:if test="${content_lang.equals(\"en\")}">selected</c:if>>English</option>
+                <option value="ru" <c:if test="${content_lang.equals(\"ru\")}">selected</c:if>>Русский</option>
+            </select>
+            <button class="nav-item btn-sm btn-dark text-nowrap" type="submit">Change language</button>
+        </form>
+    </div>
+</nav>
 </body>
 </html>

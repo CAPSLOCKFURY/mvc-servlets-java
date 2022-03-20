@@ -11,13 +11,15 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-    <h1><fmt:message key="title.registration"/></h1>
-    <form method="post">
+<h1 class="ms-2"><fmt:message key="title.registration"/></h1>
+<div class="d-flex ms-2">
+    <form method="post" class="form-group">
         <form:renderForm formClassPath="forms.RegisterForm"/>
-        <button type="submit"><fmt:message key="register.register"/></button>
+        <button class="btn btn-danger" type="submit"><fmt:message key="register.register"/></button>
     </form>
-    <c:forEach var="error" items="${errors}">
-        <h2 style="color:red">${error}</h2>
-    </c:forEach>
+</div>
+<c:forEach var="error" items="${errors}">
+    <h2 class="text-danger">${error}</h2>
+</c:forEach>
 </body>
 </html>
