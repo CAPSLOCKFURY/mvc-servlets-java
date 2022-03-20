@@ -13,15 +13,15 @@
     <a href="<c:url value="/project/login"/>"><fmt:message key="header.login"/></a>
 </c:if>
 <c:if test="${sessionScope.user != null}">
-    <a href="<c:url value="/project/profile"/>">Your profile</a>
-    <a href="<c:url value="/project/room-request"/>">Request room</a>
+    <a href="<c:url value="/project/profile"/>"><fmt:message key="header.myProfile"/></a>
+    <a href="<c:url value="/project/room-request"/>"><fmt:message key="header.requestRoom"/></a>
 </c:if>
 <form action="<c:url value="/project/change-language"/>" method="get">
     <select name="lang">
         <option value="en" <c:if test="${content_lang.equals(\"en\")}">selected</c:if>>English</option>
         <option value="ru" <c:if test="${content_lang.equals(\"ru\")}">selected</c:if>>Русский</option>
     </select>
-    <button type="submit">Change Language</button>
+    <button type="submit"><fmt:message key="header.changeLang"/></button>
 </form>
 </body>
 </html>
