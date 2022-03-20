@@ -37,10 +37,21 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException;
 
+    /**
+     * Sets archived = true, for all old room registries
+     */
     public abstract int archiveOldRoomRegistries() throws SQLException;
 
+    /**
+     * Updates all rooms statuses, sets free if free for today date, sets occupied if room is occupied for today
+     */
     public abstract int updateRoomStatus() throws SQLException;
 
+    /**
+     * Closes given room (sets status = unavailable)
+     * @param endDate Approximate date of room closing, money will be refunded for all people,
+     * which ordered on the overlapping dates of today - endDate
+     */
     public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException;
 
     public abstract boolean openRoom(Long roomId) throws SQLException;

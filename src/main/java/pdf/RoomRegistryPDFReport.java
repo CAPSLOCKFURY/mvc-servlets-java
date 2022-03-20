@@ -35,12 +35,20 @@ public class RoomRegistryPDFReport {
 
     private PdfFont font;
 
+    /**
+     * @param out Output stream to which pdf will be written
+     * @param data List of objects which will fill table in pdf
+     * @param request Request from which, url will be determined, need to correctly make href to room id
+     */
     public RoomRegistryPDFReport(OutputStream out, List<RoomRegistryPdfReportDto> data, HttpServletRequest request) {
         this.out = out;
         this.data = data;
         this.request = request;
     }
 
+    /**
+     * Writes document to Output Stream
+     */
     public void buildDocument(){
         PdfWriter writer = new PdfWriter(out);
         try {

@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class CookieFormErrorsPRG implements FormErrorPRG {
 
+    /**
+     * @param errors list of error to set
+     * @return Cookie which should be set in response
+     */
     public static Cookie setErrorCookie(List<String> errors){
         String joinedErrors = String.join(";", errors);
         String urlSafeErrors = UTF8UrlCoder.encode(joinedErrors);

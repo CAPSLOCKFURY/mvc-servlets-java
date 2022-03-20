@@ -16,6 +16,9 @@ public @interface HtmlSelect {
 
     HtmlOption[] options() default {};
 
+    /**
+     * If this is not default, html options will be loaded from request attribute with given name
+     */
     String dynamicOptionsAttribute() default "";
 
     HtmlLabel label() default @HtmlLabel(forElement = "", text = "");

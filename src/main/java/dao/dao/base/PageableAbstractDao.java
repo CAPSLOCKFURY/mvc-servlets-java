@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Base dao which can do paginating
+ */
 public class PageableAbstractDao extends AbstractDao {
 
     protected final <T> List<T> getAll(Connection connection, String sql, Class<T> model, Pageable pageable) throws SQLException {

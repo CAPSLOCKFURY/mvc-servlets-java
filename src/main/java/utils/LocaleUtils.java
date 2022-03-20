@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 
 public final class LocaleUtils {
 
+    /**
+     * @param cookies cookies, in which locale will be searched
+     * @return String of found locale or default value ("en")
+     */
     public static String getLocaleFromCookies(Cookie[] cookies){
         if(cookies == null || cookies.length == 0){
             return "en";

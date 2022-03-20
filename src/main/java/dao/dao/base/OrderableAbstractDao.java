@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Base class for dao that can do ordering and paginating
+ */
 public class OrderableAbstractDao extends PageableAbstractDao {
 
     protected final <T> List<T> getAll(Connection connection, String sql, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{

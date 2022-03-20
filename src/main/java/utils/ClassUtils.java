@@ -17,6 +17,11 @@ public final class ClassUtils {
 
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Finds all classes in given package and it subpackages
+     * @param packageName name of package in which classes will be searched
+     * @return List of classes found in package and it subpackages
+     */
     public static List<Class<?>> getClassesInPackage(String packageName){
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL packageRoot = classLoader.getResource(packageName.replace('.', '/'));
@@ -28,6 +33,10 @@ public final class ClassUtils {
         return getClassFiles(files, packageName);
     }
 
+    /**
+     * @param packageName name of package in which classes will be searched
+     * @return all commands that implements {@link Command} and hava {@link WebMapping} annotation
+     */
     public static List<Class<Command>> getAnnotatedCommandClassesInPackage(String packageName){
         List<Class<?>> classes = getClassesInPackage(packageName);
         List<Class<?>> filteredClasses = classes.stream()

@@ -12,6 +12,9 @@ import java.util.*;
 
 import static utils.StringUtils.capitalize;
 
+/**
+ * Base class for all forms
+ */
 public abstract class Form {
     protected List<String> errors = new LinkedList<>();
 
@@ -23,6 +26,13 @@ public abstract class Form {
         return errors;
     }
 
+    /**
+     * Maps request parameters to html form with {@link HtmlInput} or {@link HtmlSelect} or {@link HtmlTextArea} annotation
+     * <p>
+     *     Note: form must have String setter for each field which should be mapped
+     * </p>
+     * @param request Request from which parameters will be got
+     */
     public final void mapRequestToForm(HttpServletRequest request){
         Class<? extends Form> formClass = this.getClass();
         Arrays.stream(formClass.getDeclaredFields())

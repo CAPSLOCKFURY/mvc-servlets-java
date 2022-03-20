@@ -2,6 +2,9 @@ package commands.base;
 
 import java.util.Objects;
 
+/**
+ * Class for matching request to the bound {@link Command} in hash map
+ */
 public class UrlBind {
     private final String url;
     private final RequestMethod method;

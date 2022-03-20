@@ -9,6 +9,10 @@ import java.util.Arrays;
 
 import static utils.StringUtils.capitalize;
 
+/**
+ * Class for mapping ResultSet to given model
+ * @param <T> model to map
+ */
 public class SqlMapper<T> {
     private T model;
 
@@ -16,6 +20,10 @@ public class SqlMapper<T> {
         this.model = model;
     }
 
+    /**
+     * Maps ResultSet to model
+     * @param rs ResultSet from which values will be got
+     */
     public void mapFromResultSet(ResultSet rs){
         Arrays.stream(model.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SqlColumn.class))

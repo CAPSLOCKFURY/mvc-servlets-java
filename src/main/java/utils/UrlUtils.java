@@ -7,6 +7,10 @@ public final class UrlUtils {
         return request.getContextPath().concat(request.getServletPath()).concat(url);
     }
 
+    /**
+     * @param request Request from which url will be determined
+     * @return Full url with get parameters
+     */
     public static String getFullUrl(HttpServletRequest request){
         String requestUrl = request.getRequestURL().toString();
         String queryParameters = request.getQueryString();

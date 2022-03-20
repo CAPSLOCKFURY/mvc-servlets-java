@@ -12,12 +12,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.StringUtils.capitalize;
 
+/**
+ * Class for mapping object to prepared statement
+ * <p>
+ *     Note: object from which statement will be mapped, should have getter methods for each of its fields annotated with {@link SqlColumn}
+ * </p>
+ */
 public class PreparedStatementMapper<T> {
 
     private T form;
     private PreparedStatement stmt;
     private Set<String> ignoreFields;
 
+    /**
+     * @param form Object from which statement will be mapped, you should put {@link SqlColumn} annotation on fields that should be mapped, you can ignore {@link SqlColumn#columnName()}
+     * @param stmt Prepared statement which will be mapped
+     * @param ignoreFields name of fields that should be ignored at mapping
+     */
     public PreparedStatementMapper(T form, PreparedStatement stmt, String ...ignoreFields){
         this.form = form;
         this.stmt = stmt;

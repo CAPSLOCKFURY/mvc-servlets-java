@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
+/**
+ * Class which holds all the {@link Command} mapped to particular url and method
+ */
 public final class CommandRegistry {
 
     private static final Logger logger = LogManager.getLogger();
@@ -33,6 +36,9 @@ public final class CommandRegistry {
 
     private final Map<UrlBind, Command> commandMap = new HashMap<>();
 
+    /**
+     * You can manually add lambda command to {@link #commandMap} in this constructor
+     */
     private CommandRegistry(){
         List<Class<Command>> commands = ClassUtils.getAnnotatedCommandClassesInPackage("commands.impl");
         registerAnnotatedCommands(commands);
@@ -93,6 +99,12 @@ public final class CommandRegistry {
                 }));
     }
 
+    /**
+     * Resolves command from given request
+     * @param request Request from which url and request method will be got
+     * @return {@link Command} if command is found matching
+     * @throws CommandNotFoundException if command is not found
+     */
     public Command resolveCommand(HttpServletRequest request) throws CommandNotFoundException {
         logger.debug("Resolving command");
         String url = getRequestUrl(request);
@@ -106,6 +118,9 @@ public final class CommandRegistry {
         return instance;
     }
 
+    /**
+     * @return Url from which all information about server path will be removed
+     */
     private static String getRequestUrl(HttpServletRequest request){
         String pathInfo = request.getPathInfo();
         logger.debug("Path info: " + pathInfo);

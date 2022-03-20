@@ -8,18 +8,28 @@ import utils.UTF8UrlCoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of message transport which stores messages in cookies
+ * <p>
+ *     Note: messages are automatically encoding into url safe format
+ * </p>
+ */
 public class CookieMessageTransport implements MessageTransport {
 
     private List<String> messages = new LinkedList<>();
 
     private Locale locale = Locale.ROOT;
 
+    /**
+     * This method needed, if {@link #setMessage(HttpServletRequest, HttpServletResponse)} is not enough for you,
+     * or you want more flexibility
+     * @return Cookie which contains all messages
+     */
     public Cookie getMessageCookie() {
         String joinedMessages = String.join(";", messages);
         String urlSafeMessages = UTF8UrlCoder.encode(joinedMessages);
         return new Cookie("messages", urlSafeMessages);
     }
-
 
     public void setMessage(HttpServletRequest request, HttpServletResponse response) {
         response.addCookie(getMessageCookie());
@@ -38,6 +48,10 @@ public class CookieMessageTransport implements MessageTransport {
         messages.add(bundle.getString(key));
     }
 
+    /**
+     * @param cookies accepts cookies
+     * @return List of decoded messages from message cookie
+     */
     public static List<String> getMessagesFromCookies(Cookie[] cookies){
         return Arrays.stream(cookies)
                 .filter(c -> c.getName().equals("messages"))
@@ -45,6 +59,9 @@ public class CookieMessageTransport implements MessageTransport {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Delete cookie which stores messages from request
+     */
     public void deleteMessageCookie(Cookie[] cookies, HttpServletRequest request, HttpServletResponse response){
         Arrays.stream(cookies)
                 .filter(c -> c.getName().equals("messages"))

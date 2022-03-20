@@ -14,9 +14,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
+/**
+ * Front-controller servlet which handles all requests
+ */
 public class ControllerServlet extends HttpServlet {
 
     private static final Logger logger = LogManager.getLogger();
+
+    private static final CommandRegistry commandRegistry = CommandRegistry.getInstance();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         handleRequest(request, response);
@@ -29,15 +34,14 @@ public class ControllerServlet extends HttpServlet {
     private void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             logger.debug("Started handling request");
-            CommandRegistry commandRegistry = CommandRegistry.getInstance();
             Command command = commandRegistry.resolveCommand(request);
             logger.debug("Resolved command");
             CommandResult result = command.execute(request, response);
             logger.debug("Executed command");
             if(result.getDirection() == RequestDirection.FORWARD){
-                request.getRequestDispatcher("/pages/" + result.getJspPage()).forward(request, response);
+                request.getRequestDispatcher("/pages/" + result.getUrl()).forward(request, response);
             } else if(result.getDirection() == RequestDirection.REDIRECT){
-                response.sendRedirect(result.getJspPage());
+                response.sendRedirect(result.getUrl());
             } else if(result.getDirection() == RequestDirection.VOID){
                 //this intentionally left blank
             }

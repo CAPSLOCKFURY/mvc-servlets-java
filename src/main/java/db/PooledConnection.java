@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+/**
+ * Proxy class for Connection
+ * This class is returned by {@link ConnectionPool}
+ * This class is caching all prepared statements, and instead of closing connection it releases connection to {@link ConnectionPool}
+ */
 public class PooledConnection implements Connection {
 
     private final Connection connection;
@@ -16,6 +21,9 @@ public class PooledConnection implements Connection {
         this.connection = connection;
     }
 
+    /**
+     * Prepares statement and caches it
+     */
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         PreparedStatement stmt = preparedStatementCache.get(sql);
@@ -26,6 +34,9 @@ public class PooledConnection implements Connection {
         return stmt;
     }
 
+    /**
+     * releases connection back to {@link ConnectionPool}
+     */
     @Override
     public void close() {
         ConnectionPool.releaseConnection(this);

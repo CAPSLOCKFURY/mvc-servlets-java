@@ -1,6 +1,7 @@
 package db;
 
 import exceptions.db.ConnectionCreationException;
+import exceptions.db.ConnectionNotReturned;
 import exceptions.db.IncorrectDriverPath;
 import exceptions.db.NoAvailableConnections;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,21 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Connection pool class, you should create database.properties file, from which properties will be loaded
+ * <p>
+ * Example of Database properties file
+ *  database.url = jdbc:postgresql://localhost:5432/table
+ *  database.user = admin
+ *  database.password = admin
+ *  driver.name = org.postgresql.Driver
+ *  pool.size = 10
+ *  pool.freeConnectionWaitTime = 3000
+ * </p>
+ * <p>
+ *     Note: Connections which are returned are {@link PooledConnection} class
+ * </p>
+ */
 public class ConnectionPool {
 
     private static final Logger logger = LogManager.getLogger();
@@ -49,6 +65,9 @@ public class ConnectionPool {
         logger.info("Connection pool initialized");
     }
 
+    /**
+     * Initializes connection pool, if it is not initialized
+     */
     public static void initPool(){
         lock.lock();
         try{
@@ -69,6 +88,10 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Gets connection from connection pool, if pool is empty it will wait pool.freeConnectionWaitTime milliseconds defined in database.properties
+     * @return Connection or throw {@link NoAvailableConnections} exception, if connection pool is empty
+     */
     public static Connection getConnection() {
         Connection connection = null;
         try {
@@ -84,15 +107,22 @@ public class ConnectionPool {
         return connection;
     }
 
+    /**
+     * Releases connection back to pool, if the connection was in usedConnections list,
+     * or throws {@link ConnectionNotReturned} if connection was not returned to pool
+     * @param connection Connection to release
+     */
     public static void releaseConnection(Connection connection){
         if(usedConnections.remove(connection)) {
             if(connectionPool.offer(connection)) {
                 logger.debug("Returned connection back to pool");
             } else {
                 logger.fatal("Could not return connection to connection poll");
+                throw new ConnectionNotReturned();
             }
         } else {
             logger.fatal("Could not return connection to connection poll");
+            throw new ConnectionNotReturned();
         }
     }
 
@@ -110,6 +140,9 @@ public class ConnectionPool {
         usedConnections.forEach(ConnectionPool::releaseConnection);
     }
 
+    /**
+     * Closes all jdbc connections, should be only used at application shutdown
+     */
     public static void closeAllConnections(){
         connectionPool.forEach(c -> {
             try {
