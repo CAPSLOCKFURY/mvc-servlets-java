@@ -17,7 +17,8 @@
 <h1><fmt:message key="roomRequests.capacity"/> : ${roomRequest.capacity}</h1>
 <h1><fmt:message key="roomRequests.roomClass"/> : ${roomRequest.className}</h1>
 <h1><fmt:message key="roomRequests.admin.comment"/> : ${roomRequest.comment}</h1>
-<h1><fmt:message key="roomRequests.status"/> : ${roomRequest.status}</h1>
+<h1><fmt:message key="roomRequests.managerComment"/> : ${roomRequest.managerComment}</h1>
+<h1><fmt:message key="roomRequests.status"/> : <fmt:message key="${'roomRequestStatus.'.concat(roomRequest.status.replace(' ', '_'))}"/></h1>
 <h1><fmt:message key="roomRequests.checkInDate"/> : ${roomRequest.checkInDate}</h1>
 <h1><fmt:message key="roomRequests.checkOutDate"/> : ${roomRequest.checkOutDate}</h1>
 <h1><fmt:message key="roomRequests.admin.userLogin"/> : ${roomRequest.login}</h1>
@@ -59,7 +60,7 @@
         <h1><fmt:message key="rooms.roomNumber"/> : ${room.number}</h1>
         <h1><fmt:message key="rooms.roomName"/> : ${room.name}</h1>
         <h1><fmt:message key="rooms.className"/> : ${room.className}</h1>
-        <h1><fmt:message key="rooms.roomStatus"/> : ${room.status}</h1>
+        <h1><fmt:message key="rooms.roomStatus"/> : <fmt:message key="${'roomStatus.'.concat(room.status)}"/></h1>
         <h1><fmt:message key="rooms.roomCapacity"/> : ${room.capacity}</h1>
         <h1><fmt:message key="rooms.roomPrice"/> : ${room.price}</h1>
         <form method="post" action="<c:url value="/project/admin/room-request/assign"/>">

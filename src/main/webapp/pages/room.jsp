@@ -16,7 +16,7 @@
     <h1><fmt:message key="rooms.roomName"/> : ${room.name}</h1>
     <h1><fmt:message key="rooms.className"/> : ${room.className}</h1>
     <h1><fmt:message key="rooms.roomCapacity"/> : ${room.capacity}</h1>
-    <h1><fmt:message key="rooms.roomStatus"/> : ${room.status}</h1>
+    <h1><fmt:message key="rooms.roomStatus"/> : <fmt:message key="${'roomStatus.'.concat(room.status)}"/></h1>
     <h1><fmt:message key="rooms.roomPrice"/> : ${room.price}</h1>
     <c:if test="${!room.status.equals('unavailable')}">
         <c:if test="${sessionScope.user != null}">

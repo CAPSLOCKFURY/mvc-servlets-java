@@ -39,7 +39,8 @@
         <h1><fmt:message key="roomRequests.capacity"/> : ${roomRequest.capacity}</h1>
         <h1><fmt:message key="roomRequests.roomClass"/> : ${roomRequest.className}</h1>
         <h1><fmt:message key="roomRequests.admin.comment"/> : ${roomRequest.comment}</h1>
-        <h1><fmt:message key="roomRequests.status"/> : ${roomRequest.status}</h1>
+        <h1><fmt:message key="roomRequests.managerComment"/> : ${roomRequest.managerComment}</h1>
+        <h1><fmt:message key="roomRequests.status"/> : <fmt:message key="${'roomRequestStatus.'.concat(roomRequest.status.replace(' ', '_'))}"/></h1>
         <h1><fmt:message key="roomRequests.checkInDate"/> : ${roomRequest.checkInDate}</h1>
         <h1><fmt:message key="roomRequests.checkOutDate"/> : ${roomRequest.checkOutDate}</h1>
         <h1><fmt:message key="roomRequests.admin.userLogin"/> : ${roomRequest.login}</h1>

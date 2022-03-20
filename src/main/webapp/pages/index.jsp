@@ -35,7 +35,7 @@
     <h1><fmt:message key="rooms.roomNumber"/>: ${room.number}</h1>
     <h1><fmt:message key="rooms.roomName"/>: ${room.name}</h1>
     <h1><fmt:message key="rooms.className"/>: ${room.className}</h1>
-    <h1><fmt:message key="rooms.roomStatus"/> : ${room.status}</h1>
+    <h1><fmt:message key="rooms.roomStatus"/> : <fmt:message key="${'roomStatus.'.concat(room.status)}"/></h1>
     <h1><fmt:message key="rooms.roomCapacity"/> : ${room.capacity}</h1>
     <h1><fmt:message key="rooms.roomPrice"/> : ${room.price}</h1>
     <h2><a href="<c:url value="/project/room">

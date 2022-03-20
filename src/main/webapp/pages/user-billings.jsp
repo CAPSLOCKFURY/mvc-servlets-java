@@ -21,7 +21,7 @@
     <hr>
     <h1><fmt:message key="billings.price"/> : ${billing.price}</h1>
     <h1><fmt:message key="billings.payEndDate"/> : ${billing.payEndDate}</h1>
-    <h1><fmt:message key="billings.paid"/> : ${billing.paid}</h1>
+    <h1><fmt:message key="billings.paid"/> : <c:if test="${billing.paid == true}"><fmt:message key="true"/></c:if><c:if test="${billing.paid == false}"><fmt:message key="false"/></c:if></h1>
     <c:if test="${!billing.paid}">
         <form method="post" action="<c:url value="/project/profile/my-billings/pay"/>">
             <input type="hidden" name="billingId" value="${billing.id}">

@@ -29,7 +29,7 @@ public final class SqlQueries {
         public final static String FIND_ROOM_HISTORY_BY_USER_ID = "select r.*, rct.name as class_name, room_registry.check_in_date, room_registry.check_out_date from room_registry\n" +
                 "    left outer join rooms r on room_registry.room_id = r.id\n" +
                 "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
-                "where user_id = ?";
+                "where user_id = ? order by -room_registry.id";
 
         public final static String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
                 "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
@@ -181,7 +181,7 @@ public final class SqlQueries {
 
         public final static String FIND_ALL_BILLING_BY_USER_ID = "select * from billing \n" +
                 "    left outer join room_requests rr on billing.request_id = rr.id\n" +
-                "where rr.user_id = ?";
+                "where rr.user_id = ? order by -billing.id";
 
         public final static String PAY_BILLING = "update billing set paid = true where id = ?";
 
