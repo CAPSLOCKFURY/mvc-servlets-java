@@ -22,8 +22,12 @@
     <welcome-file-list>
         <welcome-file>/pages/welcome.jsp</welcome-file>
     </welcome-file-list>
-<!--    <error-page>-->
-<!--        <error-code>404</error-code>-->
-<!--        <location>/pages/errors/error_404.jsp</location>-->
-<!--    </error-page>-->
+    <error-page>
+        <location>/pages/errors/dao-error.jsp</location>
+        <exception-type>exceptions.db.DaoException</exception-type>
+    </error-page>
+    <error-page>
+        <location>/pages/errors/generic-error.jsp</location>
+        <exception-type>java.lang.Throwable</exception-type>
+    </error-page>
 </web-app>

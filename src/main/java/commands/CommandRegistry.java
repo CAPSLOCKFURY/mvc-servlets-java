@@ -5,6 +5,7 @@ import commands.base.security.AuthenticatedOnly;
 import commands.base.security.NonAuthenticatedOnly;
 import commands.base.security.Security;
 import exceptions.CommandNotFoundException;
+import exceptions.db.DaoException;
 import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.Cookie;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
-//TODO add pages for errors
+
 /**
  * Class which holds all the {@link Command} mapped to particular url and method
  */
