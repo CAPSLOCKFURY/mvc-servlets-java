@@ -14,7 +14,9 @@ import service.AdminRoomsService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
@@ -39,6 +41,7 @@ public class GenerateReport implements Command {
         }
         List<RoomRegistryPdfReportDto> data = roomsService.findDataForRoomRegistryReport(form, pageable);
         RoomRegistryPDFReport pdfReport = new RoomRegistryPDFReport(out, data, request);
+        pdfReport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         pdfReport.buildDocument();
         return new CommandResult("", RequestDirection.VOID);
     }

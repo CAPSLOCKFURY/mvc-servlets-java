@@ -20,6 +20,8 @@ import models.dto.RoomRegistryPdfReportDto;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static utils.UrlUtils.getAbsoluteUrl;
 
@@ -30,6 +32,10 @@ public class RoomRegistryPDFReport {
     private final List<RoomRegistryPdfReportDto> data;
 
     private final HttpServletRequest request;
+
+    private Locale locale = Locale.ROOT;
+
+    private ResourceBundle bundle;
 
     public static final String FONT = "/fonts/Arial.ttf";
 
@@ -56,6 +62,7 @@ public class RoomRegistryPDFReport {
         } catch (IOException e){
             e.printStackTrace();
         }
+        bundle = ResourceBundle.getBundle("pdf", locale);
         PdfDocument pdfDocument = new PdfDocument(writer);
         addMetaData(pdfDocument.getDocumentInfo());
         Document document = new Document(pdfDocument);
@@ -71,17 +78,17 @@ public class RoomRegistryPDFReport {
 
     private void addColumns(Table table){
         Cell userIdCol = new Cell();
-        userIdCol.add(new Paragraph("User id"));
+        userIdCol.add(new Paragraph(bundle.getString("userId")));
         Cell fistNameCol = new Cell();
-        fistNameCol.add(new Paragraph("First Name"));
+        fistNameCol.add(new Paragraph(bundle.getString("firstName")));
         Cell lastNameCol = new Cell();
-        lastNameCol.add(new Paragraph("Last Name"));
+        lastNameCol.add(new Paragraph(bundle.getString("lastName")));
         Cell checkInDateCol = new Cell();
-        checkInDateCol.add(new Paragraph("Check In Date"));
+        checkInDateCol.add(new Paragraph(bundle.getString("checkInDate")));
         Cell checkOutDateCol = new Cell();
-        checkOutDateCol.add(new Paragraph("Check Out Date"));
+        checkOutDateCol.add(new Paragraph(bundle.getString("checkOutDate")));
         Cell roomIdCol = new Cell();
-        roomIdCol.add(new Paragraph("Room Id"));
+        roomIdCol.add(new Paragraph(bundle.getString("roomId")));
         table.addCell(userIdCol).addCell(fistNameCol).addCell(lastNameCol).addCell(checkInDateCol).addCell(checkOutDateCol).addCell(roomIdCol);
     }
 
@@ -108,8 +115,12 @@ public class RoomRegistryPDFReport {
     }
 
     private void writeHeader(Document document){
-        Paragraph header = new Paragraph("Room Registry Report");
+        Paragraph header = new Paragraph(bundle.getString("roomRegistryReport"));
         header.setTextAlignment(TextAlignment.CENTER);
         document.add(header);
+    }
+
+    public void setLocale(Locale locale ){
+        this.locale = locale;
     }
 }
