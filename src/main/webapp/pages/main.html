@@ -28,26 +28,18 @@
         </form>
     </div>
 </nav>
-<h1 class="ms-2">Request Room</h1>
-<div class="d-flex ms-2">
-    <form method="post" class="form-group">
-        <label for="capacity">Room Capacity</label>
-        <input class="form-control my-2" type="number" name="capacity" id="capacity" min="1">
-        <label for="roomClass">Room class</label>
-        <select class="form-select my-2" name="roomClass" id="roomClass">
-            <option value="1">Cheap</option>
-            <option value="2">Normal</option>
-            <option value="3">Half lux</option>
-            <option value="4">Lux</option>
-        </select>
-        <label for="checkInDate">Check in date</label>
-        <input class="form-control my-2" type="date" name="checkInDate" id="checkInDate" min="2022-03-21">
-        <label for="checkOutDate">Check out date</label>
-        <input class="form-control my-2" type="date" name="checkOutDate" id="checkOutDate">
-        <label for="comment">Commentary</label>
-        <textarea class="form-control my-2" name="comment" rows="3" cols="35" id="comment"></textarea>
-        <button class="btn btn-success" type="submit">Make request</button>
-    </form>
+<h1 class="ms-2">My Room History</h1>
+<div class="d-flex">
+    <div class="row card bg-light ms-2 my-2">
+        <h1>Room Number : 2</h1>
+        <h1>Room Name : Room 2</h1>
+        <h1>Room Price : 110.00</h1>
+        <h1>Room Capacity : 3</h1>
+        <h1>Class Name : Cheap</h1>
+        <h1>Check in date : 2022-03-21</h1>
+        <h1>Check out date : 2022-03-31</h1>
+        <h2><a href="/project/room?id=2">See Room</a></h2>
+    </div>
 </div>
 </body>
 </html>
