@@ -11,13 +11,17 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h1><fmt:message key="title.balance"/></h1>
-<form method="post">
-    <form:renderForm formClassPath="forms.AddBalanceForm"/>
-    <button type="submit"><fmt:message key="balance.addBalance"/></button>
-</form>
-<c:forEach var="error" items="${errors}">
-    <h2 style="color:red">${error}</h2>
-</c:forEach>
+<h1 class="ms-2"><fmt:message key="title.balance"/></h1>
+<div class="d-flex ms-2">
+    <form class="form-group" method="post">
+        <form:renderForm formClassPath="forms.AddBalanceForm"/>
+        <button class="btn btn-outline-success" type="submit"><fmt:message key="balance.addBalance"/></button>
+    </form>
+</div>
+<div class="ms-2">
+    <c:forEach var="error" items="${errors}">
+        <h2 style="color:red">${error}</h2>
+    </c:forEach>
+</div>
 </body>
 </html>

@@ -13,12 +13,12 @@ import java.time.LocalDate;
 public class BookRoomForm extends Form {
 
     @SqlColumn(columnName = "", type = SqlType.DATE)
-    @HtmlInput(name = "checkInDate", type = InputType.DATE, id="checkInDate", literal = "onchange=\"dateChange()\"",
+    @HtmlInput(name = "checkInDate", type = InputType.DATE, id="checkInDate", literal = "onchange=\"dateChange()\" class=\"form-control my-1\"",
         label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
     private java.sql.Date checkInDate;
 
     @SqlColumn(columnName = "", type = SqlType.DATE)
-    @HtmlInput(name = "checkOutDate", type = InputType.DATE, id="checkOutDate", literal = "onchange=\"dateChange()\"",
+    @HtmlInput(name = "checkOutDate", type = InputType.DATE, id="checkOutDate", literal = "onchange=\"dateChange()\" class=\"form-control my-1\"",
         label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
     private java.sql.Date checkOutDate;
 

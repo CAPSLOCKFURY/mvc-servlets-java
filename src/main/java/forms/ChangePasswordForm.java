@@ -11,10 +11,10 @@ public class ChangePasswordForm extends Form {
 
     private final static Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
 
-    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "oldPassword")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "oldPassword", literal = "class=\"form-control my-2\"")
     private String oldPassword;
 
-    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "newPassword")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "newPassword", literal = "class=\"form-control my-2\"")
     private String newPassword;
 
     @Override

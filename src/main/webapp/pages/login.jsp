@@ -11,15 +11,15 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<form method="post">
-    <h1><fmt:message key="title.login"/></h1>
-    <form method="post">
+<h1 class="ms-2"><fmt:message key="title.login"/></h1>
+<div class="d-flex ms-2">
+    <form class="form-group" method="post">
         <form:renderForm formClassPath="forms.LoginForm"/>
-        <button type="submit"><fmt:message key="title.login"/></button>
+        <button class="btn btn-info" type="submit"><fmt:message key="title.login"/></button>
     </form>
-    <c:forEach var="error" items="${errors}">
-        <h2 style="color:red">${error}</h2>
-    </c:forEach>
-</form>
+</div>
+<c:forEach var="error" items="${errors}">
+    <h2 class="text-danger">${error}</h2>
+</c:forEach>
 </body>
 </html>

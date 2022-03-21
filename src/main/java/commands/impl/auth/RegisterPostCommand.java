@@ -38,7 +38,7 @@ public class RegisterPostCommand implements Command {
         User user = new User(form);
         user.setId(id);
         session.setAttribute("user", user);
-        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+        return new CommandResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
 
     }
 }

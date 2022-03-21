@@ -12,11 +12,16 @@ import java.math.RoundingMode;
 public class AddBalanceForm extends Form {
 
     @SqlColumn(columnName = "", type = SqlType.DECIMAL)
-    @HtmlInput(name = "amount", type = InputType.NUMBER, literal = "step=\"0.01\"")
+    @HtmlInput(name = "amount", type = InputType.NUMBER, literal = "step=\"0.01\" class =\"form-control my-2\"")
     private BigDecimal amount;
 
     @Override
     public boolean validate() {
+        if(amount != null){
+            if(amount.compareTo(BigDecimal.ZERO) <= 0){
+                addLocalizedError("errors.IncorrectMoneyAmount");
+            }
+        }
         return errors.size() == 0;
     }
 

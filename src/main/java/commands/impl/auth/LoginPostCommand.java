@@ -42,6 +42,6 @@ public class LoginPostCommand implements Command {
         }
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
-        return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+        return new CommandResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
     }
 }

@@ -14,10 +14,10 @@ public class LoginForm extends Form {
     private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
 
 
-    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login")
+    @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login", literal = "class=\"form-control my-2\"")
     @SqlColumn(type = SqlType.STRING, columnName = "login")
     private String login;
-    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password")
+    @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password", literal = "class=\"form-control my-2\"")
     @SqlColumn(type = SqlType.STRING, columnName = "password")
     private String password;
 

@@ -11,13 +11,17 @@
 </head>
 <body>
     <jsp:include page="header.jsp"/>
-    <h1><fmt:message key="title.changePassword"/></h1>
-    <form method="post">
-        <form:renderForm formClassPath="forms.ChangePasswordForm"/>
-        <button type="submit"><fmt:message key="changePassword.changePassword"/></button>
-    </form>
+    <h1 class="ms-2"><fmt:message key="title.changePassword"/></h1>
+    <div class="d-flex ms-2">
+        <form class="form-group" method="post">
+            <form:renderForm formClassPath="forms.ChangePasswordForm"/>
+            <button class="btn btn-outline-danger" type="submit"><fmt:message key="changePassword.changePassword"/></button>
+        </form>
+    </div>
+<div class="ms-2">
     <c:forEach var="error" items="${errors}">
         <h2 style="color:red">${error}</h2>
     </c:forEach>
+</div>
 </body>
 </html>

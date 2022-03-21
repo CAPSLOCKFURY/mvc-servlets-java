@@ -11,14 +11,18 @@
 </head>
 <body>
     <jsp:include page="header.jsp"/>
-    <h1><fmt:message key="title.profileUpdate"/></h1>
-    <form method="post">
-        <input name="firstName" type="text" value="${dbUser.firstName}">
-        <input name="lastName" type="text" value="${dbUser.lastName}">
-        <button type="submit"><fmt:message key="updateProfile.updateProfile"/></button>
-        <c:forEach var="error" items="${errors}">
-            <h2 style="color:red">${error}</h2>
-        </c:forEach>
-    </form>
+    <h1 class="ms-2"><fmt:message key="title.profileUpdate"/></h1>
+    <div class="d-flex ms-2">
+        <form class="form-group" method="post">
+            <input class="form-control my-2" name="firstName" type="text" value="${dbUser.firstName}">
+            <input class="form-control my-2" name="lastName" type="text" value="${dbUser.lastName}">
+            <button class="btn btn-outline-info" type="submit"><fmt:message key="updateProfile.updateProfile"/></button>
+        </form>
+    </div>
+<div class="ms-2">
+    <c:forEach var="error" items="${errors}">
+        <h2 class="text-danger">${error}</h2>
+    </c:forEach>
+</div>
 </body>
 </html>

@@ -14,11 +14,11 @@
     </c:set>
 </c:if>
 <c:if test="${page > 1}">
-    <a style="display: inline" href="?page=${page - 1}${getParams}"><fmt:message key="prevPage"/></a>
+    <a class="ms-2" style="display: inline" href="?page=${page - 1}${getParams}"><fmt:message key="prevPage"/></a>
 </c:if>
 <c:if test="${page > 1 || entitiesCount > entitiesPerPage}">
-<h4 style="display: inline">${page}</h4>
+<h4 class="ms-2" style="display: inline">${page}</h4>
 </c:if>
 <c:if test="${entitiesCount > entitiesPerPage}">
-    <a style="display: inline" href="?page=${page + 1}${getParams}"><fmt:message key="nextPage"/></a>
+    <a class="ms-2" style="display: inline" href="?page=${page + 1}${getParams}"><fmt:message key="nextPage"/></a>
 </c:if>

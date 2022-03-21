@@ -28,17 +28,36 @@
         </form>
     </div>
 </nav>
-<h1 class="ms-1">Register</h1>
+<div class="ms-2 d-flex my-2">
+    <div class="row card bg-light">
+        <h1>Номер комнаты : 1</h1>
+        <h1>Название комнаты : Room 1</h1>
+        <h1>Название класса : Дешевый</h1>
+        <h1>Вместимость комнаты : 2</h1>
+        <h1>Статус комнаты : Свободна</h1>
+        <h1>Цена комнаты : 100.00</h1>
+    </div>
+</div>
+<script type="text/javascript" src="/pages/js/room-price-calculator.js" defer=""></script>
+<h3 class="ms-2">Забронировать комнату :</h3>
+<input type="hidden" id="pricePerDay" value="100.00">
+<script type="text/javascript" src="/pages/js/set-min-date-today.js" defer=""></script>
 <div class="d-flex ms-2">
-    <form method="post" class="form-group">
-    <input type="text" class="form-control my-2" name="login" id="login" placeholder="Логин">
-    <input type="text" class="form-control my-2" name="email" placeholder="Почта">
-    <input type="password" class="form-control my-2" name="password" placeholder="Пароль">
-    <input type="password" class="form-control my-2" name="repeatPassword" placeholder="Повторите пароль">
-    <input type="text" class="form-control my-2" name="firstName" placeholder="Имя">
-    <input type="text" class="form-control my-2" name="lastName" placeholder="фамилия">
-    <button class="btn btn-danger" type="submit">Зарегистрироваться</button>
-</form>
+    <form class="form-group bg-light" method="post">
+        <label for="checkInDate">Дата заезда</label>
+        <input type="date" name="checkInDate" id="checkInDate" onchange="dateChange()" class="form-control my-1" min="2022-03-21">
+        <label for="checkOutDate">Дата выезда</label>
+        <input type="date" name="checkOutDate" id="checkOutDate" onchange="dateChange()" class="form-control my-1">
+        <button class="btn btn-outline-success" type="submit">Забронировать эту комнату</button>
+    </form>
+</div>
+<div class="d-flex ms-2">
+    <h2>Расчетная стоимость : </h2>
+    <h2 class="text-success" id="calculatedPrice"></h2>
+</div>
+<h1 class="ms-2">Забронированные даты:</h1>
+<div class="ms-2 d-flex">
+<h2>Дата заезда : 2022-03-27| Дата выезда : 2022-03-31</h2>
 </div>
 </body>
 </html>
