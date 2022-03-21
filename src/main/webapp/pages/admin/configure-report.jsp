@@ -11,10 +11,12 @@
 </head>
 <body>
     <jsp:include page="/pages/header.jsp"/>
-    <h1><fmt:message key="title.configureReport"/></h1>
-    <form method="post" action="<c:url value="/project/admin/report/pdf"/>">
-        <form:renderForm formClassPath="forms.ReportConfigurationForm"/>
-        <button type="submit"><fmt:message key="configureReport.generateReport"/></button>
-    </form>
+    <h1 class="ms-2"><fmt:message key="title.configureReport"/></h1>
+    <div class="d-flex ms-2">
+        <form method="post" action="<c:url value="/project/admin/report/pdf"/>">
+            <form:renderForm formClassPath="forms.ReportConfigurationForm"/>
+            <button class="btn btn-primary my-2" type="submit"><fmt:message key="configureReport.generateReport"/></button>
+        </form>
+    </div>
 </body>
 </html>
