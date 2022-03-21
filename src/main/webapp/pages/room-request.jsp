@@ -12,13 +12,17 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h1><fmt:message key="title.roomRequest"/></h1>
-<form method="post">
-    <form:renderForm formClassPath="forms.RoomRequestForm"/>
-    <button type="submit"><fmt:message key="roomRequest.makeRequest"/></button>
-</form>
-<c:forEach var="error" items="${errors}">
-    <h2 style="color:red">${error}</h2>
-</c:forEach>
+<h1 class="ms-2"><fmt:message key="title.roomRequest"/></h1>
+<div class="d-flex ms-2">
+    <form method="post" class="form-group">
+        <form:renderForm formClassPath="forms.RoomRequestForm"/>
+        <button class="btn btn-success" type="submit"><fmt:message key="roomRequest.makeRequest"/></button>
+    </form>
+</div>
+<div class="my-2">
+    <c:forEach var="error" items="${errors}">
+        <h2 class="text-danger">${error}</h2>
+    </c:forEach>
+</div>
 </body>
 </html>

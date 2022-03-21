@@ -18,29 +18,29 @@ public class RoomRequestForm extends Form {
     private Long userId;
 
     @SqlColumn(columnName = "capacity", type = SqlType.INT)
-    @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER, literal = "min =\"1\"",
+    @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER, literal = "min =\"1\" class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "capacity", localizedText = "capacity"))
     private Integer capacity;
 
     @SqlColumn(columnName = "room_class", type = SqlType.INT)
     @HtmlSelect(id = "roomClass", name = "roomClass",
-            dynamicOptionsAttribute = "roomClassesMap",
+            dynamicOptionsAttribute = "roomClassesMap", literal = "class=\"form-select my-2\"",
             label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass")
     )
     private Integer roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE,
+    @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
     private java.sql.Date checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    @HtmlInput(id = "checkOutDate", name = "checkOutDate", type = InputType.DATE,
+    @HtmlInput(id = "checkOutDate", name = "checkOutDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
     private java.sql.Date checkOutDate;
 
     @SqlColumn(columnName = "comment", type = SqlType.STRING)
-    @HtmlTextArea(id = "comment", rows = "3", cols = "35", name = "comment",
+    @HtmlTextArea(id = "comment", rows = "3", cols = "35", name = "comment", literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
     private String comment;
 
@@ -65,6 +65,11 @@ public class RoomRequestForm extends Form {
             }
             if(checkOutDate.compareTo(checkInDate) == 0){
                 addLocalizedError("errors.CheckOutDateIsCheckInDate");
+            }
+        }
+        if(capacity != null){
+            if(capacity < 1){
+                addLocalizedError("errors.capacityNumberFormat");
             }
         }
         return errors.size() == 0;

@@ -28,46 +28,26 @@
         </form>
     </div>
 </nav>
-<div class="ms-2 d-flex my-2">
-    <div class="row card bg-light">
-        <h1>Номер комнаты : 1</h1>
-        <h1>Название комнаты : Room 1</h1>
-        <h1>Название класса : Дешевый</h1>
-        <h1>Вместимость комнаты : 2</h1>
-        <h1>Статус комнаты : Свободна</h1>
-        <h1>Цена комнаты : 100.00</h1>
-    </div>
-</div>
-<script type="text/javascript" src="/pages/js/room-price-calculator.js" defer=""></script>
-<h3 class="ms-2">Забронировать комнату :</h3>
-<input type="hidden" id="pricePerDay" value="100.00">
-<script type="text/javascript" src="/pages/js/set-min-date-today.js" defer=""></script>
+<h1 class="ms-2">Request Room</h1>
 <div class="d-flex ms-2">
-    <form class="form-group bg-light" method="post">
-        <label for="checkInDate">Дата заезда</label>
-        <input type="date" name="checkInDate" id="checkInDate" onchange="dateChange()" class="form-control my-1" min="2022-03-21">
-        <label for="checkOutDate">Дата выезда</label>
-        <input type="date" name="checkOutDate" id="checkOutDate" onchange="dateChange()" class="form-control my-1">
-        <button class="btn btn-outline-success" type="submit">Забронировать эту комнату</button>
+    <form method="post" class="form-group">
+        <label for="capacity">Room Capacity</label>
+        <input class="form-control my-2" type="number" name="capacity" id="capacity" min="1">
+        <label for="roomClass">Room class</label>
+        <select class="form-select my-2" name="roomClass" id="roomClass">
+            <option value="1">Cheap</option>
+            <option value="2">Normal</option>
+            <option value="3">Half lux</option>
+            <option value="4">Lux</option>
+        </select>
+        <label for="checkInDate">Check in date</label>
+        <input class="form-control my-2" type="date" name="checkInDate" id="checkInDate" min="2022-03-21">
+        <label for="checkOutDate">Check out date</label>
+        <input class="form-control my-2" type="date" name="checkOutDate" id="checkOutDate">
+        <label for="comment">Commentary</label>
+        <textarea class="form-control my-2" name="comment" rows="3" cols="35" id="comment"></textarea>
+        <button class="btn btn-success" type="submit">Make request</button>
     </form>
-</div>
-<div class="d-flex ms-2">
-    <h2>Расчетная стоимость : </h2>
-    <h2 class="text-success" id="calculatedPrice"></h2>
-</div>
-<div class="ms-2 d-flex">
-    <form method="post" class="form-group" action="/project/admin/room/close">
-        <input type="hidden" name="id" value="1">
-        <input class="form-control my-2" type="date" name="endDate" id="endDate">
-        <button class="btn btn-outline-warning" type="submit">Закрыть комнату</button>
-    </form>
-    <script>
-        endDate.min = new Date().toISOString().split("T")[0];
-    </script>
-</div>
-<h1 class="ms-2">Забронированные даты:</h1>
-<div class="ms-2 d-flex">
-<h2>Дата заезда : 2022-03-27| Дата выезда : 2022-03-31</h2>
 </div>
 </body>
 </html>
