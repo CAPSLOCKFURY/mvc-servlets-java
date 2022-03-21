@@ -27,10 +27,10 @@
             <h1><fmt:message key="roomRequests.checkInDate"/> : ${roomRequest.checkInDate}</h1>
             <h1><fmt:message key="roomRequests.checkOutDate"/> : ${roomRequest.checkOutDate}</h1>
             <c:if test="${roomRequest.comment != null}">
-                <h1><fmt:message key="roomRequests.yourComment"/> : ${roomRequest.comment}</h1>
+                <h1><fmt:message key="roomRequests.yourComment"/> : <c:out value="${roomRequest.comment}"/></h1>
             </c:if>
             <c:if test="${roomRequest.managerComment != null}">
-                <h1><fmt:message key="roomRequests.managerComment"/> : ${roomRequest.managerComment}</h1>
+                <h1><fmt:message key="roomRequests.managerComment"/> : <c:out value="${roomRequest.managerComment}"/></h1>
             </c:if>
             <h1><fmt:message key="roomRequests.status"/> : <fmt:message key="${'roomRequestStatus.'.concat(roomRequest.status.replace(' ', '_'))}"/></h1>
             <c:if test="${roomRequest.roomId != 0}">
