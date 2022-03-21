@@ -45,22 +45,29 @@
             </div>
         </c:if>
         <c:if test="${sessionScope.user.role == 2}">
-            <form method="post" action="<c:url value="/project/admin/room/close"/>">
-                <input type="hidden" name="id" value="${room.id}">
-                <form:renderForm formClassPath="forms.CloseRoomForm"/>
-                <button type="submit"><fmt:message key="room.closeThisRoom"/></button>
-            </form>
-            <c:forEach var="error" items="${errors}">
-                <h2 style="color:red">${error}</h2>
-            </c:forEach>
+            <div class="ms-2 d-flex">
+                <form method="post" class="form-group" action="<c:url value="/project/admin/room/close"/>">
+                    <input type="hidden" name="id" value="${room.id}">
+                    <form:renderForm formClassPath="forms.CloseRoomForm"/>
+                    <button class="btn btn-outline-warning" type="submit"><fmt:message key="room.closeThisRoom"/></button>
+                </form>
+                <script>endDate.min = new Date().toISOString().split("T")[0];</script>
+            </div>
+            <div class="ms-2">
+                <c:forEach var="error" items="${errors}">
+                    <h2 class="text-danger">${error}</h2>
+                </c:forEach>
+            </div>
         </c:if>
     </c:if>
     <c:if test="${room.status.equals('unavailable')}">
         <c:if test="${sessionScope.user.role == 2}">
-            <form method="post" action="<c:url value="/project/admin/room/open"/>">
-                <input type="hidden" name="roomId" value="${room.id}">
-                <button type="submit"><fmt:message key="room.openRoom"/></button>
-            </form>
+            <div class="ms-2">
+                <form method="post" action="<c:url value="/project/admin/room/open"/>">
+                    <input type="hidden" name="roomId" value="${room.id}">
+                    <button class="btn btn-success" type="submit"><fmt:message key="room.openRoom"/></button>
+                </form>
+            </div>
         </c:if>
     </c:if>
     <div class="ms-2">

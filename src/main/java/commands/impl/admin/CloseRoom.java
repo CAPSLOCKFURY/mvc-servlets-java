@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import service.AdminRoomsService;
 
+import java.util.Locale;
+
+import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebMapping(url = "/admin/room/close", method = RequestMethod.POST)
@@ -24,14 +27,17 @@ public class CloseRoom implements Command {
         }
         CloseRoomForm form = new CloseRoomForm();
         form.mapRequestToForm(request);
-        if(!form.validate()){
-            response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-        }
         Long roomId = null;
         try {
             roomId = Long.parseLong(request.getParameter("id"));
         } catch (IllegalArgumentException iag) {
             return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+        }
+        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        boolean isValid = form.validate();
+        if(!isValid){
+            response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
+            return new CommandResult(getAbsoluteUrl("/room?id=" + roomId, request), RequestDirection.REDIRECT);
         }
         roomService.closeRoom(roomId, form);
         if(!form.isValid()){

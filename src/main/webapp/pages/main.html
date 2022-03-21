@@ -55,6 +55,16 @@
     <h2>Расчетная стоимость : </h2>
     <h2 class="text-success" id="calculatedPrice"></h2>
 </div>
+<div class="ms-2 d-flex">
+    <form method="post" class="form-group" action="/project/admin/room/close">
+        <input type="hidden" name="id" value="1">
+        <input class="form-control my-2" type="date" name="endDate" id="endDate">
+        <button class="btn btn-outline-warning" type="submit">Закрыть комнату</button>
+    </form>
+    <script>
+        endDate.min = new Date().toISOString().split("T")[0];
+    </script>
+</div>
 <h1 class="ms-2">Забронированные даты:</h1>
 <div class="ms-2 d-flex">
 <h2>Дата заезда : 2022-03-27| Дата выезда : 2022-03-31</h2>

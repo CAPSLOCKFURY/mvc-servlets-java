@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public class CloseRoomForm extends Form {
 
-    @HtmlInput(name = "endDate", type = InputType.DATE)
+    @HtmlInput(name = "endDate", type = InputType.DATE, id = "endDate", literal = "class=\"form-control my-2\"")
     private java.sql.Date endDate;
 
     @Override
@@ -19,7 +19,7 @@ public class CloseRoomForm extends Form {
         if(endDate != null){
             LocalDate checkInLocalDate = endDate.toLocalDate();
             if (checkInLocalDate.isBefore(today)) {
-                addLocalizedError("errors.CheckInDateInPast");
+                addLocalizedError("errors.CheckOutDateInPast");
             }
         }
         return errors.size() == 0;
@@ -33,7 +33,7 @@ public class CloseRoomForm extends Form {
         try {
             this.endDate = java.sql.Date.valueOf(endDate);
         } catch (IllegalArgumentException iag){
-            addLocalizedError("errors.checkOutDateIAG");
+            addLocalizedError("errors.endDateIsNull");
         }
     }
 }

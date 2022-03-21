@@ -17,7 +17,7 @@
     <h2 class="my-1"><fmt:message key="profile.yourBalance"/> : ${user.balance}</h2>
 </div>
     <div class="d-flex bg-light w-25">
-        <div class="row">
+        <div class="ms-2 row">
             <a class="link-primary my-1 text-decoration-none" href="<c:url value="/project/room-request"/>"><fmt:message key="header.requestRoom"/></a>
             <a class="link-primary my-1 text-decoration-none" href="<c:url value="/project/profile/my-room-requests"/>"><fmt:message key="profile.myRoomRequests"/></a>
             <a class="link-primary my-1 text-decoration-none" href="<c:url value="/project/profile/my-billings"/>"><fmt:message key="profile.myBillings"/></a>
