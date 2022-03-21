@@ -3,21 +3,22 @@ package forms;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
+import forms.base.annotations.HtmlLabel;
 
 import java.sql.Date;
 
 public class ReportConfigurationForm extends Form {
 
-    @HtmlInput(name = "page", type = InputType.NUMBER)
+    @HtmlInput(id="page", name = "page", type = InputType.NUMBER, label = @HtmlLabel(forElement = "page", localizedText = "page"))
     private Integer page;
 
-    @HtmlInput(name = "entitiesPerPage", type = InputType.NUMBER)
+    @HtmlInput(id="epp", name = "entitiesPerPage", type = InputType.NUMBER, label = @HtmlLabel(forElement = "epp", localizedText = "epp"))
     private Integer entitiesPerPage;
 
-    @HtmlInput(name = "checkInDate", type = InputType.DATE)
+    @HtmlInput(id="startDate", name = "checkInDate", type = InputType.DATE, label = @HtmlLabel(forElement = "startDate", localizedText = "startDate"))
     private java.sql.Date checkInDate;
 
-    @HtmlInput(name = "checkOutDate", type = InputType.DATE)
+    @HtmlInput(id="endDate", name = "checkOutDate", type = InputType.DATE, label = @HtmlLabel(forElement = "endDate", localizedText = "endDate"))
     private java.sql.Date checkOutDate;
 
     public Integer getPage() {

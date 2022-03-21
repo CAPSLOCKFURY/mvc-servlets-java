@@ -15,7 +15,7 @@
 <div class="d-flex ms-2">
     <form class="form-group" method="post">
         <form:renderForm formClassPath="forms.LoginForm"/>
-        <button class="btn btn-info" type="submit"><fmt:message key="title.login"/></button>
+        <button class="btn btn-primary" type="submit"><fmt:message key="title.login"/></button>
     </form>
 </div>
 <c:forEach var="error" items="${errors}">

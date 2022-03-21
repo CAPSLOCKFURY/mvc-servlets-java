@@ -28,17 +28,62 @@
         </form>
     </div>
 </nav>
-<h1 class="ms-2">My Room History</h1>
+<h1 class="ms-2">Customer Room Request</h1>
+    <div class="d-flex">
+        <div class="row card bg-light ms-2">
+            <h1>Capacity : 4</h1>
+            <h1>Room class : Normal</h1>
+            <h1>Comment : </h1>
+            <h1>Manager comment : </h1>
+            <h1>Status : Awaiting</h1>
+            <h1>Check in date : 2022-03-17</h1>
+            <h1>Check out date : 2022-03-31</h1>
+            <h1>User login : vadim</h1>
+            <h1>User email : vadim@gmail.com</h1>
+            <h1>First name : Вадим</h1>
+            <h1>Last name : Демб</h1>
+            <form method="post" class="form-group" action="/project/admin/room-request/close">
+                <div class="d-flex">
+                    <input type="hidden" name="requestId" value="4">
+                    <textarea class="form-control w-50 my-2" name="managerComment"></textarea>
+                </div>
+                <button class="btn btn-outline-danger my-2" type="submit">Disable request</button>
+            </form>
+        </div>
+    </div>
+<h1>Suitable rooms</h1>
+<form class="form-group" method="get">
+    <div class="d-flex justify-content-start">
+        <input type="hidden" name="id" value="4">
+        <select class="form-select ms-2 me-1" style="width: 10%" name="orderColName">
+            <option value="ID">New</option>
+            <option value="PRICE">Price</option>
+            <option value="STATUS">Status</option>
+            <option value="CLASS">Room Class</option>
+            <option value="CAPACITY">Capacity</option>
+        </select>
+        <select class="form-select mx-1" style="width: 10%" name="orderDirection">
+            <option value="ASC">Ascending</option>
+            <option value="DESC">Descending</option>
+        </select>
+        <button class="btn btn-outline-primary mx-1" type="submit">Sort Results</button>
+    </div>
+</form>
+<a class="ms-2" style="display: inline" href="?page=1&amp;id=4">Previous Page</a>
+<h4 class="ms-2" style="display: inline">2</h4>
 <div class="d-flex">
-    <div class="row card bg-light ms-2 my-2">
-        <h1>Room Number : 2</h1>
-        <h1>Room Name : Room 2</h1>
-        <h1>Room Price : 110.00</h1>
-        <h1>Room Capacity : 3</h1>
-        <h1>Class Name : Cheap</h1>
-        <h1>Check in date : 2022-03-21</h1>
-        <h1>Check out date : 2022-03-31</h1>
-        <h2><a href="/project/room?id=2">See Room</a></h2>
+    <div class="row card bg-light ms-2">
+        <h1>Room Number : 13</h1>
+        <h1>Room Name : lux Room 1</h1>
+        <h1>Class Name : Lux</h1>
+        <h1>Room Status : Free</h1>
+        <h1>Room Capacity : 8</h1>
+        <h1>Room Price : 700.00</h1>
+        <form method="post" action="/project/admin/room-request/assign">
+            <input name="roomId" type="hidden" value="13">
+            <input name="requestId" type="hidden" value="4">
+            <button class="btn btn-outline-success" type="submit">Assign this room to request</button>
+        </form>
     </div>
 </div>
 </body>
