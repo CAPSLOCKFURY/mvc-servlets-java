@@ -19,7 +19,7 @@ public final class SqlQueries {
         public final static String FIND_ROOM_DATES_BY_ID = "select check_in_date, check_out_date from room_registry where room_id = ? and archived = false";
 
         public final static String FIND_OVERLAPPING_DATES_COUNT = "select count('*') as cnt from room_registry\n" +
-                "where room_id = ? and (daterange(?::date, ?::date, '[]') &&\n" +
+                "where room_id = ? and archived = false and (daterange(?::date, ?::date, '[]') &&\n" +
                 "      daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]') )";
 
         public final static String WITHDRAW_FROM_USER_BALANCE = "update users set balance = balance - ? where id = ?";
@@ -34,7 +34,8 @@ public final class SqlQueries {
         public final static String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
                 "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
                 "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
-                "where rooms.id not in (select room_id from room_requests where room_id is not null) and rooms.status <> 'unavailable' \n" +
+                "where rooms.id not in (select distinct room_id from room_requests where room_id is not null and daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]')) " +
+                "and rooms.status <> 'unavailable' \n" +
                 "group by rooms.id, rct.id\n" +
                 "having count(room_id) filter\n" +
                 "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0";

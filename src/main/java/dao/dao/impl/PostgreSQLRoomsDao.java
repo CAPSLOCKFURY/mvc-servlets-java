@@ -68,7 +68,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Object[]{locale, checkInDate, checkOutDate}, Room.class, orderable, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Object[]{locale, checkInDate, checkOutDate, checkInDate, checkOutDate}, Room.class, orderable, pageable);
         }
     }
 
