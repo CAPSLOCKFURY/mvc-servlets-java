@@ -18,18 +18,7 @@ public class PostgreSQLBillingDao extends BillingDao {
 
     @Override
     public boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long roomRegistryId) throws SQLException {
-        class BillingForm{
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long reqId = requestId;
-            @SqlColumn(columnName = "", type = SqlType.DECIMAL)
-            private final BigDecimal billingPrice = price;
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long roomRegistryInsertId = roomRegistryId;
-            public Long getReqId() {return reqId;}
-            public BigDecimal getBillingPrice() {return billingPrice;}
-            public Long getRoomRegistryInsertId() {return roomRegistryInsertId;}
-        }
-        return createEntity(connection, SqlQueries.Billing.INSERT_BILLING, new BillingForm());
+        return createEntity(connection, SqlQueries.Billing.INSERT_BILLING, new Object[]{requestId, price, roomRegistryId});
     }
 
     @Override
@@ -42,12 +31,7 @@ public class PostgreSQLBillingDao extends BillingDao {
     @Override
     public List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = userId;
-                public Long getId() {return id;}
-            }
-            return getAllByParams(connection, SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Param(), Billing.class, pageable);
+            return getAllByParams(connection, SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Object[]{userId}, Billing.class, pageable);
         }
     }
 
@@ -57,36 +41,18 @@ public class PostgreSQLBillingDao extends BillingDao {
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            class MoneyParam{
-                @SqlColumn(columnName = "", type = SqlType.DECIMAL)
-                private final BigDecimal amount = billing.getPrice();
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = userId;
-                public BigDecimal getAmount() {return amount;}
-                public Long getId() {return id;}
-            }
-            boolean balanceUpdated = updateEntity(connection, "update users set balance = balance - ? where id =?", new MoneyParam());
+            boolean balanceUpdated = updateEntity(connection, "update users set balance = balance - ? where id =?", new Object[]{billing.getPrice(), userId});
             if(!balanceUpdated){
                 connection.rollback();
                 return false;
             }
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = billing.getId();
-                public Long getId() {return id;}
-            }
-            boolean billingUpdated = updateEntity(connection, SqlQueries.Billing.PAY_BILLING, new Param());
+            boolean billingUpdated = updateEntity(connection, SqlQueries.Billing.PAY_BILLING, new Object[]{billing.getId()});
             if(!billingUpdated){
                 connection.rollback();
                 return false;
             }
-            class UpdateParam{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = billing.getRequestId();
-                public Long getId() {return id;}
-            }
             boolean requestStatusUpdated = updateEntity(connection,
-                    "update room_requests set status = 'paid' where id = ?", new UpdateParam());
+                    "update room_requests set status = 'paid' where id = ?", new Object[]{billing.getRequestId()});
             if(!requestStatusUpdated){
                 connection.rollback();
                 return false;
@@ -97,8 +63,10 @@ public class PostgreSQLBillingDao extends BillingDao {
             connection.rollback();
             return false;
         } finally {
-            connection.setAutoCommit(true);
-            connection.close();
+            if(connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
         }
     }
 

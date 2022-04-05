@@ -30,36 +30,15 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public Room getRoomById(Long id, String locale) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long entityId = id;
-                public String getLang() {return lang;}
-                public Long getEntityId() {return entityId;}
-            }
-            return getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Param(), Room.class);
+            return getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Object[]{locale, id}, Room.class);
         }
     }
 
     @Override
     public RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long entityId = id;
-                public String getLang() {return lang;}
-                public Long getEntityId() {return entityId;}
-            }
-            class DatesParam{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long roomId = id;
-                public Long getRoomId() {return roomId;}
-            }
-            RoomExtendedInfo room = getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Param(), RoomExtendedInfo.class);
-            List<RoomDate> roomDates = getAllByParams(connection, SqlQueries.Room.FIND_ROOM_DATES_BY_ID, new DatesParam(), RoomDate.class);
+            RoomExtendedInfo room = getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Object[]{locale, id}, RoomExtendedInfo.class);
+            List<RoomDate> roomDates = getAllByParams(connection, SqlQueries.Room.FIND_ROOM_DATES_BY_ID, new Object[]{id}, RoomDate.class);
             room.setDates(roomDates);
             return room;
         }
@@ -68,63 +47,28 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public List<RoomClass> getAllRoomClasses(String locale) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                public String getLang() {return lang;}
-            }
-            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOM_CLASSES, new Param(), RoomClass.class);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOM_CLASSES, new Object[]{locale}, RoomClass.class);
         }
     }
 
     @Override
     public OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class OverlapParams{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = roomId;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkInDateParam = checkInDate;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkOutDateParam = checkOutDate;
-                public Date getCheckInDateParam() {return checkInDateParam;}
-                public Date getCheckOutDateParam() {return checkOutDateParam;}
-                public Long getId() {return id;}
-            }
-            return getOneByParams(connection, SqlQueries.Room.FIND_OVERLAPPING_DATES_COUNT, new OverlapParams(), OverlapCountDTO.class);
+            return getOneByParams(connection, SqlQueries.Room.FIND_OVERLAPPING_DATES_COUNT, new Object[]{roomId, checkInDate, checkOutDate}, OverlapCountDTO.class);
         }
     }
 
     @Override
     public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            class Params{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private Long id = userId;
-                public String getLang() {return lang;}
-                public Long getId() {return id;}
-            }
-            return getAllByParams(connection, SqlQueries.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Params(), RoomHistoryDTO.class, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Object[]{locale, userId}, RoomHistoryDTO.class, pageable);
         }
     }
 
     @Override
     public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Params{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date startDate = checkInDate;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date endDate = checkOutDate;
-                public String getLang() {return lang;}
-                public Date getStartDate() {return startDate;}
-                public Date getEndDate() {return endDate;}
-            }
-            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Params(), Room.class, orderable, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Object[]{locale, checkInDate, checkOutDate}, Room.class, orderable, pageable);
         }
     }
 
@@ -134,48 +78,17 @@ public class PostgreSQLRoomsDao extends RoomsDao {
         try {
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            class WithdrawAmount{
-                @SqlColumn(columnName = "", type = SqlType.DECIMAL)
-                private BigDecimal amount = moneyAmount;
-                public BigDecimal getAmount() {return amount;}
-                public void setAmount(BigDecimal amount) {this.amount = amount;}
-            }
-            boolean isUpdated = updateEntityById(connection, SqlQueries.Room.WITHDRAW_FROM_USER_BALANCE, new WithdrawAmount(), userId);
+            boolean isUpdated = updateEntityById(connection, SqlQueries.Room.WITHDRAW_FROM_USER_BALANCE, new Object[]{moneyAmount}, userId);
             if(!isUpdated){
                 connection.rollback();
                 return false;
             }
-            class RoomRegistryInsert {
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long user_id = userId;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long room_id = roomId;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final Date checkInDate = form.getCheckInDate();
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final Date checkOutDate = form.getCheckOutDate();
-                public Long getUser_id() {return user_id;}
-                public Long getRoom_id() {return room_id;}
-                public Date getCheckInDate() {return checkInDate;}
-                public Date getCheckOutDate() {return checkOutDate;}
-            }
-            boolean entityCreated = createEntity(connection, SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            boolean entityCreated = createEntity(connection, SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new Object[]{userId, roomId, form.getCheckInDate(), form.getCheckOutDate()});
             if(!entityCreated){
                 connection.rollback();
                 return false;
             }
-            class RemoveAssignedRoomParams{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = roomId;
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkInDate = form.getCheckInDate();
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkOutDate = form.getCheckOutDate();
-                public Long getId() {return id;}
-                public Date getCheckInDate() {return checkInDate;}
-                public Date getCheckOutDate() {return checkOutDate;}
-            }
-            updateEntity(connection, SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new RemoveAssignedRoomParams());
+            updateEntity(connection, SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, form.getCheckInDate(), form.getCheckOutDate()});
             connection.commit();
             return true;
         } catch (SQLException sqle) {
@@ -195,12 +108,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private Long room = roomId;
-                public Long getRoom() {return room;}
-            }
-            return updateEntityById(connection, SqlQueries.Room.ASSIGN_ROOM_TO_REQUEST, new Param(), requestId);
+            return updateEntityById(connection, SqlQueries.Room.ASSIGN_ROOM_TO_REQUEST, new Object[]{roomId}, requestId);
         }
     }
 
@@ -211,32 +119,14 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             if(checkInDate != null || checkOutDate != null){
                 sql = sql.concat(" where ");
                 if(checkInDate != null && checkOutDate != null){
-                    class TwoDatesParam{
-                        @SqlColumn(columnName = "", type = SqlType.DATE)
-                        private final java.sql.Date checkIn = checkInDate;
-                        @SqlColumn(columnName = "", type = SqlType.DATE)
-                        private final java.sql.Date checkOut = checkOutDate;
-                        public Date getCheckIn() {return checkIn;}
-                        public Date getCheckOut() {return checkOut;}
-                    }
                     sql = sql.concat(" check_in_date >= ? and check_out_date <= ? ");
-                    return getAllByParams(connection, sql, new TwoDatesParam(), RoomRegistryPdfReportDto.class, pageable);
+                    return getAllByParams(connection, sql, new Object[]{checkInDate, checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
                 } else if (checkInDate != null){
-                    class SingleInDateParam{
-                        @SqlColumn(columnName = "", type = SqlType.DATE)
-                        private final java.sql.Date checkIn = checkInDate;
-                        public Date getCheckIn() {return checkIn;}
-                    }
                     sql = sql.concat(" check_in_date >= ? ");
-                    return getAllByParams(connection, sql, new SingleInDateParam(), RoomRegistryPdfReportDto.class, pageable);
+                    return getAllByParams(connection, sql, new Object[]{checkInDate}, RoomRegistryPdfReportDto.class, pageable);
                 } else {
-                    class SingleOutDateParam{
-                        @SqlColumn(columnName = "", type = SqlType.DATE)
-                        private final java.sql.Date checkOut = checkOutDate;
-                        public Date getCheckOut() {return checkOut;}
-                    }
                     sql = sql.concat(" check_out_date <= ? ");
-                    return getAllByParams(connection, sql, new SingleOutDateParam(), RoomRegistryPdfReportDto.class, pageable);
+                    return getAllByParams(connection, sql, new Object[]{checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
                 }
             }
             return getAll(connection, SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
@@ -260,42 +150,15 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException {
         Connection connection = null;
-        class RefundParams{
-            @SqlColumn(columnName = "", type = SqlType.DATE)
-            private final java.sql.Date date = endDate;
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long id = roomId;
-            @SqlColumn(columnName = "", type = SqlType.DATE)
-            private final java.sql.Date date1 = endDate;
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long id1 = roomId;
-            public Date getDate() {return date;}
-            public Long getId() {return id;}
-            public Date getDate1() {return date1;}
-            public Long getId1() {return id1;}
-        }
-        class IdParam{
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long id = roomId;
-            public Long getId() {return id;}
-        }
-        class DeleteParams{
-            @SqlColumn(columnName = "", type = SqlType.DATE)
-            private final java.sql.Date date = endDate;
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long id = roomId;
-            public Date getDate() {return date;}
-            public Long getId() {return id;}
-        }
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            updateEntity(connection, SqlQueries.Room.SET_ROOM_UNAVAILABLE, new IdParam());
-            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_BILLINGS, new RefundParams());
-            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_ROOM_REGISTRY, new RefundParams());
-            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new DeleteParams());
-            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new DeleteParams());
-            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new DeleteParams());
+            updateEntity(connection, SqlQueries.Room.SET_ROOM_UNAVAILABLE, new Object[]{roomId});
+            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_BILLINGS, new Object[]{endDate, roomId, endDate, roomId});
+            updateEntity(connection, SqlQueries.Room.REFUND_MONEY_FROM_ROOM_REGISTRY, new Object[]{endDate, roomId, endDate, roomId});
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new Object[]{endDate, roomId});
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new Object[]{endDate, roomId});
+            updateEntity(connection, SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new Object[]{endDate, roomId});
             connection.commit();
             return true;
         } catch (SQLException sqle){
@@ -312,13 +175,8 @@ public class PostgreSQLRoomsDao extends RoomsDao {
 
     @Override
     public boolean openRoom(Long roomId) throws SQLException {
-        class IdParam{
-            @SqlColumn(columnName = "", type = SqlType.LONG)
-            private final Long id = roomId;
-            public Long getId() {return id;}
-        }
         try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntity(connection, SqlQueries.Room.OPEN_ROOM, new IdParam());
+            return updateEntity(connection, SqlQueries.Room.OPEN_ROOM, new Object[]{roomId});
         }
     }
 }

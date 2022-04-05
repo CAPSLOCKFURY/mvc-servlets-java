@@ -35,30 +35,14 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     @Override
     public RoomRequest getRoomRequestById(Long requestId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Params{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = "en";
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = requestId;
-                public String getLang() {return lang;}
-                public Long getId() {return id;}
-            }
-            return getOneByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUEST_BY_ID, new Params(), RoomRequest.class);
+            return getOneByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUEST_BY_ID, new Object[]{"en", requestId}, RoomRequest.class);
         }
     }
 
     @Override
     public List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = userId;
-                private String getLang(){return lang;}
-                public Long getId() {return id;}
-            }
-            return getAllByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUESTS_BY_USER_ID, new Param(), RoomRequest.class, pageable);
+            return getAllByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUESTS_BY_USER_ID, new Object[]{locale, userId}, RoomRequest.class, pageable);
         }
     }
 
@@ -75,30 +59,14 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     @Override
     public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Orderable orderable, Pageable pageable) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String status = requestStatus;
-                public String getLang() {return lang;}
-                public String getStatus() {return status;}
-            }
-            return getAllByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUESTS, new Param(), AdminRoomRequestDTO.class, orderable, pageable);
+            return getAllByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUESTS, new Object[]{locale, requestStatus}, AdminRoomRequestDTO.class, orderable, pageable);
         }
     }
 
     @Override
     public AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class Params{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = requestId;
-                public String getLang() {return lang;}
-                public Long getId() {return id;}
-            }
-            return getOneByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Params(), AdminRoomRequestDTO.class);
+            return getOneByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Object[]{locale, requestId}, AdminRoomRequestDTO.class);
         }
     }
 
@@ -108,31 +76,13 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
         try{
             connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            class UpdateParam{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = roomRequest.getId();
-                public Long getId() {return id;}
-            }
-            boolean requestConfirmed = updateEntity(connection, SqlQueries.RoomRequest.CONFIRM_ROOM_REQUEST, new UpdateParam());
+            boolean requestConfirmed = updateEntity(connection, SqlQueries.RoomRequest.CONFIRM_ROOM_REQUEST, new Object[]{roomRequest.getId()});
             if(!requestConfirmed){
                 connection.rollback();
                 return false;
             }
-            class RoomRegistryInsert{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long roomRegistryUserId = roomRequest.getUserId();
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long roomRegistryRoomId = roomRequest.getRoomId();
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkInDate = roomRequest.getCheckInDate();
-                @SqlColumn(columnName = "", type = SqlType.DATE)
-                private final java.sql.Date checkOutDate = roomRequest.getCheckOutDate();
-                public Long getRoomRegistryUserId() {return roomRegistryUserId;}
-                public Long getRoomRegistryRoomId() {return roomRegistryRoomId;}
-                public Date getCheckInDate() {return checkInDate;}
-                public Date getCheckOutDate() {return checkOutDate;}
-            }
-            long roomRegistryInsertedId = createEntityAndGetId(connection, SqlQueries.RoomRequest.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new RoomRegistryInsert());
+            long roomRegistryInsertedId = createEntityAndGetId(connection, SqlQueries.RoomRequest.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY,
+                    new Object[]{roomRequest.getUserId(), roomRequest.getRoomId(), roomRequest.getCheckInDate(), roomRequest.getCheckOutDate()});
             if(roomRegistryInsertedId == 0){
                 connection.rollback();
                 return false;
@@ -161,23 +111,13 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
    public boolean declineAssignedRoom(String comment, Long requestId) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class UpdateParams{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String newComment = comment;
-                public String getNewComment() {return newComment;}
-            }
-            return updateEntityById(connection, SqlQueries.RoomRequest.DECLINE_ASSIGNED_ROOM, new UpdateParams(), requestId);
+            return updateEntityById(connection, SqlQueries.RoomRequest.DECLINE_ASSIGNED_ROOM, new Object[]{comment}, requestId);
         }
     }
 
    public boolean adminCloseRequest(Long requestId, String comment) throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
-            class UpdateParam{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String managerComment = comment;
-                public String getManagerComment() {return managerComment;}
-            }
-            return updateEntityById(connection, SqlQueries.RoomRequest.ADMIN_CLOSE_REQUEST, new UpdateParam(), requestId);
+            return updateEntityById(connection, SqlQueries.RoomRequest.ADMIN_CLOSE_REQUEST, new Object[]{comment}, requestId);
         }
    }
 }
