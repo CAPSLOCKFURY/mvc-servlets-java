@@ -1,4 +1,6 @@
-package models.base;
+package models.base.mappers;
+
+import models.base.SqlColumn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,24 +20,22 @@ import static utils.StringUtils.capitalize;
  *     Note: object from which statement will be mapped, should have getter methods for each of its fields annotated with {@link SqlColumn}
  * </p>
  */
-public class PreparedStatementMapper<T> {
+public class PreparedStatementClassMapper<T> implements PreparedStatementMapper {
 
     private T form;
-    private PreparedStatement stmt;
     private Set<String> ignoreFields;
 
     /**
      * @param form Object from which statement will be mapped, you should put {@link SqlColumn} annotation on fields that should be mapped, you can ignore {@link SqlColumn#columnName()}
-     * @param stmt Prepared statement which will be mapped
      * @param ignoreFields name of fields that should be ignored at mapping
      */
-    public PreparedStatementMapper(T form, PreparedStatement stmt, String ...ignoreFields){
+    public PreparedStatementClassMapper(T form, String ...ignoreFields){
         this.form = form;
-        this.stmt = stmt;
         this.ignoreFields = new HashSet<>(Arrays.asList(ignoreFields));
     }
-    // TODO remove stmt from constructor and add it to this method
-    public void mapToPreparedStatement(){
+
+    @Override
+    public void mapToPreparedStatement(PreparedStatement stmt){
         AtomicInteger stmtCursor = new AtomicInteger(1);
         Arrays.stream(form.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(SqlColumn.class))

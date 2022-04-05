@@ -1,6 +1,6 @@
 package models;
 
-import models.base.PreparedStatementMapper;
+import models.base.mappers.PreparedStatementClassMapper;
 import models.resources.TestExtendedForm;
 import models.resources.TestPreparedStatementForm;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-public class PreparedStatementMapperTest {
+public class PreparedStatementClassMapperTest {
 
     @ParameterizedTest
     @MethodSource("preparedStatementMapperCases")
@@ -59,8 +59,8 @@ public class PreparedStatementMapperTest {
             return invocationOnMock;
         }).when(stmt).setBoolean(any(Integer.class), any(Boolean.class));
 
-        PreparedStatementMapper mapper = new PreparedStatementMapper(form, stmt);
-        mapper.mapToPreparedStatement();
+        PreparedStatementClassMapper mapper = new PreparedStatementClassMapper(form);
+        mapper.mapToPreparedStatement(stmt);
         assertEquals(expected, setParams);
     }
 

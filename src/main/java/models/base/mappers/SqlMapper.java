@@ -1,4 +1,6 @@
-package models.base;
+package models.base.mappers;
+
+import models.base.SqlColumn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

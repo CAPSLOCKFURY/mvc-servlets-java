@@ -23,12 +23,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     @Override
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()){
-            class Param{
-                @SqlColumn(columnName = "", type = SqlType.STRING)
-                private final String lang = locale;
-                public String getLang() {return lang;}
-            }
-            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOMS, new Param(), Room.class, orderable, pageable);
+            return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOMS, new Object[]{locale}, Room.class, orderable, pageable);
         }
     }
 

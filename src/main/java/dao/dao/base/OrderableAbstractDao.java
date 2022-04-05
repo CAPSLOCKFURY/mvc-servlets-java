@@ -22,4 +22,9 @@ public class OrderableAbstractDao extends PageableAbstractDao {
         return getAllByParams(connection, sql, params, model, pageable);
     }
 
+    protected final  <T> List<T> getAllByParams(Connection connection, String sql, Object[] params, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
+        sql = orderable.orderQuery(sql);
+        return getAllByParams(connection, sql, params, model, pageable);
+    }
+
 }

@@ -1,6 +1,6 @@
 package models;
 
-import models.base.SqlMapper;
+import models.base.mappers.SqlMapper;
 import models.resources.ExtendedTestModel;
 import models.resources.TestModel;
 import models.resources.TypePair;
@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
