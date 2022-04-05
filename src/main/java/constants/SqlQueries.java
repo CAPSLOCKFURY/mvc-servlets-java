@@ -48,7 +48,7 @@ public final class SqlQueries {
         public final static String FIND_DATA_FOR_ROOM_REGISTRY_REPORT = "select user_id, u.first_name, u.last_name, check_in_date, check_out_date, room_id from room_registry " +
                 "join users u on room_registry.user_id = u.id";
 
-        public final static String ARCHIVE_OLD_ROOM_REGISTRIES = "update room_registry set archived = false where check_out_date <= date(now())";
+        public final static String ARCHIVE_OLD_ROOM_REGISTRIES = "update room_registry set archived = true where check_out_date <= date(now())";
 
         public final static String UPDATE_ROOM_STATUS = "update rooms set status =\n" +
                 "    case\n" +
