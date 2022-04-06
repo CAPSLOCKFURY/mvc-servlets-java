@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PostgreSQLRoomRequestDao extends RoomRequestDao {
 
-    private final static BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+    private static final BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
 
     @Override
     public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
