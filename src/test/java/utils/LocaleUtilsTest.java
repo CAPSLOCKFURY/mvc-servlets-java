@@ -13,7 +13,7 @@ public class LocaleUtilsTest {
 
     @ParameterizedTest
     @MethodSource("getLocaleFromCookiesCases")
-    public void testGetLocaleFromCookies(Cookie[] cookies, String expectedLocale){
+    void testGetLocaleFromCookies(Cookie[] cookies, String expectedLocale){
         String contentLang = LocaleUtils.getLocaleFromCookies(cookies);
         assertEquals(expectedLocale, contentLang);
     }

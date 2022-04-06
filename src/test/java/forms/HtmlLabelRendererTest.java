@@ -1,7 +1,5 @@
 package forms;
 
-import forms.base.InputType;
-import forms.base.renderers.HtmlInputRenderer;
 import forms.base.renderers.HtmlLabelRenderer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,7 +14,7 @@ public class HtmlLabelRendererTest {
 
     @ParameterizedTest
     @MethodSource("nonLocalizedCases")
-    public void testNonLocalized(String forElement, String text, String literal, String expected){
+    void testNonLocalized(String forElement, String text, String literal, String expected){
         HtmlLabelRenderer renderer = new HtmlLabelRenderer.Builder()
                 .withForElement(forElement)
                 .withText(text)
@@ -29,7 +27,7 @@ public class HtmlLabelRendererTest {
 
     @ParameterizedTest
     @MethodSource("localizedCases")
-    public void testLocalized(String forElement, String localizedText, String literal, Locale locale, String expected){
+    void testLocalized(String forElement, String localizedText, String literal, Locale locale, String expected){
         HtmlLabelRenderer renderer = new HtmlLabelRenderer.Builder()
                 .withForElement(forElement)
                 .withLocalizedText(localizedText)

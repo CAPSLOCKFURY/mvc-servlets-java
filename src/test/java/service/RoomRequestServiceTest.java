@@ -32,7 +32,7 @@ public class RoomRequestServiceTest {
     }
 
     @Test
-    public void getRoomRequestByUserId(){
+    void getRoomRequestByUserId(){
         Pageable pageable = new Pageable(1, 10);
         List<RoomRequest> roomRequests = service.getRoomRequestsByUserId(2L, "en", pageable);
         assertEquals(1, roomRequests.size());
@@ -40,7 +40,7 @@ public class RoomRequestServiceTest {
     }
 
     @Test
-    public void createRoomRequestTest(){
+    void createRoomRequestTest(){
         RoomRequestForm form = new RoomRequestForm();
 
         LocalDateTime today = new java.sql.Date(System.currentTimeMillis()).toLocalDate().atStartOfDay();
@@ -59,21 +59,21 @@ public class RoomRequestServiceTest {
     }
 
     @Test
-    public void confirmRoomRequestTest(){
+    void confirmRoomRequestTest(){
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.confirmRoomRequest(2L, 3L, messageTransport);
         assertTrue(result);
     }
 
     @Test
-    public void declineAssignedRoomTest(){
+    void declineAssignedRoomTest(){
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.declineAssignedRoom("123", 3L, 3L, messageTransport);
         assertTrue(result);
     }
 
     @Test
-    public void disableRoomRequestTest(){
+    void disableRoomRequestTest(){
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.disableRoomRequest(4L, 3L, messageTransport);
         assertTrue(result);

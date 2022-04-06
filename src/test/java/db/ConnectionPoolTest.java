@@ -1,7 +1,6 @@
 package db;
 
 import exceptions.db.NoAvailableConnections;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    public void testConnectionPoolTrowsWhenEmpty(){
+    void testConnectionPoolTrowsWhenEmpty(){
         for (int i = 0; i < POOL_SIZE; i++) {
             ConnectionPool.getConnection();
         }
@@ -38,7 +37,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    public void testConnectionPoolReleaseConnection(){
+    void testConnectionPoolReleaseConnection(){
         int cpSizeBefore = ConnectionPool.getCurrentPoolSize();
         Connection connection = ConnectionPool.getConnection();
         int cpSizeAfter = ConnectionPool.getCurrentPoolSize();
@@ -48,7 +47,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    public void testPooledConnectionNotClosing() throws SQLException {
+    void testPooledConnectionNotClosing() throws SQLException {
         int cpSizeBefore = ConnectionPool.getCurrentPoolSize();
         Connection connection = ConnectionPool.getConnection();
         connection.close();
@@ -57,7 +56,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    public void testPooledConnectionPreparedStatementCache() throws SQLException {
+    void testPooledConnectionPreparedStatementCache() throws SQLException {
         Connection connection = ConnectionPool.getConnection();
         PreparedStatement stmt = connection.prepareStatement("select 1 + 1");
         PreparedStatement stmt1 = connection.prepareStatement("select 1 + 1");

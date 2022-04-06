@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class ChangePasswordForm extends Form {
 
-    private final static Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
+    private static final Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "oldPassword", literal = "class=\"form-control my-2\"")
     private String oldPassword;

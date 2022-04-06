@@ -20,7 +20,7 @@ public class SqlMapperTest {
 
     @ParameterizedTest
     @MethodSource("sqlMapperCases")
-    public void testMapper(TypePair[] typePairs, Object model, Object expected) throws SQLException {
+    void testMapper(TypePair[] typePairs, Object model, Object expected) throws SQLException {
         ResultSet rs = Mockito.mock(ResultSet.class);
         for(TypePair pair : typePairs){
             if(pair.getType() == String.class){

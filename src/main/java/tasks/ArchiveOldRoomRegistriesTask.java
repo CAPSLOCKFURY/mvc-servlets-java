@@ -10,7 +10,7 @@ public class ArchiveOldRoomRegistriesTask extends TimerTask {
 
     private final RoomsService roomsService = RoomsService.getInstance();
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void run() {

@@ -21,7 +21,7 @@ public class GetParamJoinerHandler extends TagSupport {
         this.insertQuestionMark = insertQuestionMark;
     }
 
-    private JspWriter out;
+    private transient JspWriter out;
 
     @Override
     public int doStartTag(){

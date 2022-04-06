@@ -54,7 +54,7 @@ public class ReportConfigurationForm extends Form {
         try {
             this.checkInDate = java.sql.Date.valueOf(checkInDate);
         } catch (IllegalArgumentException iag){
-            checkInDate = null;
+            this.checkInDate = null;
         }
     }
 
@@ -66,7 +66,7 @@ public class ReportConfigurationForm extends Form {
         try {
             this.checkOutDate = java.sql.Date.valueOf(checkOutDate);
         } catch (IllegalArgumentException iag){
-            checkOutDate = null;
+            this.checkOutDate = null;
         }
     }
 

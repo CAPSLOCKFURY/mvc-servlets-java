@@ -42,7 +42,7 @@ public class ConnectionPool {
     private static int POOL_SIZE;
     private static int FREE_CONNECTION_WAIT_TIME;
 
-    private static BlockingQueue<Connection> connectionPool;
+    private static BlockingQueue<Connection> pool;
     private static BlockingQueue<Connection> usedConnections;
 
     private static final ReentrantLock lock = new ReentrantLock();
@@ -56,10 +56,10 @@ public class ConnectionPool {
             e.printStackTrace();
             throw new IncorrectDriverPath(DRIVER_NAME);
         }
-        connectionPool = new ArrayBlockingQueue<>(POOL_SIZE);
+        pool = new ArrayBlockingQueue<>(POOL_SIZE);
         usedConnections = new ArrayBlockingQueue<>(POOL_SIZE);
         for (int i = 0; i < POOL_SIZE; i++) {
-            connectionPool.add(createConnection());
+            pool.add(createConnection());
         }
         POOL_INITIALIZED = true;
         logger.info("Connection pool initialized");
@@ -95,7 +95,7 @@ public class ConnectionPool {
     public static Connection getConnection() {
         Connection connection = null;
         try {
-            connection = connectionPool.poll(FREE_CONNECTION_WAIT_TIME, TimeUnit.MILLISECONDS);
+            connection = pool.poll(FREE_CONNECTION_WAIT_TIME, TimeUnit.MILLISECONDS);
         } catch (InterruptedException ie){
             ie.printStackTrace();
         }
@@ -114,7 +114,7 @@ public class ConnectionPool {
      */
     public static void releaseConnection(Connection connection){
         if(usedConnections.remove(connection)) {
-            if(connectionPool.offer(connection)) {
+            if(pool.offer(connection)) {
                 logger.debug("Returned connection back to pool");
             } else {
                 logger.fatal("Could not return connection to connection poll");
@@ -126,7 +126,7 @@ public class ConnectionPool {
         }
     }
 
-    private void initializeProperties() {
+    private static void initializeProperties() {
         ResourceBundle properties = ResourceBundle.getBundle("database");
         URL = properties.getString("database.url");
         USER = properties.getString("database.user");
@@ -144,7 +144,7 @@ public class ConnectionPool {
      * Closes all jdbc connections, should be only used at application shutdown
      */
     public static void closeAllConnections(){
-        connectionPool.forEach(c -> {
+        pool.forEach(c -> {
             try {
                 ((PooledConnection)c).closeInDb();
             } catch (SQLException e) {
@@ -154,7 +154,7 @@ public class ConnectionPool {
     }
 
     public static int getCurrentPoolSize(){
-        return connectionPool.size();
+        return pool.size();
     }
 
     public static int getUsedConnectionsSize(){

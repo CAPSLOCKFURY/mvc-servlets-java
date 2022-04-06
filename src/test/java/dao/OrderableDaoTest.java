@@ -33,7 +33,7 @@ public class OrderableDaoTest {
     }
 
     @Test
-    public void getAllTest() throws SQLException{
+    void getAllTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             Pageable pageable = new Pageable(1, 4);
             Orderable orderable = new Orderable("id", OrderDirection.DESC);
@@ -48,7 +48,7 @@ public class OrderableDaoTest {
     }
 
     @Test
-    public void getAllByParamsTest() throws SQLException{
+    void getAllByParamsTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.INT)

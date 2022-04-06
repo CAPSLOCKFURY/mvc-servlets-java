@@ -4,8 +4,6 @@ import constants.SqlQueries;
 import dao.dao.BillingDao;
 import db.ConnectionPool;
 import models.Billing;
-import models.base.SqlColumn;
-import models.base.SqlType;
 import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 

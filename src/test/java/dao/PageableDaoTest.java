@@ -31,7 +31,7 @@ public class PageableDaoTest {
     private final static TestPageableDao dao = new TestPageableDao();
 
     @Test
-    public void getAllTest() throws SQLException{
+    void getAllTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             Pageable pageable = new Pageable(1, 2);
             List<DaoTestModel> models = dao.abstractGetAll(connection, "select * from dao_test", DaoTestModel.class, pageable);
@@ -48,7 +48,7 @@ public class PageableDaoTest {
     }
 
     @Test
-    public void getAllByParamsTest() throws SQLException{
+    void getAllByParamsTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.INT)

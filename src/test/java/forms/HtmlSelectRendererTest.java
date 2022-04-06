@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HtmlSelectRendererTest {
 
     @Test
-    public void testHtmlSelectRenderer(){
+    void testHtmlSelectRenderer(){
         Map<String, String> options = new HashMap<>();
         options.put("1", "One");
         options.put("2", "Two");

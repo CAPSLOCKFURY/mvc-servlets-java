@@ -5,7 +5,6 @@ import commands.base.security.AuthenticatedOnly;
 import commands.base.security.NonAuthenticatedOnly;
 import commands.base.security.Security;
 import exceptions.CommandNotFoundException;
-import exceptions.db.DaoException;
 import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.Cookie;
@@ -124,7 +123,7 @@ public final class CommandRegistry {
      */
     private static String getRequestUrl(HttpServletRequest request){
         String pathInfo = request.getPathInfo();
-        logger.debug("Path info: " + pathInfo);
+        logger.debug("Path info: {}", pathInfo);
         if(pathInfo == null){
             return "";
         }
@@ -135,9 +134,9 @@ public final class CommandRegistry {
         commands.forEach(c ->{
             try {
                 WebMapping webMapping = c.getAnnotation(WebMapping.class);
-                Command instance = c.getConstructor().newInstance();
+                Command commandInstance = c.getConstructor().newInstance();
                 UrlBind bind = new UrlBind(webMapping.url(), webMapping.method());
-                commandMap.put(bind, instance);
+                commandMap.put(bind, commandInstance);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }

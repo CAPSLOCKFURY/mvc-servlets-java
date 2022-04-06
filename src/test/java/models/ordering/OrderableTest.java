@@ -2,7 +2,6 @@ package models.ordering;
 
 import models.base.ordering.OrderDirection;
 import models.base.ordering.Orderable;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,14 +14,14 @@ public class OrderableTest {
 
     @ParameterizedTest
     @MethodSource("orderableCases")
-    public void testOrderable(Orderable orderable, String query, String expectedSql){
+    void testOrderable(Orderable orderable, String query, String expectedSql){
         String orderedQuery = orderable.orderQuery(query);
         assertEquals(expectedSql.toLowerCase(), orderedQuery.toLowerCase());
     }
 
     @ParameterizedTest
     @MethodSource("orderDirectionEnumCases")
-    public void testOrderDirectionEnum(OrderDirection expected, String value){
+    void testOrderDirectionEnum(OrderDirection expected, String value){
         assertEquals(expected, OrderDirection.valueOfOrDefault(value));
     }
 

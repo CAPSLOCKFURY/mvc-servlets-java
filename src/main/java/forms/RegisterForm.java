@@ -10,10 +10,10 @@ import models.base.SqlType;
 import java.util.regex.Pattern;
 
 public class RegisterForm extends Form {
-    private final static Pattern loginPattern = RegexConstants.LOGIN_PATTERN;
-    private final static Pattern emailPattern = RegexConstants.EMAIL_PATTERN;
-    private final static Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
-    private final static Pattern namePattern = RegexConstants.NAME_PATTERN;
+    private static final Pattern loginPattern = RegexConstants.LOGIN_PATTERN;
+    private static final Pattern emailPattern = RegexConstants.EMAIL_PATTERN;
+    private static final Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
+    private static final Pattern namePattern = RegexConstants.NAME_PATTERN;
 
     @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login", literal = "class=\"form-control my-2\"")
     @SqlColumn(columnName = "login", type = SqlType.STRING)

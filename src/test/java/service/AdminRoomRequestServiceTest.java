@@ -30,7 +30,7 @@ public class AdminRoomRequestServiceTest {
 
     @Test
     @Order(1)
-    public void getAdminRoomRequestByIdTest(){
+    void getAdminRoomRequestByIdTest(){
         AdminRoomRequestDTO roomRequest = service.getAdminRoomRequestById(2L, "en");
         assertEquals(2, roomRequest.getId());
         assertEquals("awaiting confirmation", roomRequest.getStatus());
@@ -38,7 +38,7 @@ public class AdminRoomRequestServiceTest {
 
     @Test
     @Order(2)
-    public void getAdminRoomRequestsTest(){
+    void getAdminRoomRequestsTest(){
         Orderable orderable = new Orderable("id", OrderDirection.ASC);
         Pageable pageable = new Pageable(1, 15);
         List<AdminRoomRequestDTO> roomRequests = service.getAdminRoomRequests("en", RoomRequestStatus.AWAITING, orderable, pageable);
@@ -49,7 +49,7 @@ public class AdminRoomRequestServiceTest {
 
     @Test
     @Order(3)
-    public void closeRoomRequest(){
+    void closeRoomRequest(){
         boolean result = service.closeRoomRequest(5L, "closed");
         assertTrue(result);
     }

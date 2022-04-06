@@ -15,7 +15,7 @@ public class HtmlInputRendererTest {
 
     @ParameterizedTest
     @MethodSource("nonLocalizedCases")
-    public void testNonLocalized(InputType type, String name, String placeholder, String expected){
+    void testNonLocalized(InputType type, String name, String placeholder, String expected){
         HtmlInputRenderer renderer = new HtmlInputRenderer.Builder(type)
                 .withName(name)
                 .withPlaceholder(placeholder)

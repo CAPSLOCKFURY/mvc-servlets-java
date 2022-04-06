@@ -28,7 +28,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserByIdTest(){
+    void getUserByIdTest(){
         User user = service.getUserById(1L);
         assertEquals(1, user.getId());
         assertEquals("Vadim", user.getFirstName());
@@ -36,7 +36,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginUserTest(){
+    void loginUserTest(){
         LoginForm form = new LoginForm();
         form.setLocale(new Locale("en"));
         form.setLogin("vadim");
@@ -55,7 +55,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser(){
+    void createUser(){
         RegisterForm form = new RegisterForm();
         form.setLocale(new Locale("en"));
         form.setEmail("junit@gmail.com");
@@ -76,7 +76,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void addUserBalance(){
+    void addUserBalance(){
         AddBalanceForm form = new AddBalanceForm();
         form.setAmount("1000");
         boolean result = service.addUserBalance(form, 1L);

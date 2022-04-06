@@ -8,9 +8,9 @@ import java.util.TimerTask;
 
 public class UpdateRoomStatusTask extends TimerTask {
 
-    private final static RoomsService roomService = RoomsService.getInstance();
+    private static final RoomsService roomService = RoomsService.getInstance();
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void run() {

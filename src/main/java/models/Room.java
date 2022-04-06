@@ -32,9 +32,6 @@ public class Room {
         return id;
     }
 
-    public Room() {
-    }
-
     public String getClassName() {
         return className;
     }

@@ -32,16 +32,16 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void simpleTest() throws SQLException {
+    void simpleTest() throws SQLException {
         try(Connection connection = ConnectionPool.getConnection()) {
             List<Sum> all = dao.abstractGetAll(connection, "select 1 + 1 as sum", Sum.class);
             assertEquals(1, all.size());
-            assertEquals(all.get(0).getSum(), 2);
+            assertEquals(2, all.get(0).getSum());
         }
     }
 
     @Test
-    public void getOneByIdTest() throws SQLException{
+    void getOneByIdTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             DaoTestModel model = dao.abstractGetOneById(connection, "select * from dao_test where id = ?", 1L, DaoTestModel.class);
             assertEquals(1, model.getId());
@@ -51,7 +51,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void getOneByParams() throws SQLException{
+    void getOneByParams() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class Params{
                 @SqlColumn(columnName = "", type = SqlType.INT)
@@ -65,7 +65,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void getAllTest() throws SQLException{
+    void getAllTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             List<DaoTestModel> models = dao.abstractGetAll(connection, "select * from dao_test", DaoTestModel.class);
             assertEquals(4, models.size());
@@ -77,7 +77,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void getAllByParamsTest() throws SQLException {
+    void getAllByParamsTest() throws SQLException {
         try (Connection connection = ConnectionPool.getConnection()) {
             class Params {
                 @SqlColumn(columnName = "", type = SqlType.INT)
@@ -97,7 +97,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void createEntityTest() throws SQLException{
+    void createEntityTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class InsertParams{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -113,7 +113,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void createEntityAndGetIdTest() throws SQLException{
+    void createEntityAndGetIdTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class InsertParams{
                 @SqlColumn(columnName = "", type = SqlType.STRING)
@@ -129,7 +129,7 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void updateEntityByIdTest() throws SQLException{
+    void updateEntityByIdTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class UpdateParams{
                 @SqlColumn(columnName = "", type = SqlType.INT)
@@ -142,17 +142,18 @@ public class AbstractDaoTest {
     }
 
     @Test
-    public void updateEntityTest() throws SQLException{
+    void updateEntityTest() throws SQLException{
         try(Connection connection = ConnectionPool.getConnection()){
             class UpdateParams{
-                @SqlColumn(columnName = "", type = SqlType.LONG)
-                private final Long id = 1L;
                 @SqlColumn(columnName = "", type = SqlType.INT)
                 private final Integer age = 21;
+                @SqlColumn(columnName = "", type = SqlType.LONG)
+                private final Long id = 1L;
                 public Integer getAge() {return age;}
                 public Long getId() {return id;}
             }
             boolean result = dao.abstractUpdateEntity(connection, "update dao_test_insert set age = ? where id = ?", new UpdateParams());
+            assertTrue(result);
         }
     }
 }

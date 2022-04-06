@@ -67,10 +67,8 @@ public class RoomRequestForm extends Form {
                 addLocalizedError("errors.CheckOutDateIsCheckInDate");
             }
         }
-        if(capacity != null){
-            if(capacity < 1){
-                addLocalizedError("errors.capacityNumberFormat");
-            }
+        if(capacity != null && capacity < 1){
+            addLocalizedError("errors.capacityNumberFormat");
         }
         return errors.size() == 0;
     }

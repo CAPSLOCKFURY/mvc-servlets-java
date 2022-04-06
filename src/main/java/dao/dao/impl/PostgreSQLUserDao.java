@@ -8,8 +8,6 @@ import forms.LoginForm;
 import forms.RegisterForm;
 import forms.UserUpdateProfileForm;
 import models.User;
-import models.base.SqlColumn;
-import models.base.SqlType;
 
 import java.sql.Connection;
 import java.sql.SQLException;

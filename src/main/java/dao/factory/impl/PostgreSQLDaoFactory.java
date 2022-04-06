@@ -10,7 +10,7 @@ import dao.dao.impl.PostgreSQLRoomsDao;
 import dao.dao.impl.PostgreSQLUserDao;
 import dao.factory.DaoFactory;
 
-public class PostgreSQLDaoFactory extends DaoFactory {
+public class PostgreSQLDaoFactory implements DaoFactory {
 
     @Override
     public UserDao getUserDao() {

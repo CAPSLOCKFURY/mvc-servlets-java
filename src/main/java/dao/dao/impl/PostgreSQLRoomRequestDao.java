@@ -8,15 +8,12 @@ import dao.factory.SqlDB;
 import db.ConnectionPool;
 import forms.RoomRequestForm;
 import models.RoomRequest;
-import models.base.SqlColumn;
-import models.base.SqlType;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;

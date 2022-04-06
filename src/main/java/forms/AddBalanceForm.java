@@ -17,10 +17,8 @@ public class AddBalanceForm extends Form {
 
     @Override
     public boolean validate() {
-        if(amount != null){
-            if(amount.compareTo(BigDecimal.ZERO) <= 0){
-                addLocalizedError("errors.IncorrectMoneyAmount");
-            }
+        if(amount != null && amount.compareTo(BigDecimal.ZERO) <= 0){
+            addLocalizedError("errors.IncorrectMoneyAmount");
         }
         return errors.size() == 0;
     }

@@ -21,7 +21,7 @@ public class FormRenderHandlerTest {
 
     @ParameterizedTest
     @MethodSource("renderTagCases")
-    public void testRenderTag(String formClass, String expected) throws IOException {
+    void testRenderTag(String formClass, String expected) throws IOException {
         StringJoiner renderedFormInput = new StringJoiner("\n");
         JspWriter jspWriter = Mockito.mock(JspWriter.class);
         Mockito.doAnswer(invocationOnMock -> {

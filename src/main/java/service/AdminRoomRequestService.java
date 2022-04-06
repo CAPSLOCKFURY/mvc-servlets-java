@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AdminRoomRequestService {
 
-    private final static RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
+    private static final RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
 
     private AdminRoomRequestService(){
 

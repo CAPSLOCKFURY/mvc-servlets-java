@@ -35,13 +35,13 @@ public class AdminRoomsServiceTest {
     }
 
     @Test
-    public void assignRoomToRequestTest(){
+    void assignRoomToRequestTest(){
         boolean result = service.assignRoomToRequest(12L, 3L);
         assertTrue(result);
     }
 
     @Test
-    public void findSuitableRoomsForRequestTest(){
+    void findSuitableRoomsForRequestTest(){
         Pageable pageable = new Pageable(1, 15);
         LocalDateTime today = new java.sql.Date(System.currentTimeMillis()).toLocalDate().atStartOfDay();
         LocalDateTime todayPlus7 = today.plusDays(7);
@@ -56,7 +56,7 @@ public class AdminRoomsServiceTest {
     }
 
     @Test
-    public void testFindDataForRoomRegistryReport(){
+    void testFindDataForRoomRegistryReport(){
         ReportConfigurationForm reportConfigurationForm = new ReportConfigurationForm();
         boolean isValid = reportConfigurationForm.validate();
         assertTrue(isValid);
@@ -77,7 +77,7 @@ public class AdminRoomsServiceTest {
     }
 
     @Test
-    public void closeOpenRoomTest(){
+    void closeOpenRoomTest(){
         LocalDateTime today = new java.sql.Date(System.currentTimeMillis()).toLocalDate().atStartOfDay();
         LocalDateTime todayPlus7 = today.plusDays(7);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");

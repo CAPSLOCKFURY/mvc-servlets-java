@@ -8,9 +8,9 @@ import java.util.TimerTask;
 
 public class DeleteOldBillingsTask extends TimerTask {
 
-    private final static BillingService billingService = BillingService.getInstance();
+    private static final BillingService billingService = BillingService.getInstance();
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void run() {

@@ -24,7 +24,7 @@ public class PreparedStatementClassMapperTest {
 
     @ParameterizedTest
     @MethodSource("preparedStatementMapperCases")
-    public void testPreparedStatementMapper(Object form, Object ...expectedObjects) throws SQLException {
+    void testPreparedStatementMapper(Object form, Object ...expectedObjects) throws SQLException {
         PreparedStatement stmt = Mockito.mock(PreparedStatement.class);
         List<Object> setParams = new LinkedList<>();
         List<Object> expected = new ArrayList<>(Arrays.asList(expectedObjects));

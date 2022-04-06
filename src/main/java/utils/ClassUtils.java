@@ -59,9 +59,7 @@ public final class ClassUtils {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        Arrays.stream(files).filter(File::isDirectory).forEach(f -> {
-            classes.addAll(getClassFiles(f.listFiles(), packageName.concat("." + f.getName())));
-        });
+        Arrays.stream(files).filter(File::isDirectory).forEach(f -> classes.addAll(getClassFiles(f.listFiles(), packageName.concat("." + f.getName()))));
         return classes;
     }
 

@@ -16,7 +16,7 @@ public class PageableTest {
 
     @ParameterizedTest
     @MethodSource("simplePageableCases")
-    public void testSimplePageable(int page, int entitiesPerPage, String sql, String expectedSql){
+    void testSimplePageable(int page, int entitiesPerPage, String sql, String expectedSql){
         Pageable pageable = new Pageable(page, entitiesPerPage);
         String paginatedSql = pageable.paginateQuery(sql);
         assertEquals(expectedSql, paginatedSql);
@@ -24,14 +24,14 @@ public class PageableTest {
 
     @ParameterizedTest
     @MethodSource("lookAheadPageableCases")
-    public void testLookAheadPageable(int page, int entitiesPerPage, String sql, String expectedSql) {
+    void testLookAheadPageable(int page, int entitiesPerPage, String sql, String expectedSql) {
         Pageable pageable = new Pageable(page, entitiesPerPage, true);
         String paginatedSql = pageable.paginateQuery(sql);
         assertEquals(expectedSql, paginatedSql);
     }
 
     @Test
-    public void testPageableStaticFactory(){
+    void testPageableStaticFactory(){
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getParameter("page")).thenReturn("1");
         Pageable pageable1 = Pageable.of(request, 10, true);

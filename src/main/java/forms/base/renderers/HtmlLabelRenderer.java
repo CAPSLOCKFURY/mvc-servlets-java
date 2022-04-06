@@ -17,7 +17,6 @@ public class HtmlLabelRenderer {
             ResourceBundle rb = ResourceBundle.getBundle("forms", locale);
             text = rb.getString("label." + localizedText);
         }
-        //sb.append(String.format("<label for=\"%s\">%s</label>", forElement, text));
         sb.append(String.format("<label for=\"%s\" ", forElement));
         if(!literal.equals("")){
             sb.append(literal);

@@ -13,7 +13,7 @@ public class HtmlTextAreaRendererTest {
 
     @ParameterizedTest
     @MethodSource("testCases")
-    public void test(String rows, String cols, String name, String id, String literal, String expected){
+    void test(String rows, String cols, String name, String id, String literal, String expected){
         HtmlTextAreaRenderer renderer = new HtmlTextAreaRenderer.Builder()
                 .withRows(rows).withCols(cols)
                 .withName(name)

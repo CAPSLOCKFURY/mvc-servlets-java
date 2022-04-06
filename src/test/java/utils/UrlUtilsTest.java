@@ -14,7 +14,7 @@ public class UrlUtilsTest {
 
     @ParameterizedTest
     @MethodSource("getAbsoluteUrlCases")
-    public void testGetAbsoluteUrl(String url, String expected){
+    void testGetAbsoluteUrl(String url, String expected){
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getContextPath()).thenReturn("/mockito");
         Mockito.when(request.getServletPath()).thenReturn("/app");
@@ -24,7 +24,7 @@ public class UrlUtilsTest {
 
     @ParameterizedTest
     @MethodSource("getFullUrlCases")
-    public void testGetFullUrl(String url, String queryParams, String expected) {
+    void testGetFullUrl(String url, String queryParams, String expected) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         Mockito.when(request.getQueryString()).thenReturn(queryParams);

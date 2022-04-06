@@ -1,5 +1,6 @@
 package forms;
 
+import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
@@ -10,8 +11,8 @@ import java.util.regex.Pattern;
 
 public class LoginForm extends Form {
 
-    private final static Pattern loginPattern = Pattern.compile("[a-zA-Z_0-9-]+");
-    private final static Pattern passwordPattern = Pattern.compile("[a-zA-Z_0-9-]+");
+    private static final Pattern loginPattern = RegexConstants.LOGIN_PATTERN;
+    private static final Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
 
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "login", literal = "class=\"form-control my-2\"")

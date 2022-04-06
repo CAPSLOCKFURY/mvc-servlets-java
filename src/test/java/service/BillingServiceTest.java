@@ -29,7 +29,7 @@ public class BillingServiceTest {
 
     @Test
     @Order(1)
-    public void findBillingsByUserIdTest(){
+    void findBillingsByUserIdTest(){
         Pageable pageable = new Pageable(1, 10);
         List<Billing> billings = service.findBillingsByUserId(3L, pageable);
         assertEquals(1, billings.size());
@@ -37,7 +37,7 @@ public class BillingServiceTest {
 
     @Test
     @Order(2)
-    public void payBillingTest(){
+    void payBillingTest(){
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.payBilling(3L, 1L, messageTransport);
         assertTrue(result);

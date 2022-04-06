@@ -23,10 +23,12 @@ public class ControllerServlet extends HttpServlet {
 
     private static final CommandRegistry commandRegistry = CommandRegistry.getInstance();
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         handleRequest(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         handleRequest(request, response);
     }

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class UserUpdateProfileForm extends Form {
 
-    private final static Pattern namePattern = RegexConstants.NAME_PATTERN;
+    private static final Pattern namePattern = RegexConstants.NAME_PATTERN;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
     @SqlColumn(columnName = "first_name", type = SqlType.STRING)

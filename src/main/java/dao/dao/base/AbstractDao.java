@@ -80,11 +80,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <T, P> T getOneByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException {
-        return getOneByParams(connection, sql, params, model, new PreparedStatementClassMapper<>(params));
+        return getOneByParams(connection, sql, model, new PreparedStatementClassMapper<>(params));
     }
 
     protected final <T> T getOneByParams(Connection connection, String sql, Object[] params, Class<T> model) throws SQLException{
-        return getOneByParams(connection, sql, params, model, new PreparedStatementArrayMapper(params));
+        return getOneByParams(connection, sql, model, new PreparedStatementArrayMapper(params));
     }
 
     /**
@@ -97,11 +97,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <T, P> List<T> getAllByParams(Connection connection, String sql, P params, Class<T> model) throws SQLException{
-        return getAllByParams(connection, sql, params, model, new PreparedStatementClassMapper<>(params));
+        return getAllByParams(connection, sql, model, new PreparedStatementClassMapper<>(params));
     }
 
     protected final <T> List<T> getAllByParams(Connection connection, String sql, Object[] params, Class<T> model) throws SQLException{
-        return getAllByParams(connection, sql, params, model, new PreparedStatementArrayMapper(params));
+        return getAllByParams(connection, sql, model, new PreparedStatementArrayMapper(params));
     }
 
     /**
@@ -113,11 +113,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <F> boolean createEntity(Connection connection, String sql, F form) throws SQLException{
-        return createEntity(connection, sql, form, new PreparedStatementClassMapper<>(form));
+        return createEntity(connection, sql, new PreparedStatementClassMapper<>(form));
     }
 
     protected final boolean createEntity(Connection connection, String sql, Object[] form) throws SQLException{
-        return createEntity(connection, sql, form, new PreparedStatementArrayMapper(form));
+        return createEntity(connection, sql, new PreparedStatementArrayMapper(form));
     }
 
     /**
@@ -129,11 +129,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <F> long createEntityAndGetId(Connection connection, String sql, F form) throws SQLException{
-        return createEntityAndGetId(connection, sql, form, new PreparedStatementClassMapper<>(form));
+        return createEntityAndGetId(connection, sql, new PreparedStatementClassMapper<>(form));
     }
 
-    protected final <F> long createEntityAndGetId(Connection connection, String sql, Object[] form) throws SQLException{
-        return createEntityAndGetId(connection, sql, form, new PreparedStatementArrayMapper(form));
+    protected final long createEntityAndGetId(Connection connection, String sql, Object[] form) throws SQLException{
+        return createEntityAndGetId(connection, sql, new PreparedStatementArrayMapper(form));
     }
 
     /**
@@ -146,11 +146,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <F> boolean updateEntityById(Connection connection, String sql, F form, Long id) throws SQLException {
-        return updateEntityById(connection, sql, form, id, new PreparedStatementClassMapper<>(form));
+        return updateEntityById(connection, sql, id, new PreparedStatementClassMapper<>(form));
     }
 
-    protected final <F> boolean updateEntityById(Connection connection, String sql, Object[] form, Long id) throws SQLException {
-        return updateEntityById(connection, sql, form, id, new PreparedStatementArrayMapper(form));
+    protected final boolean updateEntityById(Connection connection, String sql, Object[] form, Long id) throws SQLException {
+        return updateEntityById(connection, sql, id, new PreparedStatementArrayMapper(form));
     }
 
     /**
@@ -162,11 +162,11 @@ public abstract class AbstractDao {
      * @throws SQLException this method does not handle sql exceptions
      */
     protected final <F> boolean updateEntity(Connection connection, String sql, F form) throws SQLException {
-        return updateEntity(connection, sql, form, new PreparedStatementClassMapper<>(form));
+        return updateEntity(connection, sql, new PreparedStatementClassMapper<>(form));
     }
 
-    protected final <F> boolean updateEntity(Connection connection, String sql, Object[] form) throws SQLException {
-        return updateEntity(connection, sql, form, new PreparedStatementArrayMapper(form));
+    protected final boolean updateEntity(Connection connection, String sql, Object[] form) throws SQLException {
+        return updateEntity(connection, sql, new PreparedStatementArrayMapper(form));
     }
 
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractDao {
         return statement.executeUpdate(sql);
     }
 
-    private <T, P> T getOneByParams(Connection connection, String sql, P params, Class<T> model, PreparedStatementMapper mapper) throws SQLException{
+    private <T> T getOneByParams(Connection connection, String sql, Class<T> model, PreparedStatementMapper mapper) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         mapper.mapToPreparedStatement(stmt);
         try{
@@ -198,7 +198,7 @@ public abstract class AbstractDao {
         }
     }
 
-    private <T, P> List<T> getAllByParams(Connection connection, String sql, P params, Class<T> model, PreparedStatementMapper mapper) throws SQLException{
+    private <T> List<T> getAllByParams(Connection connection, String sql, Class<T> model, PreparedStatementMapper mapper) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         mapper.mapToPreparedStatement(stmt);
         try{
@@ -217,13 +217,13 @@ public abstract class AbstractDao {
         }
     }
 
-     private <F> boolean createEntity(Connection connection, String sql, F form, PreparedStatementMapper mapper) throws SQLException{
+     private boolean createEntity(Connection connection, String sql, PreparedStatementMapper mapper) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql);
         mapper.mapToPreparedStatement(stmt);
         return stmt.executeUpdate() == 1;
     }
 
-    private <F> long createEntityAndGetId(Connection connection, String sql, F form, PreparedStatementMapper mapper) throws SQLException{
+    private long createEntityAndGetId(Connection connection, String sql, PreparedStatementMapper mapper) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         mapper.mapToPreparedStatement(stmt);
         stmt.executeUpdate();
@@ -232,7 +232,7 @@ public abstract class AbstractDao {
         return rs.getLong(1);
     }
 
-    private <F> boolean updateEntityById(Connection connection, String sql, F form, Long id, PreparedStatementMapper mapper) throws SQLException {
+    private boolean updateEntityById(Connection connection, String sql, Long id, PreparedStatementMapper mapper) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         mapper.mapToPreparedStatement(stmt);
         int numberOfPlaceholders = (int) sql.chars().filter(ch -> ch == '?').count();
@@ -240,7 +240,7 @@ public abstract class AbstractDao {
         return stmt.executeUpdate() == 1;
     }
 
-    private <F> boolean updateEntity(Connection connection, String sql, F form, PreparedStatementMapper mapper) throws SQLException {
+    private boolean updateEntity(Connection connection, String sql, PreparedStatementMapper mapper) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(sql);
         mapper.mapToPreparedStatement(stmt);
         return stmt.executeUpdate() == 1;

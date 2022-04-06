@@ -2,7 +2,8 @@ package dao.resources;
 
 import dao.dao.base.AbstractDao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TestDao extends AbstractDao {

@@ -11,4 +11,8 @@ public class DaoAbstractFactory {
         }
         throw new DaoFactoryNotFound();
     }
+
+    private DaoAbstractFactory(){
+
+    }
 }

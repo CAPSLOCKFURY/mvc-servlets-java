@@ -36,7 +36,7 @@ public class RoomsServiceTest {
     }
 
     @Test
-    public void getAllRoomsTest(){
+    void getAllRoomsTest(){
         Orderable orderable = new Orderable("id", OrderDirection.ASC);
         Pageable pageable = new Pageable(1, 10);
         List<Room> rooms = service.getAllRooms("en", orderable, pageable);
@@ -45,20 +45,20 @@ public class RoomsServiceTest {
     }
 
     @Test
-    public void getAllRoomClassesTest(){
+    void getAllRoomClassesTest(){
         List<RoomClass> roomClasses = service.getRoomClasses("en");
         assertEquals(4, roomClasses.size());
     }
 
     @Test
-    public void getRoomById(){
+    void getRoomById(){
         Room room = service.getRoomById(1L, "en");
         assertEquals(1, room.getId());
         assertEquals("Cheap", room.getClassName());
     }
 
     @Test
-    public void getExtendedRoomInfoTest(){
+    void getExtendedRoomInfoTest(){
         RoomExtendedInfo roomExtendedInfo = service.getExtendedRoomInfo(1L, "en");
         assertEquals(1, roomExtendedInfo.getId());
         assertEquals(1, roomExtendedInfo.getDates().size());
@@ -69,7 +69,7 @@ public class RoomsServiceTest {
     }
 
     @Test
-    public void getUserRoomHistoryTest(){
+    void getUserRoomHistoryTest(){
         Pageable pageable = new Pageable(1, 10);
         List<RoomHistoryDTO> roomHistory = service.getUserRoomHistory(1L, "en", pageable);
         assertEquals(1, roomHistory.size());
@@ -77,7 +77,7 @@ public class RoomsServiceTest {
     }
 
     @Test
-    public void bookRoomTest(){
+    void bookRoomTest(){
         BookRoomForm form = new BookRoomForm();
 
         LocalDateTime today = new java.sql.Date(System.currentTimeMillis()).toLocalDate().atStartOfDay();

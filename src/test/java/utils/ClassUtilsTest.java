@@ -30,14 +30,14 @@ public class ClassUtilsTest {
 
     @ParameterizedTest
     @MethodSource("getClassesInPackageCases")
-    public void testGetClassesInPackage(String packageName, List<Class<?>> expected){
+    void testGetClassesInPackage(String packageName, List<Class<?>> expected){
         List<Class<?>> classes = ClassUtils.getClassesInPackage(packageName);
         assertEquals(expected, classes);
     }
 
     @ParameterizedTest
     @MethodSource("getAnnotatedCommandClassesInPackageCases")
-    public void testGetAnnotatedCommandClassesInPackage(String packageName, List<Class<?>> expected){
+    void testGetAnnotatedCommandClassesInPackage(String packageName, List<Class<?>> expected){
         List<Class<Command>> classes = ClassUtils.getAnnotatedCommandClassesInPackage(packageName);
         assertEquals(expected, classes);
     }

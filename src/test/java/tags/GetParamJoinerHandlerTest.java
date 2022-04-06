@@ -21,7 +21,7 @@ public class GetParamJoinerHandlerTest {
 
     @ParameterizedTest
     @MethodSource("getParamJoinerCases")
-    public void testGetParamJoiner(Map<String, String[]> paramMap, String ignoreParams, boolean insertQuestionMark, String expected) throws IOException {
+    void testGetParamJoiner(Map<String, String[]> paramMap, String ignoreParams, boolean insertQuestionMark, String expected) throws IOException {
         AtomicReference<String> result = new AtomicReference<>();
         JspWriter writer = Mockito.mock(JspWriter.class);
         Mockito.doAnswer(invocationOnMock -> {
