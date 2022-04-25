@@ -1,7 +1,7 @@
 package utils.testfolders.case3;
 
-import commands.base.Command;
-import commands.base.CommandResult;
+import web.base.Command;
+import web.base.CommandResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

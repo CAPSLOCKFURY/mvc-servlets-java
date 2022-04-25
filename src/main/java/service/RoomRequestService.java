@@ -1,6 +1,5 @@
 package service;
 
-import commands.base.messages.MessageTransport;
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
@@ -10,6 +9,7 @@ import forms.RoomRequestForm;
 import models.Room;
 import models.RoomRequest;
 import models.base.pagination.Pageable;
+import web.base.messages.MessageTransport;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

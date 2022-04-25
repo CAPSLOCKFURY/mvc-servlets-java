@@ -1,6 +1,5 @@
 package service;
 
-import commands.base.messages.MessageTransport;
 import dao.dao.BillingDao;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
@@ -10,6 +9,7 @@ import models.Billing;
 import models.User;
 import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
+import web.base.messages.MessageTransport;
 
 import java.sql.SQLException;
 import java.util.List;

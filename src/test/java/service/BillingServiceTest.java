@@ -1,7 +1,7 @@
 package service;
 
-import commands.base.messages.CookieMessageTransport;
-import commands.base.messages.MessageTransport;
+import web.base.messages.CookieMessageTransport;
+import web.base.messages.MessageTransport;
 import db.ConnectionPool;
 import models.Billing;
 import models.base.pagination.Pageable;

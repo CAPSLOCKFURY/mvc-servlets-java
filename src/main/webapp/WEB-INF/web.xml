@@ -5,7 +5,7 @@
          version="4.0">
     <servlet>
         <servlet-name>ControllerServlet</servlet-name>
-        <servlet-class>controller.ControllerServlet</servlet-class>
+        <servlet-class>web.FrontController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ControllerServlet</servlet-name>
