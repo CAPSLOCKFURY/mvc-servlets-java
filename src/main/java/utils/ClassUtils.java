@@ -1,9 +1,10 @@
 package utils;
 
-import commands.base.Command;
-import commands.base.WebMapping;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import web.base.Command;
+import web.base.annotations.WebController;
+import web.base.annotations.WebMapping;
 
 import java.io.File;
 import java.net.URL;
@@ -43,6 +44,14 @@ public final class ClassUtils {
                 .filter(c -> Command.class.isAssignableFrom(c) && c.isAnnotationPresent(WebMapping.class))
                 .collect(Collectors.toList());
         return (List<Class<Command>>)(List<?>) filteredClasses;
+    }
+
+    public static List<Class<?>> getControllerClassesInPackage(String packageName){
+        List<Class<?>> classes = getClassesInPackage(packageName);
+        List<Class<?>> filteredClasses = classes.stream()
+                .filter(c -> c.isAnnotationPresent(WebController.class))
+                .collect(Collectors.toList());
+        return filteredClasses;
     }
 
     private static List<Class<?>> getClassFiles(File[] files, String packageName){
