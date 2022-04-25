@@ -3,8 +3,8 @@ package utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import web.base.Command;
-import web.base.WebController;
-import web.base.WebMapping;
+import web.base.annotations.WebController;
+import web.base.annotations.WebMapping;
 
 import java.io.File;
 import java.net.URL;

@@ -1,4 +1,4 @@
-package web.base;
+package web.base.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

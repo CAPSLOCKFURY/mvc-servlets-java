@@ -9,6 +9,8 @@ import models.dto.RoomRegistryPdfReportDto;
 import pdf.RoomRegistryPDFReport;
 import service.AdminRoomsService;
 import web.base.*;
+import web.base.annotations.WebController;
+import web.base.annotations.WebMapping;
 import web.base.security.ManagerOnly;
 import web.base.security.Security;
 
@@ -25,19 +27,19 @@ public class AdminPDFReportController {
     private final AdminRoomsService roomsService = AdminRoomsService.getInstance();
 
     @WebMapping(url = "/admin/report", method = RequestMethod.GET)
-    public CommandResult configureReport(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult configureReport(HttpServletRequest request, HttpServletResponse response) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        return new CommandResult("/admin/configure-report.jsp", RequestDirection.FORWARD);
+        return new WebResult("/admin/configure-report.jsp", RequestDirection.FORWARD);
     }
 
     @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
-    public CommandResult generateReport(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult generateReport(HttpServletRequest request, HttpServletResponse response) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         ReportConfigurationForm form = new ReportConfigurationForm();
         form.mapRequestToForm(request);
@@ -52,6 +54,6 @@ public class AdminPDFReportController {
         RoomRegistryPDFReport pdfReport = new RoomRegistryPDFReport(out, data, request);
         pdfReport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         pdfReport.buildDocument();
-        return new CommandResult("", RequestDirection.VOID);
+        return new WebResult("", RequestDirection.VOID);
     }
 }

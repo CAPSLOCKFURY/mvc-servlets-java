@@ -8,6 +8,8 @@ import models.User;
 import models.base.pagination.Pageable;
 import service.BillingService;
 import web.base.*;
+import web.base.annotations.WebController;
+import web.base.annotations.WebMapping;
 import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
 import web.base.security.AuthenticatedOnly;
@@ -25,34 +27,34 @@ public class BillingController {
     private final BillingService billingService = BillingService.getInstance();
 
     @WebMapping(url = "/profile/my-billings/pay", method = RequestMethod.POST)
-    public CommandResult payBilling(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult payBilling(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         Long userId = ((User)request.getSession().getAttribute("user")).getId();
         Long billingId;
         try{
             billingId = Long.parseLong(request.getParameter("billingId"));
         } catch (NumberFormatException nfe){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean billingPaid = billingService.payBilling(userId, billingId, messageTransport);
         messageTransport.setMessage(request, response);
         if(!billingPaid){
-            return new CommandResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
         } else {
-            return new CommandResult(getAbsoluteUrl("/profile/room-history", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/room-history", request), RequestDirection.REDIRECT);
         }
     }
 
     @WebMapping(url = "/profile/my-billings", method = RequestMethod.GET)
-    public CommandResult getUserBillings(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult getUserBillings(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
@@ -61,7 +63,7 @@ public class BillingController {
         Pageable pageable = Pageable.of(request, 10, true);
         List<Billing> billings = billingService.findBillingsByUserId(user.getId(), pageable);
         request.setAttribute("billings", billings);
-        return new CommandResult("user-billings.jsp", RequestDirection.FORWARD);
+        return new WebResult("user-billings.jsp", RequestDirection.FORWARD);
     }
 
 }

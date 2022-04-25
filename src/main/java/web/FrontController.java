@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import web.base.CommandResult;
+import web.base.WebResult;
 import web.base.RequestDirection;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class FrontController extends HttpServlet {
             Method method = controllerRegistry.resolveMethod(request);
             logger.debug("Resolved command");
             Object controllerInstance = controllerRegistry.getControllerObject(method.getDeclaringClass());
-            CommandResult result = (CommandResult) method.invoke(controllerInstance, request, response);
+            WebResult result = (WebResult) method.invoke(controllerInstance, request, response);
             logger.debug("Executed command");
             if(result.getDirection() == RequestDirection.FORWARD){
                 request.getRequestDispatcher("/pages/" + result.getUrl()).forward(request, response);

@@ -11,6 +11,8 @@ import models.User;
 import service.RoomRequestService;
 import service.RoomsService;
 import web.base.*;
+import web.base.annotations.WebController;
+import web.base.annotations.WebMapping;
 import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
 import web.base.security.AuthenticatedOnly;
@@ -31,33 +33,33 @@ public class RoomRequestController {
     private final RoomsService roomsService = RoomsService.getInstance();
 
     @WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
-    public CommandResult confirmRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult confirmRoomRequest(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         Long requestId;
         try{
             requestId = Long.parseLong(request.getParameter("requestId"));
         } catch (NumberFormatException nfe){
-            return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
         }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean isConfirmed = roomRequestService.confirmRoomRequest(requestId, ((User)request.getSession().getAttribute("user")).getId(), messageTransport);
         messageTransport.setMessage(request, response);
         if(isConfirmed) {
-            return new CommandResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
         } else {
-            return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
         }
     }
 
     @WebMapping(url = "/profile/my-room-requests/decline", method = RequestMethod.POST)
-    public CommandResult declineAssignedRoom(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult declineAssignedRoom(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         Long requestId;
         String comment;
@@ -65,21 +67,21 @@ public class RoomRequestController {
             requestId = Long.parseLong(request.getParameter("requestId"));
             comment = request.getParameter("comment");
         } catch (NumberFormatException nfe){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         User user = (User)request.getSession().getAttribute("user");
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         roomRequestService.declineAssignedRoom(comment, user.getId(), requestId, messageTransport);
         messageTransport.setMessage(request, response);
-        return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+        return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 
     @WebMapping(url = "/profile/my-room-requests/disable", method = RequestMethod.GET)
-    public CommandResult disableRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult disableRoomRequest(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         Long id;
         Long userId;
@@ -89,20 +91,20 @@ public class RoomRequestController {
             User user = (User)session.getAttribute("user");
             userId = user.getId();
         } catch (NumberFormatException nfe){
-            return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
         }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         roomRequestService.disableRoomRequest(id, userId, messageTransport);
         messageTransport.setMessage(request, response);
-        return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+        return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 
     @WebMapping(url = "/room-request", method = RequestMethod.POST)
-    public CommandResult createRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult createRoomRequest(HttpServletRequest request, HttpServletResponse response) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         RoomRequestForm form = new RoomRequestForm();
         form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
@@ -110,28 +112,28 @@ public class RoomRequestController {
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new CommandResult(getAbsoluteUrl("/room-request", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("/room-request", request), RequestDirection.REDIRECT);
         }
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("user");
         Long userId = user.getId();
         form.setUserId(userId);
         roomRequestService.createRoomRequest(form);
-        return new CommandResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
+        return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
     }
 
     @WebMapping(url = "/room-request", method = RequestMethod.GET)
-    public CommandResult showCreateRoomRequest(HttpServletRequest request, HttpServletResponse response){
+    public WebResult showCreateRoomRequest(HttpServletRequest request, HttpServletResponse response){
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new CommandResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
+            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         List<RoomClass> roomClasses = roomsService.getRoomClasses(getLocaleFromCookies(request.getCookies()));
         Map<String, String> options = roomClasses.stream().collect(Collectors.toMap(c -> String.valueOf(c.getId()), RoomClass::getName));
         request.setAttribute("roomClassesMap", options);
         FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
         errorProcessor.processErrors(request, response);
-        return new CommandResult("room-request.jsp", RequestDirection.FORWARD);
+        return new WebResult("room-request.jsp", RequestDirection.FORWARD);
     }
 
 }

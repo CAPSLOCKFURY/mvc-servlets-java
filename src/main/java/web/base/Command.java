@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Base interface for all web commands
  */
 @FunctionalInterface
+@Deprecated
 public interface Command {
-    CommandResult execute(HttpServletRequest request, HttpServletResponse response);
+    WebResult execute(HttpServletRequest request, HttpServletResponse response);
 }

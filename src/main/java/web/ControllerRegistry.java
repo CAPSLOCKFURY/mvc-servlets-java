@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import utils.ClassUtils;
 import web.base.RequestMethod;
 import web.base.UrlBind;
-import web.base.WebMapping;
+import web.base.annotations.WebMapping;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
