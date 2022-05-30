@@ -34,9 +34,8 @@ public class UserService {
                 form.addLocalizedError("errors.loginExists");
                 return 0;
             }
-            return userDao.createUser(form);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+            return userDao.createUser(new User(form), form.getPassword());
+        } catch (DaoException sqle){
             form.addError("Database error");
             return 0;
         }
@@ -44,32 +43,26 @@ public class UserService {
 
     public User loginUser(LoginForm form){
         try{
-            User user = userDao.getUserByLoginAndPassword(form);
+            User user = userDao.getUserByLoginAndPassword(form.getLogin(), form.getPassword());
             if(user.getId() == null){
                 form.addLocalizedError("errors.userNotFound");
                 return user;
             }
             return user;
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (DaoException e){
             form.addError("Database error");
             return new User();
         }
     }
 
     public User getUserById(Long id){
-        try {
-            return userDao.getUserById(id);
-        } catch (SQLException sqle){
-            throw new DaoException();
-        }
+        return userDao.getUserById(id);
     }
 
     public boolean addUserBalance(AddBalanceForm form, Long userId){
         try {
-            return userDao.addUserBalance(form, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+            return userDao.addUserBalance(form.getAmount(), userId);
+        } catch (DaoException daoException){
             form.addError("Database error");
             return false;
         }
@@ -77,9 +70,8 @@ public class UserService {
 
     public boolean updateUser(UserUpdateProfileForm form, Long userId){
         try{
-            return userDao.updateUser(form, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+            return userDao.updateUser(form.getFirstName(), form.getLastName(), userId);
+        } catch (DaoException daoException){
             form.addError("Database error");
             return false;
         }
@@ -93,8 +85,7 @@ public class UserService {
                 return false;
             }
             return userDao.changePassword(form.getNewPassword(), userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             form.addError("Database Error");
             return false;
         }

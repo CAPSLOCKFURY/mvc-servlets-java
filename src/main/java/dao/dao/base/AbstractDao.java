@@ -4,7 +4,7 @@ import exceptions.db.DaoException;
 import models.base.mappers.PreparedStatementArrayMapper;
 import models.base.mappers.PreparedStatementClassMapper;
 import models.base.mappers.PreparedStatementMapper;
-import models.base.mappers.SqlMapper;
+import models.base.mappers.SqlModelMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
@@ -31,7 +31,7 @@ public abstract class AbstractDao {
         while (rs.next()){
             try {
                 T entity = model.getConstructor().newInstance();
-                SqlMapper<T> mapper = new SqlMapper<>(entity);
+                SqlModelMapper<T> mapper = new SqlModelMapper<>(entity);
                 mapper.mapFromResultSet(rs);
                 result.add(entity);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -59,7 +59,7 @@ public abstract class AbstractDao {
             T entity = model.getConstructor().newInstance();
             ResultSet rs = stmt.executeQuery();
             while (rs.next()){
-                SqlMapper<T> mapper = new SqlMapper<>(entity);
+                SqlModelMapper<T> mapper = new SqlModelMapper<>(entity);
                 mapper.mapFromResultSet(rs);
             }
             return entity;
@@ -188,8 +188,8 @@ public abstract class AbstractDao {
             T entity = model.getConstructor().newInstance();
             ResultSet rs = stmt.executeQuery();
             while (rs.next()){
-                SqlMapper<T> sqlMapper = new SqlMapper<>(entity);
-                sqlMapper.mapFromResultSet(rs);
+                SqlModelMapper<T> sqlModelMapper = new SqlModelMapper<>(entity);
+                sqlModelMapper.mapFromResultSet(rs);
             }
             return entity;
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
@@ -206,8 +206,8 @@ public abstract class AbstractDao {
             List<T> result = new LinkedList<>();
             while (rs.next()){
                 T entity = model.getConstructor().newInstance();
-                SqlMapper<T> sqlMapper = new SqlMapper<>(entity);
-                sqlMapper.mapFromResultSet(rs);
+                SqlModelMapper<T> sqlModelMapper = new SqlModelMapper<>(entity);
+                sqlModelMapper.mapFromResultSet(rs);
                 result.add(entity);
             }
             return result;
