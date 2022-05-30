@@ -3,7 +3,7 @@ package dao.dao.impl;
 import constants.SqlQueries;
 import dao.dao.RoomsDao;
 import db.ConnectionPool;
-import forms.BookRoomForm;
+import exceptions.db.DaoException;
 import models.Room;
 import models.RoomClass;
 import models.base.ordering.Orderable;
@@ -18,59 +18,79 @@ import java.util.List;
 public class PostgreSQLRoomsDao extends RoomsDao {
 
     @Override
-    public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) throws SQLException {
+    public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOMS, new Object[]{locale}, Room.class, orderable, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public Room getRoomById(Long id, String locale) throws SQLException {
+    public Room getRoomById(Long id, String locale) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Object[]{locale, id}, Room.class);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) throws SQLException{
+    public RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale) {
         try(Connection connection = ConnectionPool.getConnection()){
             RoomExtendedInfo room = getOneByParams(connection, SqlQueries.Room.FIND_ROOM_BY_ID, new Object[]{locale, id}, RoomExtendedInfo.class);
             List<RoomDate> roomDates = getAllByParams(connection, SqlQueries.Room.FIND_ROOM_DATES_BY_ID, new Object[]{id}, RoomDate.class);
             room.setDates(roomDates);
             return room;
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<RoomClass> getAllRoomClasses(String locale) throws SQLException{
+    public List<RoomClass> getAllRoomClasses(String locale) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.Room.FIND_ALL_ROOM_CLASSES, new Object[]{locale}, RoomClass.class);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId) throws SQLException{
+    public OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, SqlQueries.Room.FIND_OVERLAPPING_DATES_COUNT, new Object[]{roomId, checkInDate, checkOutDate}, OverlapCountDTO.class);
+        } catch (SQLException sqle){
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable) throws SQLException {
+    public List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.Room.FIND_ROOM_HISTORY_BY_USER_ID, new Object[]{locale, userId}, RoomHistoryDTO.class, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) throws SQLException{
+    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Object[]{locale, checkInDate, checkOutDate, checkInDate, checkOutDate}, Room.class, orderable, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public boolean bookRoom(BookRoomForm form, BigDecimal moneyAmount, Long roomId, Long userId) throws SQLException {
+    public boolean bookRoom(java.sql.Date checkInDate, java.sql.Date checkOutDate, BigDecimal moneyAmount, Long roomId, Long userId) {
         Connection connection = null;
         try {
             connection = ConnectionPool.getConnection();
@@ -80,37 +100,49 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 connection.rollback();
                 return false;
             }
-            boolean entityCreated = createEntity(connection, SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new Object[]{userId, roomId, form.getCheckInDate(), form.getCheckOutDate()});
+            boolean entityCreated = createEntity(connection, SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new Object[]{userId, roomId, checkInDate, checkOutDate});
             if(!entityCreated){
                 connection.rollback();
                 return false;
             }
-            updateEntity(connection, SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, form.getCheckInDate(), form.getCheckOutDate()});
+            updateEntity(connection, SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, checkInDate, checkOutDate});
             connection.commit();
             return true;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            if(connection.getAutoCommit() == false) {
-                connection.rollback();
+            try {
+                if (connection.getAutoCommit() == false) {
+                    connection.rollback();
+                }
+            } catch (SQLException sqle1){
+                sqle1.printStackTrace();
+                throw new DaoException();
             }
-            return false;
+            throw new DaoException();
         } finally {
-            if(connection != null) {
-                connection.setAutoCommit(true);
-                connection.close();
+            try {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
             }
         }
     }
 
     @Override
-    public boolean assignRoomToRequest(Long roomId, Long requestId) throws SQLException{
+    public boolean assignRoomToRequest(Long roomId, Long requestId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntityById(connection, SqlQueries.Room.ASSIGN_ROOM_TO_REQUEST, new Object[]{roomId}, requestId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) throws SQLException{
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) {
         try(Connection connection =  ConnectionPool.getConnection()){
             String sql = SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
             if(checkInDate != null || checkOutDate != null){
@@ -127,25 +159,33 @@ public class PostgreSQLRoomsDao extends RoomsDao {
                 }
             }
             return getAll(connection, SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public int archiveOldRoomRegistries() throws SQLException{
+    public int archiveOldRoomRegistries(){
         try(Connection connection = ConnectionPool.getConnection()){
             return updatePlain(connection, SqlQueries.Room.ARCHIVE_OLD_ROOM_REGISTRIES);
+        } catch (SQLException sqle){
+            throw new DaoException();
         }
     }
 
     @Override
-    public int updateRoomStatus() throws SQLException{
+    public int updateRoomStatus() {
         try(Connection connection = ConnectionPool.getConnection()){
             return updatePlain(connection, SqlQueries.Room.UPDATE_ROOM_STATUS);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) throws SQLException {
+    public boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) {
         Connection connection = null;
         try{
             connection = ConnectionPool.getConnection();
@@ -159,21 +199,32 @@ public class PostgreSQLRoomsDao extends RoomsDao {
             connection.commit();
             return true;
         } catch (SQLException sqle){
-            sqle.printStackTrace();
-            connection.rollback();
-            return false;
+            try {
+                sqle.printStackTrace();
+                connection.rollback();
+            } catch (SQLException sqle1){
+                sqle1.printStackTrace();
+                throw new DaoException();
+            }
+            throw new DaoException();
         } finally {
             if(connection != null) {
-                connection.setAutoCommit(true);
-                connection.close();
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException sqle){
+                    sqle.printStackTrace();
+                }
             }
         }
     }
 
     @Override
-    public boolean openRoom(Long roomId) throws SQLException {
+    public boolean openRoom(Long roomId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntity(connection, SqlQueries.Room.OPEN_ROOM, new Object[]{roomId});
+        } catch (SQLException sqle){
+            throw new DaoException();
         }
     }
 }

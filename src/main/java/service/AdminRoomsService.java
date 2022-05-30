@@ -36,12 +36,7 @@ public class AdminRoomsService {
     }
 
     public List<Room> findSuitableRoomsForRequest(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable){
-        try{
-            return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, orderable, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, orderable, pageable);
     }
 
     public boolean assignRoomToRequest(Long roomId, Long requestId){
@@ -61,8 +56,7 @@ public class AdminRoomsService {
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){
         try{
             return roomsDao.findDataForRoomRegistryReport(form.getCheckInDate(), form.getCheckOutDate(), pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             return Collections.emptyList();
         }
     }
@@ -70,19 +64,13 @@ public class AdminRoomsService {
     public boolean closeRoom(Long id, CloseRoomForm form){
         try{
             return roomsDao.setRoomUnavailableAndRefundMoney(id, form.getEndDate());
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException sqle){
             form.addError("Database error");
             return false;
         }
     }
 
     public boolean openRoom(Long id){
-        try{
-            return roomsDao.openRoom(id);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            return false;
-        }
+        return roomsDao.openRoom(id);
     }
 }

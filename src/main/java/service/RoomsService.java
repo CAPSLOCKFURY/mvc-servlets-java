@@ -16,7 +16,6 @@ import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 
@@ -38,39 +37,19 @@ public class RoomsService {
     }
 
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
-        try{
-            return roomsDao.getAllRooms(locale, orderable, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.getAllRooms(locale, orderable, pageable);
     }
 
     public List<RoomClass> getRoomClasses(String locale){
-        try{
-            return roomsDao.getAllRoomClasses(locale);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.getAllRoomClasses(locale);
     }
 
     public Room getRoomById(Long id, String locale){
-        try{
-            return roomsDao.getRoomById(id, locale);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.getRoomById(id, locale);
     }
 
     public RoomExtendedInfo getExtendedRoomInfo(Long id, String locale){
-        try{
-            return roomsDao.getExtendedRoomInfoById(id , locale);
-        } catch (SQLException sqlException){
-            sqlException.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.getExtendedRoomInfoById(id , locale);
     }
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
@@ -93,28 +72,21 @@ public class RoomsService {
                 return false;
             }
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
-            return roomsDao.bookRoom(form, roomPrice, roomId, userId);
-        } catch (SQLException sqlException){
-            sqlException.printStackTrace();
+            return roomsDao.bookRoom(form.getCheckInDate(), form.getCheckOutDate(), roomPrice, roomId, userId);
+        } catch (DaoException daoException){
             form.addError("Database Error");
             return false;
         }
     }
 
     public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale, Pageable pageable){
-        try{
-            return roomsDao.getRoomHistory(userId, locale, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomsDao.getRoomHistory(userId, locale, pageable);
     }
 
     public int archiveOldRoomRegistries(){
         try{
             return roomsDao.archiveOldRoomRegistries();
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             return -1;
         }
     }
@@ -122,8 +94,7 @@ public class RoomsService {
     public int updateRoomsStatus(){
         try{
             return roomsDao.updateRoomStatus();
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             return -1;
         }
     }

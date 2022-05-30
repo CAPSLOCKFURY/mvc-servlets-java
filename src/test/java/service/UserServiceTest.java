@@ -61,7 +61,7 @@ public class UserServiceTest {
         form.setEmail("junit@gmail.com");
         form.setLogin("junit");
         form.setPassword("1");
-        form.setLastName("Junit");
+        form.setFirstName("Junit");
         form.setLastName("Junitov");
         long userId = service.createUser(form);
         assertTrue(userId > 0);
