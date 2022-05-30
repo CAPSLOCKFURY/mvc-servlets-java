@@ -6,6 +6,7 @@ import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import db.ConnectionPool;
+import exceptions.db.DaoException;
 import forms.RoomRequestForm;
 import models.RoomRequest;
 import models.base.ordering.Orderable;
@@ -23,52 +24,71 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     private static final BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
 
     @Override
-    public boolean createRoomRequest(RoomRequestForm form) throws SQLException {
+    public boolean createRoomRequest(RoomRequest roomRequest) {
         try(Connection connection = ConnectionPool.getConnection()){
-            return createEntity(connection, SqlQueries.RoomRequest.INSERT_ROOM_REQUEST, form);
+            return createEntity(connection, SqlQueries.RoomRequest.INSERT_ROOM_REQUEST,
+                    new Object[]{roomRequest.getUserId(), roomRequest.getCapacity(), roomRequest.getRoomClassId(), roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), roomRequest.getComment()});
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public RoomRequest getRoomRequestById(Long requestId) throws SQLException{
+    public RoomRequest getRoomRequestById(Long requestId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUEST_BY_ID, new Object[]{"en", requestId}, RoomRequest.class);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale, Pageable pageable) throws SQLException {
+    public List<RoomRequest> getAllRoomRequestsByUserId(Long userId, String locale, Pageable pageable) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.RoomRequest.FIND_ROOM_REQUESTS_BY_USER_ID, new Object[]{locale, userId}, RoomRequest.class, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public boolean disableRoomRequest(Long requestId, Long userId) throws SQLException {
+    public boolean disableRoomRequest(Long requestId, Long userId) {
+        //TODO refactor
         try(Connection connection = ConnectionPool.getConnection()){
             PreparedStatement stmt = connection.prepareStatement(SqlQueries.RoomRequest.DISABLE_REQUEST_BY_ID);
             stmt.setLong(1, requestId);
             stmt.setLong(2, userId);
             return stmt.executeUpdate() == 1;
+        } catch (SQLException sqle){
+            throw new DaoException();
         }
     }
 
     @Override
-    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Orderable orderable, Pageable pageable) throws SQLException{
+    public List<AdminRoomRequestDTO> getRoomRequestsForAdmin(String locale, String requestStatus, Orderable orderable, Pageable pageable){
         try(Connection connection = ConnectionPool.getConnection()){
             return getAllByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUESTS, new Object[]{locale, requestStatus}, AdminRoomRequestDTO.class, orderable, pageable);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
     @Override
-    public AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale) throws SQLException{
+    public AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale){
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Object[]{locale, requestId}, AdminRoomRequestDTO.class);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
    @Override
-   public boolean confirmRoomRequest(RoomRequest roomRequest, BigDecimal moneyAmount) throws SQLException{
+   public boolean confirmRoomRequest(RoomRequest roomRequest, BigDecimal moneyAmount){
         Connection connection = null;
         try{
             connection = ConnectionPool.getConnection();
@@ -93,28 +113,43 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
             return true;
         } catch (SQLException sqle){
             sqle.printStackTrace();
-            if(connection.getAutoCommit() == false) {
-                connection.rollback();
+            try {
+                if (connection.getAutoCommit() == false) {
+                    connection.rollback();
+                }
+            } catch (SQLException sqle1){
+                sqle1.printStackTrace();
+                throw new DaoException();
             }
             return false;
         } finally {
             if(connection != null) {
-                connection.setAutoCommit(true);
-                connection.close();
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException sqle){
+                    sqle.printStackTrace();
+                }
             }
         }
    }
 
 
-   public boolean declineAssignedRoom(String comment, Long requestId) throws SQLException{
+   public boolean declineAssignedRoom(String comment, Long requestId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntityById(connection, SqlQueries.RoomRequest.DECLINE_ASSIGNED_ROOM, new Object[]{comment}, requestId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
     }
 
-   public boolean adminCloseRequest(Long requestId, String comment) throws SQLException{
+   public boolean adminCloseRequest(Long requestId, String comment) {
         try(Connection connection = ConnectionPool.getConnection()){
             return updateEntityById(connection, SqlQueries.RoomRequest.ADMIN_CLOSE_REQUEST, new Object[]{comment}, requestId);
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+            throw new DaoException();
         }
    }
 }

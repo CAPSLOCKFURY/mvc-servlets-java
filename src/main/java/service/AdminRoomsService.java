@@ -14,7 +14,6 @@ import models.dto.AdminRoomRequestDTO;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,17 +39,12 @@ public class AdminRoomsService {
     }
 
     public boolean assignRoomToRequest(Long roomId, Long requestId){
-        try{
-            AdminRoomRequestDTO roomRequest = roomRequestDao.getRoomRequestForAdmin(requestId, "en");
-            OverlapCountDTO overlapCount = roomsDao.getDatesOverlapCount(roomRequest.getCheckInDate(),roomRequest.getCheckOutDate(), roomId);
-            if(overlapCount.getCount() != 0) {
-                return false;
-            }
-            return roomsDao.assignRoomToRequest(roomId, requestId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
+        AdminRoomRequestDTO roomRequest = roomRequestDao.getRoomRequestForAdmin(requestId, "en");
+        OverlapCountDTO overlapCount = roomsDao.getDatesOverlapCount(roomRequest.getCheckInDate(),roomRequest.getCheckOutDate(), roomId);
+        if(overlapCount.getCount() != 0) {
+            return false;
         }
+        return roomsDao.assignRoomToRequest(roomId, requestId);
     }
 
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){

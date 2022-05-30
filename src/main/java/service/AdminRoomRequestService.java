@@ -30,30 +30,15 @@ public class AdminRoomRequestService {
 
 
     public AdminRoomRequestDTO getAdminRoomRequestById(Long requestId, String locale){
-        try{
-            return roomRequestDao.getRoomRequestForAdmin(requestId, locale);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
+        return roomRequestDao.getRoomRequestForAdmin(requestId, locale);
     }
 
     public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale, RoomRequestStatus requestStatus, Orderable orderable, Pageable pageable){
-        try{
-            return roomRequestDao.getRoomRequestsForAdmin(locale, requestStatus.getColName(), orderable, pageable);
-        } catch (SQLException sqlException){
-            sqlException.printStackTrace();
-            throw new DaoException();
-        }
+        return roomRequestDao.getRoomRequestsForAdmin(locale, requestStatus.getColName(), orderable, pageable);
     }
 
     public boolean closeRoomRequest(Long requestId, String comment){
-        try {
-            return roomRequestDao.adminCloseRequest(requestId, comment);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            return false;
-        }
+        return roomRequestDao.adminCloseRequest(requestId, comment);
     }
 
 }
