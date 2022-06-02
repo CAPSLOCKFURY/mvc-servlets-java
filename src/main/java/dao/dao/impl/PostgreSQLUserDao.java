@@ -6,7 +6,6 @@ import db.ConnectionPool;
 import exceptions.db.DaoException;
 import models.User;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,9 +32,9 @@ public class PostgreSQLUserDao extends UserDao {
     }
 
     @Override
-    public long createUser(User user, String password) {
+    public long createUser(User user) {
         try(Connection connection = ConnectionPool.getConnection()){
-            return createEntityAndGetId(connection, SqlQueries.User.INSERT_USER, new Object[]{user.getLogin(), user.getEmail(), password, user.getFirstName(), user.getLastName()});
+            return createEntityAndGetId(connection, SqlQueries.User.INSERT_USER, new Object[]{user.getLogin(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getBalance(), user.getRole()});
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();
@@ -73,19 +72,11 @@ public class PostgreSQLUserDao extends UserDao {
     }
 
     @Override
-    public boolean addUserBalance(BigDecimal amount, Long userId) {
+    public boolean updateUser(User user){
         try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntityById(connection, SqlQueries.User.ADD_USER_BALANCE, new Object[]{amount}, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
-    }
-
-    @Override
-    public boolean updateUser(String firstName, String lastName, Long userId){
-        try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntityById(connection, SqlQueries.User.UPDATE_USER, new Object[]{firstName, lastName}, userId);
+            return updateEntityById(connection, SqlQueries.User.UPDATE_USER,
+                    new Object[]{user.getLogin(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getRole(), user.getBalance()},
+                    user.getId());
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();
@@ -95,16 +86,6 @@ public class PostgreSQLUserDao extends UserDao {
     public User findUserForPasswordChange(String password, Long userId) {
         try(Connection connection = ConnectionPool.getConnection()){
             return getOneByParams(connection, SqlQueries.User.FIND_USER_FOR_PASSWORD_CHANGE, new Object[]{password, userId}, User.class);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
-        }
-    }
-
-    @Override
-    public boolean changePassword(String newPassword, Long userId) {
-        try(Connection connection = ConnectionPool.getConnection()){
-            return updateEntity(connection, SqlQueries.User.CHANGE_PASSWORD, new Object[]{newPassword, userId});
         } catch (SQLException sqle){
             sqle.printStackTrace();
             throw new DaoException();

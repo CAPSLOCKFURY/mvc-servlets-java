@@ -153,25 +153,21 @@ public final class SqlQueries {
 
     public static final class User {
 
-        public static final String FIND_USER_BY_ID = "select * from users where id = ?";
+        public static final String FIND_USER_BY_ID = "select id, login, email, password, first_name, last_name, role, balance from users where id = ?";
 
-        public static final String FIND_ALL_USERS = "select * from users";
+        public static final String FIND_ALL_USERS = "select id, login, email, password, first_name, last_name, role, balance from users";
 
-        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name) values (?, ?, md5(?), ?, ?)";
+        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name, balance, role) values (?, ?, md5(?), ?, ?, ?, ?)";
 
-        public static final String FIND_BY_LOGIN = "select * from users where login = ?";
+        public static final String UPDATE_USER = "update users set login = ?, email = ?, password = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
 
-        public static final String FIND_BY_EMAIL = "select * from users where email = ?";
+        public static final String FIND_BY_LOGIN = "select id, login, email, password, first_name, last_name, role, balance from users where login = ?";
 
-        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = md5(?)";
+        public static final String FIND_BY_EMAIL = "select id, login, email, password, first_name, last_name, role, balance from users where email = ?";
 
-        public static final String ADD_USER_BALANCE = "update users set balance = balance + ? where id = ?";
+        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select id, login, email, password, first_name, last_name, role, balance from users where login = ? and password = md5(?)";
 
-        public static final String UPDATE_USER = "update users set first_name = ?, last_name = ? where id = ?";
-
-        public static final String CHANGE_PASSWORD = "update users set password = md5(?) where id = ?";
-
-        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select * from users where password = md5(?) and id = ?";
+        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select id, login, email, password, first_name, last_name, role, balance from users where password = md5(?) and id = ?";
 
         private User(){}
     }

@@ -17,6 +17,9 @@ public class User {
     @SqlColumn(columnName = "email", type = SqlType.STRING)
     private String email;
 
+    @SqlColumn(columnName = "password", type = SqlType.STRING)
+    private String password;
+
     @SqlColumn(columnName = "first_name", type = SqlType.STRING)
     private String firstName;
 
@@ -35,8 +38,9 @@ public class User {
         email = form.getEmail();
         firstName = form.getFirstName();
         lastName = form.getLastName();
+        password = form.getPassword();
         role = 1;
-        balance = new BigDecimal(0);
+        balance = BigDecimal.ZERO;
     }
 
     public User(){
@@ -97,5 +101,13 @@ public class User {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
