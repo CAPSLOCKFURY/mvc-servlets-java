@@ -19,6 +19,9 @@ public abstract class AbstractDao implements AutoCloseable {
     protected Connection connection;
 
     public AbstractDao(Connection connection) {
+        if(connection == null){
+            throw new IllegalArgumentException("Connection in dao can't be null");
+        }
         this.connection = connection;
     }
 
