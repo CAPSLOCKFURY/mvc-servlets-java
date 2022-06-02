@@ -7,6 +7,7 @@ import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.List;
 
 public abstract class RoomRequestDao extends OrderableAbstractDao {
@@ -31,4 +32,8 @@ public abstract class RoomRequestDao extends OrderableAbstractDao {
      * Closes room request and inserts manager comment into it
      */
     public abstract boolean adminCloseRequest(Long requestId, String comment);
+
+    public RoomRequestDao(Connection connection) {
+        super(connection);
+    }
 }

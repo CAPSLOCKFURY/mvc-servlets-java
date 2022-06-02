@@ -16,8 +16,8 @@ import java.util.List;
 
 public class BillingService {
 
-    private static final BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
-    private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+    //private static final BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+    //private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private BillingService(){
 
@@ -32,7 +32,7 @@ public class BillingService {
     }
 
     public List<Billing> findBillingsByUserId(Long userId, Pageable pageable){
-        try{
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
             return billingDao.getAllBillingsByUserId(userId, pageable);
         } catch (SQLException sqle){
             sqle.printStackTrace();
@@ -41,7 +41,9 @@ public class BillingService {
     }
 
     public boolean payBilling(Long userId, Long billingId, MessageTransport messageTransport){
-        try{
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(billingDao.getConnection());)
+        {
             ExtendedBillingDTO billing = billingDao.getBillingById(billingId);
             User user = userDao.getUserById(userId);
             if(billing.getPaid()){
@@ -64,7 +66,7 @@ public class BillingService {
     }
 
     public int deleteOldBillings(){
-        try{
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
             return billingDao.deleteOldBillings();
         } catch (SQLException sqle){
             sqle.printStackTrace();

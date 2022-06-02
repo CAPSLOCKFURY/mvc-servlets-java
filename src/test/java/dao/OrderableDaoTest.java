@@ -20,11 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderableDaoTest {
 
-    private final static TestOrderableDao dao = new TestOrderableDao();
+    private static TestOrderableDao dao;
 
     @BeforeAll
     public static void setUp(){
         ConnectionPool.initPool();
+        dao = new TestOrderableDao(ConnectionPool.getConnection());
     }
 
     @AfterEach
@@ -34,35 +35,30 @@ public class OrderableDaoTest {
 
     @Test
     void getAllTest() throws SQLException{
-        try(Connection connection = ConnectionPool.getConnection()){
-            Pageable pageable = new Pageable(1, 4);
-            Orderable orderable = new Orderable("id", OrderDirection.DESC);
-            List<DaoTestModel> models = dao.abstractGetAll(connection, "select * from dao_test", DaoTestModel.class, orderable, pageable);
-            assertEquals(4, models.size());
-            int id = 4;
-            for (DaoTestModel model : models){
-                assertEquals(id--, model.getId());
-            }
-
+        Pageable pageable = new Pageable(1, 4);
+        Orderable orderable = new Orderable("id", OrderDirection.DESC);
+        List<DaoTestModel> models = dao.abstractGetAll("select * from dao_test", DaoTestModel.class, orderable, pageable);
+        assertEquals(4, models.size());
+        int id = 4;
+        for (DaoTestModel model : models){
+            assertEquals(id--, model.getId());
         }
     }
 
     @Test
     void getAllByParamsTest() throws SQLException{
-        try(Connection connection = ConnectionPool.getConnection()){
-            class Params{
-                @SqlColumn(columnName = "", type = SqlType.INT)
-                private final Integer age = 12;
-                public Integer getAge() {return age;}
-            }
-            Pageable pageable = new Pageable(1, 4);
-            Orderable orderable = new Orderable("id", OrderDirection.DESC);
-            List<DaoTestModel> models = dao.abstractGetAllByParams(connection, "select * from dao_test where age <= ?", new Params(), DaoTestModel.class, orderable, pageable);
-            assertEquals(3, models.size());
-            int id = 3;
-            for (DaoTestModel model : models){
-                assertEquals(id--, model.getId());
-            }
+        class Params{
+            @SqlColumn(columnName = "", type = SqlType.INT)
+            private final Integer age = 12;
+            public Integer getAge() {return age;}
+        }
+        Pageable pageable = new Pageable(1, 4);
+        Orderable orderable = new Orderable("id", OrderDirection.DESC);
+        List<DaoTestModel> models = dao.abstractGetAllByParams("select * from dao_test where age <= ?", new Params(), DaoTestModel.class, orderable, pageable);
+        assertEquals(3, models.size());
+        int id = 3;
+        for (DaoTestModel model : models){
+            assertEquals(id--, model.getId());
         }
     }
 

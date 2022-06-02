@@ -15,42 +15,35 @@ import java.util.List;
 public class PostgreSQLBillingDao extends BillingDao {
 
     @Override
-    public boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long roomRegistryId) throws SQLException {
-        return createEntity(connection, SqlQueries.Billing.INSERT_BILLING, new Object[]{requestId, price, roomRegistryId});
+    public boolean insertBilling(Long requestId, BigDecimal price, Long roomRegistryId) {
+        return createEntity(SqlQueries.Billing.INSERT_BILLING, new Object[]{requestId, price, roomRegistryId});
     }
 
     @Override
-    public ExtendedBillingDTO getBillingById(Long billingId) throws SQLException{
-        try(Connection connection = ConnectionPool.getConnection()){
-            return getOneById(connection, SqlQueries.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
-        }
+    public ExtendedBillingDTO getBillingById(Long billingId) {
+        return getOneById(SqlQueries.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
     }
 
     @Override
-    public List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) throws SQLException{
-        try(Connection connection = ConnectionPool.getConnection()){
-            return getAllByParams(connection, SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Object[]{userId}, Billing.class, pageable);
-        }
+    public List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) {
+        return getAllByParams(SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Object[]{userId}, Billing.class, pageable);
     }
 
     @Override
     public boolean payBilling(Long userId, ExtendedBillingDTO billing) throws SQLException{
-        Connection connection = null;
         try{
-            connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            boolean balanceUpdated = updateEntity(connection, "update users set balance = balance - ? where id =?", new Object[]{billing.getPrice(), userId});
+            boolean balanceUpdated = updateEntity("update users set balance = balance - ? where id =?", new Object[]{billing.getPrice(), userId});
             if(!balanceUpdated){
                 connection.rollback();
                 return false;
             }
-            boolean billingUpdated = updateEntity(connection, SqlQueries.Billing.PAY_BILLING, new Object[]{billing.getId()});
+            boolean billingUpdated = updateEntity(SqlQueries.Billing.PAY_BILLING, new Object[]{billing.getId()});
             if(!billingUpdated){
                 connection.rollback();
                 return false;
             }
-            boolean requestStatusUpdated = updateEntity(connection,
-                    "update room_requests set status = 'paid' where id = ?", new Object[]{billing.getRequestId()});
+            boolean requestStatusUpdated = updateEntity("update room_requests set status = 'paid' where id = ?", new Object[]{billing.getRequestId()});
             if(!requestStatusUpdated){
                 connection.rollback();
                 return false;
@@ -63,20 +56,18 @@ public class PostgreSQLBillingDao extends BillingDao {
         } finally {
             if(connection != null) {
                 connection.setAutoCommit(true);
-                connection.close();
+                //connection.close();
             }
         }
     }
 
     @Override
     public int deleteOldBillings() throws SQLException {
-        Connection connection = null;
         try{
-            connection = ConnectionPool.getConnection();
             connection.setAutoCommit(false);
-            updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
-            updatePlain(connection, SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
-            int affectedRows = updatePlain(connection, SqlQueries.Billing.DELETE_OLD_BILLINGS);
+            updatePlain(SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
+            updatePlain(SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
+            int affectedRows = updatePlain(SqlQueries.Billing.DELETE_OLD_BILLINGS);
             connection.commit();
             return affectedRows;
         } catch (SQLException sqle){
@@ -86,8 +77,12 @@ public class PostgreSQLBillingDao extends BillingDao {
         } finally {
             if(connection != null) {
                 connection.setAutoCommit(true);
-                connection.close();
+                //connection.close();
             }
         }
+    }
+
+    public PostgreSQLBillingDao(Connection connection) {
+        super(connection);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public abstract class BillingDao extends OrderableAbstractDao {
 
-    public abstract boolean insertBilling(Connection connection, Long requestId, BigDecimal price, Long RoomRegistryId) throws SQLException;
+    public abstract boolean insertBilling(Long requestId, BigDecimal price, Long RoomRegistryId) throws SQLException;
 
     public abstract List<Billing> getAllBillingsByUserId(Long userId, Pageable pageable) throws SQLException;
 
@@ -25,4 +25,8 @@ public abstract class BillingDao extends OrderableAbstractDao {
      * @return number of affected rows
      */
     public abstract int deleteOldBillings() throws SQLException;
+
+    public BillingDao(Connection connection) {
+        super(connection);
+    }
 }

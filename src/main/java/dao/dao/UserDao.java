@@ -3,6 +3,7 @@ package dao.dao;
 import dao.dao.base.OrderableAbstractDao;
 import models.User;
 
+import java.sql.Connection;
 import java.util.List;
 
 public abstract class UserDao extends OrderableAbstractDao {
@@ -22,5 +23,9 @@ public abstract class UserDao extends OrderableAbstractDao {
     public abstract User findUserForPasswordChange(String password, Long userId);
 
     public abstract List<User> getAllUsers();
+
+    public UserDao(Connection connection) {
+        super(connection);
+    }
 
 }

@@ -11,6 +11,7 @@ import models.dto.RoomHistoryDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.List;
 
 public abstract class RoomsDao extends OrderableAbstractDao {
@@ -53,5 +54,9 @@ public abstract class RoomsDao extends OrderableAbstractDao {
     public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate);
 
     public abstract boolean openRoom(Long roomId);
+
+    public RoomsDao(Connection connection) {
+        super(connection);
+    }
 
 }

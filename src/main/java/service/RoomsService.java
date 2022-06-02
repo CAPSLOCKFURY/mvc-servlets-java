@@ -21,8 +21,8 @@ import java.util.List;
 
 public class RoomsService {
 
-    private static final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-    private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+    //private static final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+    //private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private RoomsService(){
 
@@ -37,23 +37,32 @@ public class RoomsService {
     }
 
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
-        return roomsDao.getAllRooms(locale, orderable, pageable);
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+            return roomsDao.getAllRooms(locale, orderable, pageable);
+        }
     }
 
     public List<RoomClass> getRoomClasses(String locale){
-        return roomsDao.getAllRoomClasses(locale);
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+            return roomsDao.getAllRoomClasses(locale);
+        }
     }
 
     public Room getRoomById(Long id, String locale){
-        return roomsDao.getRoomById(id, locale);
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+            return roomsDao.getRoomById(id, locale);
+        }
     }
 
     public RoomExtendedInfo getExtendedRoomInfo(Long id, String locale){
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
         return roomsDao.getExtendedRoomInfoById(id , locale);
+        }
     }
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());) {
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");
@@ -80,11 +89,13 @@ public class RoomsService {
     }
 
     public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale, Pageable pageable){
-        return roomsDao.getRoomHistory(userId, locale, pageable);
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+            return roomsDao.getRoomHistory(userId, locale, pageable);
+        }
     }
 
     public int archiveOldRoomRegistries(){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.archiveOldRoomRegistries();
         } catch (DaoException daoException){
             return -1;
@@ -92,7 +103,7 @@ public class RoomsService {
     }
 
     public int updateRoomsStatus(){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.updateRoomStatus();
         } catch (DaoException daoException){
             return -1;
