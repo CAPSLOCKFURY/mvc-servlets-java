@@ -21,7 +21,19 @@ public class Billing {
     private java.sql.Date payEndDate;
 
     @SqlColumn(columnName = "paid", type = SqlType.BOOLEAN)
-    private Boolean paid;
+    private Boolean paid = false;
+
+    @SqlColumn(columnName = "room_registry_id", type = SqlType.LONG)
+    private Long roomRegistryId;
+
+    public Billing(Long requestId, BigDecimal price, Long roomRegistryId) {
+        this.requestId = requestId;
+        this.price = price;
+        this.roomRegistryId = roomRegistryId;
+    }
+
+    public Billing() {
+    }
 
     public Long getId() {return id;}
 
@@ -42,4 +54,12 @@ public class Billing {
     public Boolean getPaid() {return paid;}
 
     public void setPaid(Boolean paid) {this.paid = paid;}
+
+    public Long getRoomRegistryId() {
+        return roomRegistryId;
+    }
+
+    public void setRoomRegistryId(Long roomRegistryId) {
+        this.roomRegistryId = roomRegistryId;
+    }
 }

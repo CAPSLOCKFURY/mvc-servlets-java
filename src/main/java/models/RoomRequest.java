@@ -1,5 +1,6 @@
 package models;
 
+import forms.RoomRequestForm;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
@@ -29,13 +30,28 @@ public class RoomRequest {
     private String comment;
 
     @SqlColumn(columnName = "status", type = SqlType.STRING)
-    private String status;
+    private String status = "awaiting";
 
     @SqlColumn(columnName = "room_id", type = SqlType.LONG)
     private Long roomId;
 
     @SqlColumn(columnName = "manager_comment", type = SqlType.STRING)
-    private String managerComment;
+    private String managerComment = "";
+
+    @SqlColumn(columnName = "room_class", type = SqlType.LONG)
+    private Long roomClassId;
+
+    public RoomRequest(RoomRequestForm form){
+        userId = form.getUserId();
+        capacity = form.getCapacity();
+        roomClassId = Long.valueOf(form.getRoomClass());
+        checkInDate = form.getCheckInDate();
+        checkOutDate = form.getCheckOutDate();
+        comment = form.getComment();
+    }
+
+    public RoomRequest() {
+    }
 
     public Long getId() {
         return id;
@@ -115,5 +131,13 @@ public class RoomRequest {
 
     public void setManagerComment(String managerComment) {
         this.managerComment = managerComment;
+    }
+
+    public Long getRoomClassId() {
+        return roomClassId;
+    }
+
+    public void setRoomClassId(Long roomClassId) {
+        this.roomClassId = roomClassId;
     }
 }

@@ -28,8 +28,19 @@ public class Room {
     @SqlColumn(columnName = "class_name", type = SqlType.STRING)
     private String className;
 
+    @SqlColumn(columnName = "class", type = SqlType.LONG)
+    private Long classId;
+
     public long getId() {
         return id;
+    }
+
+    public Long getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Long classId) {
+        this.classId = classId;
     }
 
     public String getClassName() {

@@ -1,6 +1,6 @@
 package models;
 
-import models.base.mappers.SqlMapper;
+import models.base.mappers.SqlModelMapper;
 import models.resources.ExtendedTestModel;
 import models.resources.TestModel;
 import models.resources.TypePair;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SqlMapperTest {
+public class SqlModelMapperTest {
 
     @ParameterizedTest
     @MethodSource("sqlMapperCases")
@@ -42,7 +42,7 @@ public class SqlMapperTest {
                 Mockito.when(rs.getBoolean((String)pair.getKey())).thenReturn((Boolean) pair.getValue());
             }
         }
-        SqlMapper modelMapper = new SqlMapper(model);
+        SqlModelMapper modelMapper = new SqlModelMapper(model);
         modelMapper.mapFromResultSet(rs);
         assertEquals(expected, model);
     }

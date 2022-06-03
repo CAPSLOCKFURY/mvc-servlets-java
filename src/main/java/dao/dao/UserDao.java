@@ -1,34 +1,31 @@
 package dao.dao;
 
 import dao.dao.base.OrderableAbstractDao;
-import forms.AddBalanceForm;
-import forms.LoginForm;
-import forms.RegisterForm;
-import forms.UserUpdateProfileForm;
 import models.User;
 
-import java.sql.SQLException;
+import java.sql.Connection;
 import java.util.List;
 
 public abstract class UserDao extends OrderableAbstractDao {
-    public abstract User getUserById(Long id) throws SQLException;
 
-    public abstract List<User> getAllUsers() throws SQLException;
+    public abstract User getUserById(Long id);
 
-    public abstract long createUser(RegisterForm form) throws SQLException;
+    public abstract long createUser(User user);
 
-    public abstract User getUserByEmail(String email) throws SQLException;
+    public abstract User getUserByEmail(String email);
 
-    public abstract User getUserByLogin(String login) throws SQLException;
+    public abstract User getUserByLogin(String login);
 
-    public abstract User getUserByLoginAndPassword(LoginForm form) throws SQLException;
+    public abstract User getUserByLoginAndPassword(String login, String password);
 
-    public abstract boolean addUserBalance(AddBalanceForm form, Long userId) throws SQLException;
+    public abstract boolean updateUser(User user);
 
-    public abstract boolean updateUser(UserUpdateProfileForm form, Long userId) throws SQLException;
+    public abstract User findUserForPasswordChange(String password, Long userId);
 
-    public abstract boolean changePassword(String newPassword, Long userId) throws SQLException;
+    public abstract List<User> getAllUsers();
 
-    public abstract User findUserForPasswordChange(String password, Long userId) throws SQLException;
+    public UserDao(Connection connection) {
+        super(connection);
+    }
 
 }

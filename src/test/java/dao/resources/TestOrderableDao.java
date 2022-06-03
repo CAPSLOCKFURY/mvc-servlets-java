@@ -10,12 +10,16 @@ import java.util.List;
 
 public class TestOrderableDao extends OrderableAbstractDao {
 
-    public <T> List<T> abstractGetAll(Connection connection, String sql, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException {
-        return getAll(connection, sql, model, orderable, pageable);
+    public <T> List<T> abstractGetAll(String sql, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException {
+        return getAll(sql, model, orderable, pageable);
     }
 
-    public <T, P> List<T> abstractGetAllByParams(Connection connection, String sql, P params, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
-        return getAllByParams(connection, sql, params, model, orderable, pageable);
+    public <T, P> List<T> abstractGetAllByParams(String sql, P params, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
+        return getAllByParams(sql, params, model, orderable, pageable);
+    }
+
+    public TestOrderableDao(Connection connection) {
+        super(connection);
     }
 
 }

@@ -9,12 +9,17 @@ import java.util.List;
 
 public class TestPageableDao extends PageableAbstractDao {
 
-    public <T> List<T> abstractGetAll(Connection connection, String sql, Class<T> model, Pageable pageable) throws SQLException {
-        return getAll(connection, sql, model, pageable);
+    public <T> List<T> abstractGetAll(String sql, Class<T> model, Pageable pageable) throws SQLException {
+        return getAll(sql, model, pageable);
     }
 
-    public <T, P> List<T> abstractGetAllByParams(Connection connection, String sql, P params, Class<T> model, Pageable pageable) throws SQLException {
-        return getAllByParams(connection, sql, params, model, pageable);
+    public <T, P> List<T> abstractGetAllByParams(String sql, P params, Class<T> model, Pageable pageable) throws SQLException {
+        return getAllByParams(sql, params, model, pageable);
     }
+
+    public TestPageableDao(Connection connection) {
+        super(connection);
+    }
+
 
 }

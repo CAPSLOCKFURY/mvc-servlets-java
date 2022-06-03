@@ -1,5 +1,6 @@
 package service;
 
+import dao.dao.RoomRegistryDAO;
 import dao.dao.RoomsDao;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
@@ -8,6 +9,7 @@ import exceptions.db.DaoException;
 import forms.BookRoomForm;
 import models.Room;
 import models.RoomClass;
+import models.RoomRegistry;
 import models.User;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
@@ -16,14 +18,10 @@ import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 
 public class RoomsService {
-
-    private static final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-    private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private RoomsService(){
 
@@ -38,43 +36,35 @@ public class RoomsService {
     }
 
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.getAllRooms(locale, orderable, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public List<RoomClass> getRoomClasses(String locale){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.getAllRoomClasses(locale);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public Room getRoomById(Long id, String locale){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.getRoomById(id, locale);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public RoomExtendedInfo getExtendedRoomInfo(Long id, String locale){
-        try{
-            return roomsDao.getExtendedRoomInfoById(id , locale);
-        } catch (SQLException sqlException){
-            sqlException.printStackTrace();
-            throw new DaoException();
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        return roomsDao.getExtendedRoomInfoById(id , locale);
         }
     }
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
-        try{
+        RoomsDao roomsDao = null;
+        try {
+            roomsDao =  DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());
+            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomsDao.getConnection());
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");
@@ -93,37 +83,43 @@ public class RoomsService {
                 return false;
             }
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
-            return roomsDao.bookRoom(form, roomPrice, roomId, userId);
-        } catch (SQLException sqlException){
-            sqlException.printStackTrace();
+
+            roomsDao.transaction.open();
+
+            user.setBalance(user.getBalance().subtract(roomPrice));
+            userDao.updateUser(user);
+            RoomRegistry roomRegistry = new RoomRegistry(userId, roomId, form.getCheckInDate(), form.getCheckOutDate());
+            roomRegistryDAO.createRoomRegistry(roomRegistry);
+            roomsDao.removeAssignedRoomsOnOverlappingDates(roomId, form.getCheckInDate(), form.getCheckOutDate());
+            roomsDao.transaction.commit();
+            return true;
+        } catch (DaoException daoException){
             form.addError("Database Error");
+            roomsDao.transaction.rollback();
             return false;
+        } finally {
+            roomsDao.close();
         }
     }
 
     public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale, Pageable pageable){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.getRoomHistory(userId, locale, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public int archiveOldRoomRegistries(){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.archiveOldRoomRegistries();
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             return -1;
         }
     }
 
     public int updateRoomsStatus(){
-        try{
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
             return roomsDao.updateRoomStatus();
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+        } catch (DaoException daoException){
             return -1;
         }
     }

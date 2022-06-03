@@ -15,10 +15,10 @@ import static utils.StringUtils.capitalize;
  * Class for mapping ResultSet to given model
  * @param <T> model to map
  */
-public class SqlMapper<T> {
+public class SqlModelMapper<T> {
     private T model;
 
-    public SqlMapper(T model){
+    public SqlModelMapper(T model){
         this.model = model;
     }
 

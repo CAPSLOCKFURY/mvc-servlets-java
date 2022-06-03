@@ -5,14 +5,16 @@ public final class SqlQueries {
     public static final class Room {
 
         public static final String FIND_ALL_ROOMS = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
-                "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms" +
+                "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name, rooms.class as class from rooms" +
                 "    left outer join room_class rc on rooms.class = rc.id\n" +
                 "    left outer join room_class_translation rct on rc.id = rct.class_id and language = ?";
 
         public static final String FIND_ROOM_BY_ID = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status,\n" +
-                "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name from rooms\n" +
+                "       rooms.price as price, rooms.capacity as capacity, rct.name as class_name, rooms.class as class from rooms\n" +
                 "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
                 "where rooms.id = ?";
+
+        public static final String UPDATE_ROOM = "update rooms set number = ?, status = ?::room_status, name = ?, price = ?, capacity = ?, class = ? where id = ?";
 
         public static final String FIND_ALL_ROOM_CLASSES = "select class_id as id, name from room_class_translation where language = ?";
 
@@ -31,7 +33,7 @@ public final class SqlQueries {
                 "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
                 "where user_id = ? order by -room_registry.id";
 
-        public static final String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.*, rct.name as class_name from rooms\n" +
+        public static final String FIND_SUITABLE_ROOM_FOR_REQUEST = "select rooms.id, rooms.name as name, rooms.number as number, rooms.status, rooms.price as price, rooms.capacity as capacity, rct.name as class_name, rooms.class as class from rooms\n" +
                 "    left outer join room_registry rr on rooms.id = rr.room_id and archived = false\n" +
                 "    left outer join room_class_translation rct on rooms.class = rct.class_id and language = ?\n" +
                 "where rooms.id not in (select distinct room_id from room_requests where room_id is not null and daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]')) " +
@@ -116,8 +118,11 @@ public final class SqlQueries {
 
     public static final class RoomRequest {
 
-        public static final String INSERT_ROOM_REQUEST = "insert into room_requests (user_id, capacity, room_class, check_in_date, check_out_date, comment)\n" +
-                "values (?, ?, ?, ?, ?, ?)";
+        public static final String INSERT_ROOM_REQUEST = "insert into room_requests(user_id, capacity, room_class, check_in_date, check_out_date, comment, status, room_id, manager_comment)\n" +
+                " values (?, ?, ?, ?, ?, ?, ?::request_status, ?, ?)";
+
+        public static final String UPDATE_ROOM_REQUEST = "update room_requests set user_id = ?, capacity = ?, room_class = ?, check_in_date = ?, check_out_date = ?,\n" +
+                "                         comment = ?, status = ?::request_status, room_id = nullif(?, 0), manager_comment = ? where id = ?";
 
         public static final String FIND_ROOM_REQUESTS_BY_USER_ID = "select room_requests.*, rct.name as class_name from room_requests\n" +
                 "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
@@ -153,42 +158,42 @@ public final class SqlQueries {
 
     public static final class User {
 
-        public static final String FIND_USER_BY_ID = "select * from users where id = ?";
+        public static final String FIND_USER_BY_ID = "select id, login, email, password, first_name, last_name, role, balance from users where id = ?";
 
-        public static final String FIND_ALL_USERS = "select * from users";
+        public static final String FIND_ALL_USERS = "select id, login, email, password, first_name, last_name, role, balance from users";
 
-        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name) values (?, ?, md5(?), ?, ?)";
+        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name, balance, role) values (?, ?, md5(?), ?, ?, ?, ?)";
 
-        public static final String FIND_BY_LOGIN = "select * from users where login = ?";
+        public static final String UPDATE_USER = "update users set login = ?, email = ?, password = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
 
-        public static final String FIND_BY_EMAIL = "select * from users where email = ?";
+        public static final String FIND_BY_LOGIN = "select id, login, email, password, first_name, last_name, role, balance from users where login = ?";
 
-        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select * from users where login = ? and password = md5(?)";
+        public static final String FIND_BY_EMAIL = "select id, login, email, password, first_name, last_name, role, balance from users where email = ?";
 
-        public static final String ADD_USER_BALANCE = "update users set balance = balance + ? where id = ?";
+        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select id, login, email, password, first_name, last_name, role, balance from users where login = ? and password = md5(?)";
 
-        public static final String UPDATE_USER = "update users set first_name = ?, last_name = ? where id = ?";
-
-        public static final String CHANGE_PASSWORD = "update users set password = md5(?) where id = ?";
-
-        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select * from users where password = md5(?) and id = ?";
+        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select id, login, email, password, first_name, last_name, role, balance from users where password = md5(?) and id = ?";
 
         private User(){}
     }
 
     public static final class Billing {
 
-        public static final String INSERT_BILLING = "insert into billing(request_id, price, room_registry_id) values (?, ?, ?)";
+        public static final String INSERT_BILLING = "insert into billing(request_id, price, pay_end_date, paid, room_registry_id) values (?, ?, default, ?, ?)";
 
         public static final String FIND_ALL_BILLING_BY_USER_ID = "select * from billing \n" +
                 "    left outer join room_requests rr on billing.request_id = rr.id\n" +
                 "where rr.user_id = ? order by -billing.id";
 
+        public static final String UPDATE_BILLING = "update billing set request_id = ?, price = ?, pay_end_date = ?, paid = ?, room_registry_id = ? where id = ?;";
+
         public static final String PAY_BILLING = "update billing set paid = true where id = ?";
 
-        public static final String GET_BILLING_BY_ID = "select *, rr.id as request_id, rr.user_id as user_id from billing \n" +
+        public static final String GET_EXTENDED_BILLING_BY_ID = "select *, rr.id as request_id, rr.user_id as user_id from billing \n" +
                 "    left outer join room_requests rr on billing.request_id = rr.id\n" +
                 "where billing.id = ?";
+
+        public static final String GET_BILLING_BY_ID = "select id, request_id, price, pay_end_date, paid, room_registry_id from billing where id = ?";
 
         public static final String DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING = "delete from room_requests where id in\n" +
                 "(select request_id from billing where pay_end_date < date(now()) and paid = false)";
@@ -199,6 +204,19 @@ public final class SqlQueries {
         public static final String DELETE_OLD_BILLINGS = "delete from billing where pay_end_date < date(now()) and paid = false";
 
         private Billing(){}
+    }
+
+    public static final class RoomRegistry{
+
+        public static final String GET_ROOM_REGISTRY_BY_ID = "select id, user_id, room_id, check_in_date, check_out_date, archived from room_registry where id = ?";
+
+        public static final String CREATE_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date, archived) values (?, ?, ?, ?, ?)";
+
+        public static final String UPDATE_ROOM_REGISTRY = "update room_registry set user_id = ?, room_id = ?, check_in_date = ?, check_out_date = ?, archived = ? where id = ?";
+
+        private RoomRegistry(){
+
+        }
     }
 
     private SqlQueries(){

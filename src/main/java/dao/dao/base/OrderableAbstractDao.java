@@ -4,27 +4,30 @@ import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
  * Base class for dao that can do ordering and paginating
  */
-public class OrderableAbstractDao extends PageableAbstractDao {
+public abstract class OrderableAbstractDao extends PageableAbstractDao {
 
-    protected final <T> List<T> getAll(Connection connection, String sql, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
+    protected final <T> List<T> getAll(String sql, Class<T> model, Orderable orderable, Pageable pageable) {
         sql = orderable.orderQuery(sql);
-        return getAll(connection, sql, model, pageable);
+        return getAll(sql, model, pageable);
     }
 
-    protected final  <T, P> List<T> getAllByParams(Connection connection, String sql, P params, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
+    protected final  <T, P> List<T> getAllByParams(String sql, P params, Class<T> model, Orderable orderable, Pageable pageable) {
         sql = orderable.orderQuery(sql);
-        return getAllByParams(connection, sql, params, model, pageable);
+        return getAllByParams(sql, params, model, pageable);
     }
 
-    protected final  <T> List<T> getAllByParams(Connection connection, String sql, Object[] params, Class<T> model, Orderable orderable, Pageable pageable) throws SQLException{
+    protected final  <T> List<T> getAllByParams(String sql, Object[] params, Class<T> model, Orderable orderable, Pageable pageable) {
         sql = orderable.orderQuery(sql);
-        return getAllByParams(connection, sql, params, model, pageable);
+        return getAllByParams(sql, params, model, pageable);
+    }
+
+    public OrderableAbstractDao(Connection connection) {
+        super(connection);
     }
 
 }

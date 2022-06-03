@@ -3,14 +3,13 @@ package service;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
-import exceptions.db.DaoException;
 import forms.*;
 import models.User;
 
-import java.sql.SQLException;
 
 public class UserService {
-    private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
+
+    //private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private UserService(){
 
@@ -25,78 +24,62 @@ public class UserService {
     }
 
     public long createUser(RegisterForm form) {
-        try {
-            if(userDao.getUserByEmail(form.getEmail()).getEmail() != null){
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+            if (userDao.getUserByEmail(form.getEmail()).getEmail() != null) {
                 form.addLocalizedError("errors.emailExists");
                 return 0;
             }
-            if(userDao.getUserByLogin(form.getLogin()).getLogin() != null){
+            if (userDao.getUserByLogin(form.getLogin()).getLogin() != null) {
                 form.addLocalizedError("errors.loginExists");
                 return 0;
             }
-            return userDao.createUser(form);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            form.addError("Database error");
-            return 0;
+            return userDao.createUser(new User(form));
         }
     }
 
     public User loginUser(LoginForm form){
-        try{
-            User user = userDao.getUserByLoginAndPassword(form);
-            if(user.getId() == null){
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+            User user = userDao.getUserByLoginAndPassword(form.getLogin(), form.getPassword());
+            if (user.getId() == null) {
                 form.addLocalizedError("errors.userNotFound");
                 return user;
             }
             return user;
-        } catch (SQLException e){
-            e.printStackTrace();
-            form.addError("Database error");
-            return new User();
         }
     }
 
     public User getUserById(Long id){
-        try {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
             return userDao.getUserById(id);
-        } catch (SQLException sqle){
-            throw new DaoException();
         }
     }
 
     public boolean addUserBalance(AddBalanceForm form, Long userId){
-        try {
-            return userDao.addUserBalance(form, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            form.addError("Database error");
-            return false;
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+            User user = userDao.getUserById(userId);
+            user.setBalance(user.getBalance().add(form.getAmount()));
+            return userDao.updateUser(user);
         }
     }
 
     public boolean updateUser(UserUpdateProfileForm form, Long userId){
-        try{
-            return userDao.updateUser(form, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            form.addError("Database error");
-            return false;
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+            User user = userDao.getUserById(userId);
+            user.setFirstName(form.getFirstName());
+            user.setLastName(form.getLastName());
+            return userDao.updateUser(user);
         }
     }
 
     public boolean changeUserPassword(ChangePasswordForm form, Long userId){
-        try {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
             User user = userDao.findUserForPasswordChange(form.getOldPassword(), userId);
-            if(user.getId() == null){
+            if (user.getId() == null) {
                 form.addLocalizedError("errors.IncorrectOldPassword");
                 return false;
             }
-            return userDao.changePassword(form.getNewPassword(), userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            form.addError("Database Error");
-            return false;
+            user.setPassword(form.getNewPassword());
+            return userDao.updateUser(user);
         }
     }
 }

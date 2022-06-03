@@ -1,11 +1,13 @@
 package service;
 
 import dao.dao.BillingDao;
+import dao.dao.RoomRequestDao;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import models.Billing;
+import models.RoomRequest;
 import models.User;
 import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
@@ -15,9 +17,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class BillingService {
-
-    private static final BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
-    private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private BillingService(){
 
@@ -32,39 +31,52 @@ public class BillingService {
     }
 
     public List<Billing> findBillingsByUserId(Long userId, Pageable pageable){
-        try{
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
             return billingDao.getAllBillingsByUserId(userId, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public boolean payBilling(Long userId, Long billingId, MessageTransport messageTransport){
-        try{
-            ExtendedBillingDTO billing = billingDao.getBillingById(billingId);
+        BillingDao billingDao = null;
+        try {
+            billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(billingDao.getConnection());
+            RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(billingDao.getConnection());
+
+            ExtendedBillingDTO extendedBilling = billingDao.getExtendedBillingById(billingId);
             User user = userDao.getUserById(userId);
-            if(billing.getPaid()){
+            if(extendedBilling.getPaid()){
                 messageTransport.addLocalizedMessage("message.billingIsPaid");
             }
-            if(!billing.getUserId().equals(userId)){
-                messageTransport.addLocalizedMessage("message.thisIsNotYourBilling");
-            }
-            if(user.getBalance().compareTo(billing.getPrice()) < 0){
+            if(user.getBalance().compareTo(extendedBilling.getPrice()) < 0){
                 messageTransport.addLocalizedMessage("message.billingNotEnoughMoney");
             }
             if(messageTransport.getMessages().size() != 0){
                 return false;
             }
-            return billingDao.payBilling(userId, billing);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
+
+            billingDao.transaction.open();
+
+            Billing billing = billingDao.getBillingById(billingId);
+            billing.setPaid(true);
+            billingDao.updateBilling(billing);
+            user.setBalance(user.getBalance().subtract(billing.getPrice()));
+            userDao.updateUser(user);
+            RoomRequest roomRequest = roomRequestDao.getRoomRequestById(extendedBilling.getRequestId());
+            roomRequest.setStatus("paid");
+            roomRequestDao.updateRoomRequest(roomRequest);
+            billingDao.transaction.commit();
+            return true;
+        } catch (DaoException sqle){
+            billingDao.transaction.rollback();
             return false;
+        } finally {
+            billingDao.close();
         }
     }
 
     public int deleteOldBillings(){
-        try{
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
             return billingDao.deleteOldBillings();
         } catch (SQLException sqle){
             sqle.printStackTrace();

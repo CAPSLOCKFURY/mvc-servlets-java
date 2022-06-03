@@ -121,6 +121,7 @@ public class ConnectionPool {
                 throw new ConnectionNotReturned();
             }
         } else {
+            logger.fatal("Connection was not in used connections");
             logger.fatal("Could not return connection to connection poll");
             throw new ConnectionNotReturned();
         }

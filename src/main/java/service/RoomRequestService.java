@@ -1,24 +1,25 @@
 package service;
 
+import dao.dao.BillingDao;
+import dao.dao.RoomRegistryDAO;
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
 import exceptions.db.DaoException;
 import forms.RoomRequestForm;
+import models.Billing;
 import models.Room;
+import models.RoomRegistry;
 import models.RoomRequest;
 import models.base.pagination.Pageable;
 import web.base.messages.MessageTransport;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 
 public class RoomRequestService {
-    private final RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
-    private static final RoomsDao roomDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
 
     private RoomRequestService(){
 
@@ -33,49 +34,46 @@ public class RoomRequestService {
     }
 
     public boolean createRoomRequest(RoomRequestForm form){
-        try{
-            return roomRequestDao.createRoomRequest(form);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
+            return roomRequestDao.createRoomRequest(new RoomRequest(form));
         }
     }
 
     public List<RoomRequest> getRoomRequestsByUserId(Long userId, String locale, Pageable pageable){
-        try{
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
             return roomRequestDao.getAllRoomRequestsByUserId(userId, locale, pageable);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
         }
     }
 
     public boolean disableRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
-        try{
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
-            if(!roomRequest.getUserId().equals(userId)){
+            if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");
                 return false;
             }
-            if(!roomRequest.getStatus().equals("awaiting")){
+            if (!roomRequest.getStatus().equals("awaiting")) {
                 messageTransport.addLocalizedMessage("message.disableRequestWrongStatus");
                 return false;
             }
-            return roomRequestDao.disableRoomRequest(requestId, userId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
+            roomRequest.setStatus("closed");
+            return roomRequestDao.updateRoomRequest(roomRequest);
         }
     }
 
     public boolean confirmRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
-        try{
+        RoomRequestDao roomRequestDao = null;
+        try {
+            roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
+            RoomsDao roomDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao(roomRequestDao.getConnection());
+            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomRequestDao.getConnection());
+            BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao(roomRequestDao.getConnection());
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
-            if(!roomRequest.getUserId().equals(userId)){
+            if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");
                 return false;
             }
-            if(!roomRequest.getStatus().equals("awaiting confirmation")){
+            if (!roomRequest.getStatus().equals("awaiting confirmation")) {
                 messageTransport.addLocalizedMessage("message.confirmRequestWrongStatus");
                 return false;
             }
@@ -83,28 +81,43 @@ public class RoomRequestService {
             long differenceInDays = Duration.between(roomRequest.getCheckInDate().toLocalDate().atStartOfDay(), roomRequest.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
-            return roomRequestDao.confirmRoomRequest(roomRequest, roomPrice);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            throw new DaoException();
+
+            roomRequestDao.transaction.open();
+            roomRequest.setStatus("awaiting payment");
+            roomRequestDao.updateRoomRequest(roomRequest);
+            RoomRegistry roomRegistry = new RoomRegistry(userId, roomRequest.getRoomId(), roomRequest.getCheckInDate(), roomRequest.getCheckOutDate());
+            long roomRegistryId = roomRegistryDAO.createRoomRegistry(roomRegistry);
+
+            Billing billing = new Billing(roomRequest.getId(), roomPrice, roomRegistryId);
+            billingDao.createBilling(billing);
+
+            roomRequestDao.transaction.commit();
+
+            return true;
+        } catch (DaoException daoException){
+            roomRequestDao.transaction.rollback();
+            return false;
+        } finally {
+            roomRequestDao.close();
         }
     }
 
     public boolean declineAssignedRoom(String comment, Long userId, Long requestId, MessageTransport messageTransport){
-        try{
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
-            if(!roomRequest.getUserId().equals(userId)){
+            if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");
                 return false;
             }
-            if(!roomRequest.getStatus().equals("awaiting confirmation")){
+            if (!roomRequest.getStatus().equals("awaiting confirmation")) {
                 messageTransport.addLocalizedMessage("message.wrongRequestStatus");
                 return false;
             }
-            return roomRequestDao.declineAssignedRoom(comment, requestId);
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            return false;
+
+            roomRequest.setComment(comment);
+            roomRequest.setRoomId(null);
+            roomRequest.setStatus("awaiting");
+            return roomRequestDao.updateRoomRequest(roomRequest);
         }
     }
 }
