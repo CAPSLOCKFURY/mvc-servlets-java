@@ -18,16 +18,20 @@ public abstract class AbstractDao implements AutoCloseable {
 
     protected Connection connection;
 
+    public Transaction transaction;
+
     public AbstractDao(Connection connection) {
         if(connection == null){
             throw new IllegalArgumentException("Connection in dao can't be null");
         }
         this.connection = connection;
+        this.transaction = new Transaction();
     }
 
     public final void close(){
         try {
             if(connection != null) {
+                transaction.close();
                 connection.close();
                 connection = null;
             }
@@ -39,6 +43,48 @@ public abstract class AbstractDao implements AutoCloseable {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public class Transaction{
+
+        public void open(){
+            try {
+                connection.setAutoCommit(false);
+            } catch (SQLException sqle) {
+                sqle.printStackTrace();
+                throw new DaoException();
+            }
+        }
+
+        public void close(){
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new DaoException();
+            }
+        }
+
+        public void commit(){
+            try{
+                connection.commit();
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new DaoException();
+            }
+        }
+
+        public void rollback(){
+            try{
+                if(!connection.getAutoCommit()) {
+                    connection.rollback();
+                }
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new DaoException();
+            }
+        }
+
     }
 
     /**

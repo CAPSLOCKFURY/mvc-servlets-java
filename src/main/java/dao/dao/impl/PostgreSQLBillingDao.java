@@ -2,12 +2,10 @@ package dao.dao.impl;
 
 import constants.SqlQueries;
 import dao.dao.BillingDao;
-import db.ConnectionPool;
 import models.Billing;
 import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,13 +13,25 @@ import java.util.List;
 public class PostgreSQLBillingDao extends BillingDao {
 
     @Override
-    public boolean insertBilling(Long requestId, BigDecimal price, Long roomRegistryId) {
-        return createEntity(SqlQueries.Billing.INSERT_BILLING, new Object[]{requestId, price, roomRegistryId});
+    public boolean createBilling(Billing billing) {
+        return createEntity(SqlQueries.Billing.INSERT_BILLING,
+                new Object[]{billing.getRequestId(), billing.getPrice(), billing.getPaid(), billing.getRoomRegistryId()});
     }
 
     @Override
-    public ExtendedBillingDTO getBillingById(Long billingId) {
-        return getOneById(SqlQueries.Billing.GET_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
+    public boolean updateBilling(Billing billing) {
+        return updateEntityById(SqlQueries.Billing.UPDATE_BILLING,
+                new Object[]{billing.getRequestId(), billing.getPrice(), billing.getPayEndDate(), billing.getPaid(), billing.getRoomRegistryId()}, billing.getId());
+    }
+
+    @Override
+    public Billing getBillingById(Long billingId) {
+        return getOneById(SqlQueries.Billing.GET_BILLING_BY_ID, billingId, Billing.class);
+    }
+
+    @Override
+    public ExtendedBillingDTO getExtendedBillingById(Long billingId) {
+        return getOneById(SqlQueries.Billing.GET_EXTENDED_BILLING_BY_ID, billingId, ExtendedBillingDTO.class);
     }
 
     @Override
@@ -29,37 +39,6 @@ public class PostgreSQLBillingDao extends BillingDao {
         return getAllByParams(SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Object[]{userId}, Billing.class, pageable);
     }
 
-    @Override
-    public boolean payBilling(Long userId, ExtendedBillingDTO billing) throws SQLException{
-        try{
-            connection.setAutoCommit(false);
-            boolean balanceUpdated = updateEntity("update users set balance = balance - ? where id =?", new Object[]{billing.getPrice(), userId});
-            if(!balanceUpdated){
-                connection.rollback();
-                return false;
-            }
-            boolean billingUpdated = updateEntity(SqlQueries.Billing.PAY_BILLING, new Object[]{billing.getId()});
-            if(!billingUpdated){
-                connection.rollback();
-                return false;
-            }
-            boolean requestStatusUpdated = updateEntity("update room_requests set status = 'paid' where id = ?", new Object[]{billing.getRequestId()});
-            if(!requestStatusUpdated){
-                connection.rollback();
-                return false;
-            }
-            return true;
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            connection.rollback();
-            return false;
-        } finally {
-            if(connection != null) {
-                connection.setAutoCommit(true);
-                //connection.close();
-            }
-        }
-    }
 
     @Override
     public int deleteOldBillings() throws SQLException {

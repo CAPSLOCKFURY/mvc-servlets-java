@@ -1,5 +1,6 @@
 package service;
 
+import dao.dao.RoomRegistryDAO;
 import dao.dao.RoomsDao;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
@@ -8,6 +9,7 @@ import exceptions.db.DaoException;
 import forms.BookRoomForm;
 import models.Room;
 import models.RoomClass;
+import models.RoomRegistry;
 import models.User;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
@@ -20,9 +22,6 @@ import java.time.Duration;
 import java.util.List;
 
 public class RoomsService {
-
-    //private static final RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-    //private static final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
 
     private RoomsService(){
 
@@ -61,8 +60,11 @@ public class RoomsService {
     }
 
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());) {
+        RoomsDao roomsDao = null;
+        try {
+            roomsDao =  DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());
+            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomsDao.getConnection());
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");
@@ -81,10 +83,22 @@ public class RoomsService {
                 return false;
             }
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
-            return roomsDao.bookRoom(form.getCheckInDate(), form.getCheckOutDate(), roomPrice, roomId, userId);
+
+            roomsDao.transaction.open();
+
+            user.setBalance(user.getBalance().subtract(roomPrice));
+            userDao.updateUser(user);
+            RoomRegistry roomRegistry = new RoomRegistry(userId, roomId, form.getCheckInDate(), form.getCheckOutDate());
+            roomRegistryDAO.createRoomRegistry(roomRegistry);
+            roomsDao.removeAssignedRoomsOnOverlappingDates(roomId, form.getCheckInDate(), form.getCheckOutDate());
+            roomsDao.transaction.commit();
+            return true;
         } catch (DaoException daoException){
             form.addError("Database Error");
+            roomsDao.transaction.rollback();
             return false;
+        } finally {
+            roomsDao.close();
         }
     }
 

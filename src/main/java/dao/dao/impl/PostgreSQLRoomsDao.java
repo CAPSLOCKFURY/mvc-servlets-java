@@ -9,12 +9,19 @@ import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.*;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
 public class PostgreSQLRoomsDao extends RoomsDao {
+
+    @Override
+    public boolean updateRoom(Room room) {
+        return updateEntityById(SqlQueries.Room.UPDATE_ROOM,
+                new Object[]{room.getNumber(), room.getStatus(), room.getName(), room.getPrice(), room.getCapacity(), room.getClassId()}
+                , room.getId());
+    }
 
     @Override
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable) {
@@ -55,48 +62,8 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public boolean bookRoom(java.sql.Date checkInDate, java.sql.Date checkOutDate, BigDecimal moneyAmount, Long roomId, Long userId) {
-        try {
-            connection.setAutoCommit(false);
-            boolean isUpdated = updateEntityById(SqlQueries.Room.WITHDRAW_FROM_USER_BALANCE, new Object[]{moneyAmount}, userId);
-            if(!isUpdated){
-                connection.rollback();
-                return false;
-            }
-            boolean entityCreated = createEntity(SqlQueries.Room.INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY, new Object[]{userId, roomId, checkInDate, checkOutDate});
-            if(!entityCreated){
-                connection.rollback();
-                return false;
-            }
-            updateEntity(SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, checkInDate, checkOutDate});
-            connection.commit();
-            return true;
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            try {
-                if (connection.getAutoCommit() == false) {
-                    connection.rollback();
-                }
-            } catch (SQLException sqle1){
-                sqle1.printStackTrace();
-                throw new DaoException();
-            }
-            throw new DaoException();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                    //connection.close();
-                }
-            } catch (SQLException sqle){
-                sqle.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public boolean assignRoomToRequest(Long roomId, Long requestId) {
-        return updateEntityById(SqlQueries.Room.ASSIGN_ROOM_TO_REQUEST, new Object[]{roomId}, requestId);
+    public boolean removeAssignedRoomsOnOverlappingDates(Long roomId, Date checkInDate, Date checkOutDate) {
+        return updateEntity(SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, checkInDate, checkOutDate});
     }
 
     @Override
@@ -161,10 +128,6 @@ public class PostgreSQLRoomsDao extends RoomsDao {
         }
     }
 
-    @Override
-    public boolean openRoom(Long roomId) {
-        return updateEntity(SqlQueries.Room.OPEN_ROOM, new Object[]{roomId});
-    }
 
     public PostgreSQLRoomsDao(Connection connection) {
         super(connection);

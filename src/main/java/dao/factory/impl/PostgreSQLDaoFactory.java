@@ -1,13 +1,7 @@
 package dao.factory.impl;
 
-import dao.dao.BillingDao;
-import dao.dao.RoomRequestDao;
-import dao.dao.RoomsDao;
-import dao.dao.UserDao;
-import dao.dao.impl.PostgreSQLBillingDao;
-import dao.dao.impl.PostgreSQLRoomRequestDao;
-import dao.dao.impl.PostgreSQLRoomsDao;
-import dao.dao.impl.PostgreSQLUserDao;
+import dao.dao.*;
+import dao.dao.impl.*;
 import dao.factory.DaoFactory;
 import db.ConnectionPool;
 
@@ -36,6 +30,11 @@ public class PostgreSQLDaoFactory implements DaoFactory {
     }
 
     @Override
+    public RoomRegistryDAO getRoomRegistryDao() {
+        return new PostgreSQLRoomRegistryDAO(ConnectionPool.getConnection());
+    }
+
+    @Override
     public UserDao getUserDao(Connection connection) {
         return new PostgreSQLUserDao(connection);
     }
@@ -53,5 +52,10 @@ public class PostgreSQLDaoFactory implements DaoFactory {
     @Override
     public BillingDao getBillingDao(Connection connection) {
         return new PostgreSQLBillingDao(connection);
+    }
+
+    @Override
+    public RoomRegistryDAO getRoomRegistryDao(Connection connection) {
+        return new PostgreSQLRoomRegistryDAO(connection);
     }
 }

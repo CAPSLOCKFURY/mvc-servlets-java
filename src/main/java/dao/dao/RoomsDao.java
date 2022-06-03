@@ -10,11 +10,12 @@ import models.dto.RoomExtendedInfo;
 import models.dto.RoomHistoryDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
 
 public abstract class RoomsDao extends OrderableAbstractDao {
+
+    public abstract boolean updateRoom(Room room);
 
     public abstract List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable);
 
@@ -28,13 +29,15 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable);
 
-    public abstract boolean bookRoom(java.sql.Date checkInDate, java.sql.Date checkOutDate, BigDecimal moneyAmount, Long roomId, Long userId);
+    //public abstract boolean bookRoom(java.sql.Date checkInDate, java.sql.Date checkOutDate, BigDecimal moneyAmount, Long roomId, Long userId);
 
     public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable);
 
-    public abstract boolean assignRoomToRequest(Long roomId, Long requestId);
+    //public abstract boolean assignRoomToRequest(Long roomId, Long requestId);
 
     public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable);
+
+    public abstract boolean removeAssignedRoomsOnOverlappingDates(Long roomId, java.sql.Date checkInDate, java.sql.Date checkOutDate);
 
     /**
      * Sets archived = true, for all old room registries
@@ -53,7 +56,7 @@ public abstract class RoomsDao extends OrderableAbstractDao {
      */
     public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate);
 
-    public abstract boolean openRoom(Long roomId);
+    //public abstract boolean openRoom(Long roomId);
 
     public RoomsDao(Connection connection) {
         super(connection);
