@@ -21,6 +21,8 @@ public class AnnotationValidator {
 
     private static final String LOCALIZED_ERROR_METHOD_NAME = "localizedError";
 
+    private static final String IGNORE_ON_NULL = "ignoreOnNullValue";
+
     public AnnotationValidator(Object validationTarget){
         this.validationTarget = validationTarget;
     }
@@ -54,10 +56,13 @@ public class AnnotationValidator {
                 try {
                     Method getter = validationTarget.getClass().getMethod(getGetterMethod(field.getName()));
                     Object fieldValue = getter.invoke(validationTarget);
-                    Validator validator = validatorRegistry.getValidatorByAnnotation(a);
-                    boolean result = executeValidator(validator, a, fieldValue);
-                    if(!result){
-                        validationResult.addLocalizedError(getLocalizedErrorFromAnnotation(a));
+                    boolean ignoreOnNullValue = getIgnoreOnNullValueFromAnnotation(a);
+                    if(!(ignoreOnNullValue && fieldValue == null)) {
+                        Validator validator = validatorRegistry.getValidatorByAnnotation(a);
+                        boolean result = executeValidator(validator, a, fieldValue);
+                        if (!result) {
+                            validationResult.addLocalizedError(getLocalizedErrorFromAnnotation(a));
+                        }
                     }
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();
@@ -74,6 +79,18 @@ public class AnnotationValidator {
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             throw new ValidatorError("Could not get localized error from annotation");
+        }
+    }
+
+    private boolean getIgnoreOnNullValueFromAnnotation(Annotation a) {
+        try {
+            Method method = a.annotationType().getDeclaredMethod(IGNORE_ON_NULL);
+            return (boolean) method.invoke(a);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            throw new ValidatorError("Could not get ignore on null from annotation");
+        } catch (NoSuchMethodException e){
+            return false;
         }
     }
 

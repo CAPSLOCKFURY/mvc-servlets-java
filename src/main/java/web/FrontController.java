@@ -52,6 +52,7 @@ public class FrontController extends HttpServlet {
             logger.error(e.getMessage());
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
+            throw new ServletException();
         }
     }
 }
