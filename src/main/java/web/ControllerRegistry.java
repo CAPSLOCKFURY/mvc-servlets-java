@@ -1,6 +1,6 @@
 package web;
 
-import exceptions.CommandNotFoundException;
+import exceptions.WebMethodNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import utils.ClassUtils;
 import web.base.RequestMethod;
@@ -29,11 +29,11 @@ public class ControllerRegistry {
         return instance;
     }
 
-    public Method resolveMethod(HttpServletRequest request) throws CommandNotFoundException {
+    public Method resolveMethod(HttpServletRequest request) throws WebMethodNotFoundException {
         String url = getRequestUrl(request);
         UrlBind urlBind = new UrlBind(url, RequestMethod.valueOf(request.getMethod()));
         return Optional.ofNullable(methodMap.get(urlBind))
-                .orElseThrow(CommandNotFoundException::new);
+                .orElseThrow(WebMethodNotFoundException::new);
     }
 
     public Object getControllerObject(Class<?> controllerClass){
