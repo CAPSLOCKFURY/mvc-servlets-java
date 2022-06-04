@@ -4,6 +4,8 @@ import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlSelect;
 import forms.base.annotations.HtmlTextArea;
 import jakarta.servlet.http.HttpServletRequest;
+import validators.base.AnnotationValidator;
+import validators.base.ValidationResult;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +22,12 @@ public abstract class Form {
 
     protected Locale locale = Locale.ROOT;
 
-    public abstract boolean validate();
+    public boolean validate(){
+        AnnotationValidator annotationValidator = new AnnotationValidator(this);
+        ValidationResult validationResult = annotationValidator.validate();
+        validationResult.getLocalizedErrors().forEach(this::addLocalizedError);
+        return isValid();
+    }
 
     public List<String> getErrors() {
         return errors;
