@@ -18,6 +18,7 @@ import utils.testfolders.case3.inner.inner.HCommandCase3;
 import utils.testfolders.case4.ACase4;
 import utils.testfolders.case4.BCase4;
 import utils.testfolders.case4.CCase4;
+import web.base.annotations.WebMapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public class ClassUtilsTest {
     @ParameterizedTest
     @MethodSource("getAnnotatedCommandClassesInPackageCases")
     void testGetAnnotatedCommandClassesInPackage(String packageName, List<Class<?>> expected){
-        List<Class<Command>> classes = ClassUtils.getAnnotatedCommandClassesInPackage(packageName);
+        List<Class<?>> classes = ClassUtils.getClassesInPackage(packageName, c -> Command.class.isAssignableFrom(c) && c.isAnnotationPresent(WebMapping.class));
         assertEquals(expected, classes);
     }
 

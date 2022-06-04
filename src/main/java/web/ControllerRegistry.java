@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import utils.ClassUtils;
 import web.base.RequestMethod;
 import web.base.UrlBind;
+import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +49,7 @@ public class ControllerRegistry {
     }
 
     private void registerControllerInstances(){
-        List<Class<?>> controllers = ClassUtils.getControllerClassesInPackage("controllers");
+        List<Class<?>> controllers = ClassUtils.getClassesInPackage("controllers", c -> c.isAnnotationPresent(WebController.class));
         controllers.forEach(c -> {
             try {
                 Object controller = c.getConstructor().newInstance();
@@ -60,7 +61,6 @@ public class ControllerRegistry {
     }
 
     private void registerControllerWebMethods(List<Class<?>> controllers){
-        List<Method> webMethods = new LinkedList<>();
         controllers.stream().flatMap(c -> Arrays.stream(c.getMethods()))
                 .filter(m -> m.isAnnotationPresent(WebMapping.class))
                 .forEach(m -> {

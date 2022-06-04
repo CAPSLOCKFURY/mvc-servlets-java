@@ -19,6 +19,7 @@ public interface MessageTransport {
      * Processes messages on the receiving side, for e.g. setting messages into jsp attribute
      */
     void processMessages(HttpServletRequest request, HttpServletResponse response);
+
     void addMessage(String message);
 
     /**
@@ -29,6 +30,8 @@ public interface MessageTransport {
      * @param key key in resource bundle of message
      */
     void addLocalizedMessage(String key);
+
     List<String> getMessages();
+
     void setLocale(Locale locale);
 }
