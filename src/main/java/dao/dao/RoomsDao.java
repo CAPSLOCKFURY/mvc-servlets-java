@@ -29,11 +29,7 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable);
 
-    //public abstract boolean bookRoom(java.sql.Date checkInDate, java.sql.Date checkOutDate, BigDecimal moneyAmount, Long roomId, Long userId);
-
     public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable);
-
-    //public abstract boolean assignRoomToRequest(Long roomId, Long requestId);
 
     public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable);
 
@@ -55,8 +51,6 @@ public abstract class RoomsDao extends OrderableAbstractDao {
      * which ordered on the overlapping dates of today - endDate
      */
     public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate);
-
-    //public abstract boolean openRoom(Long roomId);
 
     public RoomsDao(Connection connection) {
         super(connection);

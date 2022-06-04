@@ -24,10 +24,6 @@ public final class SqlQueries {
                 "where room_id = ? and archived = false and (daterange(?::date, ?::date, '[]') &&\n" +
                 "      daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]') )";
 
-        public static final String WITHDRAW_FROM_USER_BALANCE = "update users set balance = balance - ? where id = ?";
-
-        public static final String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
-
         public static final String FIND_ROOM_HISTORY_BY_USER_ID = "select r.*, rct.name as class_name, room_registry.check_in_date, room_registry.check_out_date from room_registry\n" +
                 "    left outer join rooms r on room_registry.room_id = r.id\n" +
                 "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +
@@ -41,8 +37,6 @@ public final class SqlQueries {
                 "group by rooms.id, rct.id\n" +
                 "having count(room_id) filter\n" +
                 "    (where daterange(?::date, ?::date, '[]') && daterange(rr.check_in_date::date, rr.check_out_date::date, '[]')) = 0";
-
-        public static final String ASSIGN_ROOM_TO_REQUEST = "update room_requests set room_id = ?, status = 'awaiting confirmation' where id = ?";
 
         public static final String REMOVE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting'\n" +
                 "where room_id = ?\n" +
@@ -111,8 +105,6 @@ public final class SqlQueries {
                 "daterange(date(now()), ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]')\n" +
                 " and room_registry.room_id = ? and archived = false";
 
-        public static final String OPEN_ROOM = "update rooms set status = 'free' where id = ?";
-
         private Room(){}
     }
 
@@ -128,8 +120,6 @@ public final class SqlQueries {
                 "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
                 "    where user_id = ? order by -room_requests.id";
 
-        public static final String DISABLE_REQUEST_BY_ID = "update room_requests set status = 'closed' where id = ? and user_id = ?";
-
         public static final String ADMIN_GET_ROOM_REQUESTS = "select room_requests.id, capacity, rct.name as class_name, comment, manager_comment, status, check_in_date, check_out_date, room_id, login, email, first_name, last_name from room_requests\n" +
                 "    left outer join room_class_translation rct on room_requests.room_class = rct.class_id and rct.language = ?\n" +
                 "    left outer join users u on room_requests.user_id = u.id\n" +
@@ -141,13 +131,9 @@ public final class SqlQueries {
                 "where room_requests.id = ?\n" +
                 "order by room_requests.id";
 
-        public static final String CONFIRM_ROOM_REQUEST = "update room_requests set status = 'awaiting payment' where id=?";
-
         public static final String FIND_ROOM_REQUEST_BY_ID = "select room_requests.*, rct.name as class_name from room_requests\n" +
                 "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
                 "    where room_requests.id = ?";
-
-        public static final String INSERT_BOOKED_ROOM_INTO_ROOM_REGISTRY = "insert into room_registry(user_id, room_id, check_in_date, check_out_date) values (?, ?, ?, ?)";
 
         public static final String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
 
@@ -186,8 +172,6 @@ public final class SqlQueries {
                 "where rr.user_id = ? order by -billing.id";
 
         public static final String UPDATE_BILLING = "update billing set request_id = ?, price = ?, pay_end_date = ?, paid = ?, room_registry_id = ? where id = ?;";
-
-        public static final String PAY_BILLING = "update billing set paid = true where id = ?";
 
         public static final String GET_EXTENDED_BILLING_BY_ID = "select *, rr.id as request_id, rr.user_id as user_id from billing \n" +
                 "    left outer join room_requests rr on billing.request_id = rr.id\n" +

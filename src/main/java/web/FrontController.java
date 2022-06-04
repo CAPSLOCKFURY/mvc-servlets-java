@@ -1,6 +1,6 @@
 package web;
 
-import exceptions.CommandNotFoundException;
+import exceptions.WebMethodNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class FrontController extends HttpServlet {
             } else if(result.getDirection() == RequestDirection.VOID){
                 //this intentionally left blank
             }
-        } catch (CommandNotFoundException e){
+        } catch (WebMethodNotFoundException e){
             logger.error(e.getMessage());
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
