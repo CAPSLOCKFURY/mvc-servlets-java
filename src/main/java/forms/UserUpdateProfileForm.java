@@ -1,45 +1,22 @@
 package forms;
 
-import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
-import models.base.SqlColumn;
-import models.base.SqlType;
-
-import java.util.regex.Pattern;
+import validators.annotations.NotEmpty;
+import validators.annotations.Regex;
 
 public class UserUpdateProfileForm extends Form {
 
-    private static final Pattern namePattern = RegexConstants.NAME_PATTERN;
-
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName")
-    @SqlColumn(columnName = "first_name", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullFirstName")
+    @Regex(pattern = "[а-яА-Я|a-zA-Z]+", localizedError = "errors.lastNameRegex")
     private String firstName;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName")
-    @SqlColumn(columnName = "last_name", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullLastName")
+    @Regex(pattern = "[а-яА-Я|a-zA-Z]+", localizedError = "errors.firstNameRegex")
     private String lastName;
-
-    @Override
-    public boolean validate() {
-        //TODO remove duplicates
-        if(!firstName.equals("")) {
-            if (!namePattern.matcher(firstName).matches()) {
-                addLocalizedError("errors.firstNameRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullFirstName");
-        }
-        if(!lastName.equals("")) {
-            if (!namePattern.matcher(lastName).matches()) {
-                addLocalizedError("errors.lastNameRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullLastName");
-        }
-        return errors.size() == 0;
-    }
 
     public String getFirstName() {
         return firstName;

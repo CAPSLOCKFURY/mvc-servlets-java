@@ -10,7 +10,7 @@ public class RegexValidator implements Validator<Regex, String> {
 
     @Override
     public boolean validate(Regex annotation, String value) {
-        Pattern pattern = RegexCache.getPattern(value);
+        Pattern pattern = RegexCache.getPattern(annotation.pattern());
         return pattern.matcher(value).matches();
     }
 }

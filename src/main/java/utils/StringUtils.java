@@ -11,6 +11,10 @@ public class StringUtils {
         return str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
     }
 
+    public static String getGetterMethod(String str){
+        return "get".concat(capitalize(str));
+    }
+
     private StringUtils(){
         throw new UnsupportedOperationException();
     }

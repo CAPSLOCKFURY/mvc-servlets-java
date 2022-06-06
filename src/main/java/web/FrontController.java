@@ -40,7 +40,7 @@ public class FrontController extends HttpServlet {
             logger.debug("Resolved command");
             Object controllerInstance = controllerRegistry.getControllerObject(method.getDeclaringClass());
             WebResult result = (WebResult) method.invoke(controllerInstance, request, response);
-            logger.debug("Executed command");
+            logger.debug("Executed web method");
             if(result.getDirection() == RequestDirection.FORWARD){
                 request.getRequestDispatcher("/pages/" + result.getUrl()).forward(request, response);
             } else if(result.getDirection() == RequestDirection.REDIRECT){

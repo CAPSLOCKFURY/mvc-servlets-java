@@ -1,40 +1,22 @@
 package forms;
 
-import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
-
-import java.util.regex.Pattern;
+import validators.annotations.NotEmpty;
+import validators.annotations.Regex;
 
 public class ChangePasswordForm extends Form {
 
-    private static final Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
-
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "oldPassword", literal = "class=\"form-control my-2\"")
+    @NotEmpty(localizedError = "errors.nullPassword")
+    @Regex(pattern = "[a-zA-Z_0-9-]+", localizedError = "errors.passwordRegex")
     private String oldPassword;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "newPassword", literal = "class=\"form-control my-2\"")
+    @NotEmpty(localizedError = "errors.nullPassword")
+    @Regex(pattern = "[a-zA-Z_0-9-]+", localizedError = "errors.passwordRegex")
     private String newPassword;
-
-    @Override
-    public boolean validate() {
-        if(!oldPassword.equals("")) {
-            if (!passwordPattern.matcher(oldPassword).matches()) {
-                addLocalizedError("errors.passwordRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullPassword");
-        }
-        if(!newPassword.equals("")) {
-            if (!passwordPattern.matcher(newPassword).matches()) {
-                addLocalizedError("errors.passwordRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullPassword");
-        }
-        return errors.size() == 0;
-    }
 
     public String getOldPassword() {
         return oldPassword;

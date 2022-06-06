@@ -4,12 +4,23 @@ import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
+import validators.annotations.FieldsNotEquals;
+import validators.annotations.FirstDateBeforeSecond;
 import validators.annotations.MinDateToday;
 import validators.annotations.NotNull;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
+@FieldsNotEquals(
+        firstField = "checkInDate",
+        secondField = "checkOutDate",
+        localizedError = "errors.CheckOutDateIsCheckInDate"
+)
+@FirstDateBeforeSecond(
+        firstDateField = "checkInDate",
+        secondDateField = "checkOutDate",
+        localizedError = "errors.CheckOutDateBeforeCheckIn"
+)
 public class BookRoomForm extends Form {
 
     @HtmlInput(name = "checkInDate", type = InputType.DATE, id="checkInDate", literal = "onchange=\"dateChange()\" class=\"form-control my-1\"",
@@ -32,7 +43,6 @@ public class BookRoomForm extends Form {
         try {
             this.checkInDate = Date.valueOf(checkInDate);
         } catch (IllegalArgumentException iag){
-            addLocalizedError("errors.checkInDateIAG");
             this.checkInDate = null;
         }
     }
@@ -45,22 +55,7 @@ public class BookRoomForm extends Form {
         try {
             this.checkOutDate = Date.valueOf(checkOutDate);
         } catch (IllegalArgumentException iag){
-            addLocalizedError("errors.checkOutDateIAG");
+            this.checkOutDate = null;
         }
-    }
-
-    @Override
-    public boolean validate() {
-        super.validate();
-        LocalDate today = new Date(System.currentTimeMillis()).toLocalDate();
-        if(checkOutDate != null && checkInDate != null) {
-            if (checkOutDate.before(checkInDate)) {
-                addLocalizedError("errors.CheckOutDateBeforeCheckIn");
-            }
-            if(checkOutDate.compareTo(checkInDate) == 0){
-                addLocalizedError("errors.CheckOutDateIsCheckInDate");
-            }
-        }
-        return errors.size() == 0;
     }
 }

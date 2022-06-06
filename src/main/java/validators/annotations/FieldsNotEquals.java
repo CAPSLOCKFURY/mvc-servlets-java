@@ -1,22 +1,21 @@
 package validators.annotations;
 
 import validators.base.ValidatedBy;
-import validators.validators.MinValidator;
+import validators.validators.FieldsNotEqualsValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@ValidatedBy(MinValidator.class)
-@Target(ElementType.FIELD)
+@ValidatedBy(FieldsNotEqualsValidator.class)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Min {
+public @interface FieldsNotEquals {
 
-    float min();
+    String firstField();
+
+    String secondField();
 
     String localizedError();
-
-    boolean ignoreOnNullValue() default true;
-
 }

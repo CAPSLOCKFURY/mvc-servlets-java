@@ -13,7 +13,7 @@ public final class ValidatorRegistry {
 
     private final Set<Class<? extends Annotation>> validatorAnnotations;
 
-    private final Map<Class<? extends Annotation>, Class<?>> validatorMap;
+    private final Map<Class<? extends Annotation>, Class<? extends Validator<?, ?>>> validatorMap;
 
     private ValidatorRegistry(){
         validatorAnnotations = registerAnnotations();
@@ -28,13 +28,13 @@ public final class ValidatorRegistry {
     public <A extends Annotation> Validator<A, ?> getValidatorByAnnotation(A a){
          Class<?> validatorClass = validatorMap.get(a.annotationType());
          if(validatorClass == null){
-             throw new ValidatorError("No validator registered for this annotation");
+             throw new ValidatorError("No validator registered for this annotation: " + a.annotationType().getSimpleName());
          }
          try {
              return (Validator<A, ?>)validatorClass.getConstructor().newInstance();
          } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e){
              e.printStackTrace();
-             throw new ValidatorError("Error creating Validator class");
+             throw new ValidatorError("Error creating Validator class: " + validatorClass.getSimpleName());
          }
     }
 
@@ -49,15 +49,16 @@ public final class ValidatorRegistry {
         return (Set<Class<? extends Annotation>>)(Set<?>) annotationSet;
     }
 
-    private Map<Class<? extends Annotation>, Class<?>> registerValidators(){
-        Map<Class<? extends Annotation>, Class<?>> validatorMap = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    private Map<Class<? extends Annotation>, Class<? extends Validator<?, ?>>> registerValidators(){
+        Map<Class<? extends Annotation>, Class<? extends Validator<?, ?>>> validatorMap = new HashMap<>();
         validatorAnnotations.forEach(a -> {
             ValidatedBy validatedBy = a.getAnnotation(ValidatedBy.class);
             Class<?> validatorClass = validatedBy.value();
             if(!Validator.class.isAssignableFrom(validatorClass)){
-                throw new ValidatorError("Validator class does not implement Validator interface");
+                throw new ValidatorError("Validator class does not implement Validator interface: " + validatorClass.getSimpleName());
             }
-            validatorMap.put(a, validatorClass);
+            validatorMap.put(a, (Class<? extends Validator<?, ?>>) validatorClass);
         });
         return validatorMap;
     }

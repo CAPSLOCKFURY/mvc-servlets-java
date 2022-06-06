@@ -1,7 +1,6 @@
 package validators.base;
 
 import exceptions.validators.ValidatorError;
-import utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -12,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static utils.StringUtils.getGetterMethod;
 
 public class AnnotationValidator {
 
@@ -39,6 +40,7 @@ public class AnnotationValidator {
         return validationResult;
     }
 
+    @SuppressWarnings("unchecked")
     private void validateClassAnnotations(List<Annotation> annotations, ValidationResult validationResult){
         for (Annotation a : annotations) {
             Validator validator = validatorRegistry.getValidatorByAnnotation(a);
@@ -66,7 +68,7 @@ public class AnnotationValidator {
                     }
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();
-                    throw new ValidatorError("Could not get getter method for field");
+                    throw new ValidatorError("Could not get getter method for field: " + field.getName());
                 }
             });
         }
@@ -78,7 +80,7 @@ public class AnnotationValidator {
             return (String)method.invoke(a);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
-            throw new ValidatorError("Could not get localized error from annotation");
+            throw new ValidatorError("Could not get localized error from annotation: " + a.annotationType().getSimpleName());
         }
     }
 
@@ -88,7 +90,7 @@ public class AnnotationValidator {
             return (boolean) method.invoke(a);
         } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
-            throw new ValidatorError("Could not get ignore on null from annotation");
+            throw new ValidatorError("Could not get ignore on null from annotation: " + a.annotationType().getSimpleName());
         } catch (NoSuchMethodException e){
             return false;
         }
@@ -107,10 +109,6 @@ public class AnnotationValidator {
                         f -> Arrays.stream(f.getAnnotations())
                                 .filter(validatorRegistry::isAnnotationRegistered).collect(Collectors.toList()))
                 );
-    }
-
-    private String getGetterMethod(String fieldName){
-        return "get".concat(StringUtils.capitalize(fieldName));
     }
 
 }

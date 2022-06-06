@@ -6,72 +6,51 @@ import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
 import forms.base.annotations.HtmlSelect;
 import forms.base.annotations.HtmlTextArea;
-import models.base.SqlColumn;
-import models.base.SqlType;
+import validators.annotations.*;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
+@FirstDateBeforeSecond(
+        firstDateField = "checkInDate",
+        secondDateField = "checkOutDate",
+        localizedError = "errors.CheckOutDateBeforeCheckIn"
+)
+@FieldsNotEquals(
+        firstField = "checkInDate",
+        secondField = "checkOutDate",
+        localizedError = "errors.CheckOutDateIsCheckInDate"
+)
 public class RoomRequestForm extends Form {
 
-    @SqlColumn(columnName = "user_id", type = SqlType.LONG)
     private Long userId;
 
-    @SqlColumn(columnName = "capacity", type = SqlType.INT)
     @HtmlInput(id = "capacity", name = "capacity", type = InputType.NUMBER, literal = "min =\"1\" class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "capacity", localizedText = "capacity"))
+    @NotNull(localizedError = "errors.capacityNumberFormat")
+    @Min(min = 0, localizedError = "errors.capacityNumberFormat")
     private Integer capacity;
 
-    @SqlColumn(columnName = "room_class", type = SqlType.INT)
     @HtmlSelect(id = "roomClass", name = "roomClass",
             dynamicOptionsAttribute = "roomClassesMap", literal = "class=\"form-select my-2\"",
             label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass")
     )
     private Integer roomClass;
 
-    @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
     @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
+    @NotNull(localizedError = "errors.checkInDateIAG")
+    @MinDateToday(localizedError = "errors.CheckInDateInPast")
     private java.sql.Date checkInDate;
 
-    @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
     @HtmlInput(id = "checkOutDate", name = "checkOutDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
+    @NotNull(localizedError = "errors.checkOutDateIAG")
+    @MinDateToday(localizedError = "errors.CheckOutDateInPast")
     private java.sql.Date checkOutDate;
 
-    @SqlColumn(columnName = "comment", type = SqlType.STRING)
     @HtmlTextArea(id = "comment", rows = "3", cols = "35", name = "comment", literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
     private String comment;
-
-    @Override
-    public boolean validate() {
-        LocalDate today = new Date(System.currentTimeMillis()).toLocalDate();
-        if(checkInDate != null){
-            LocalDate checkInLocalDate = checkInDate.toLocalDate();
-            if (checkInLocalDate.isBefore(today)) {
-                addLocalizedError("errors.CheckInDateInPast");
-            }
-        }
-        if(checkOutDate != null){
-            LocalDate checkOutLocalDate = checkOutDate.toLocalDate();
-            if(checkOutLocalDate.isBefore(today)){
-                addLocalizedError("errors.CheckOutDateInPast");
-            }
-        }
-        if(checkOutDate != null && checkInDate != null) {
-            if (checkOutDate.before(checkInDate)) {
-                addLocalizedError("errors.CheckOutDateBeforeCheckIn");
-            }
-            if(checkOutDate.compareTo(checkInDate) == 0){
-                addLocalizedError("errors.CheckOutDateIsCheckInDate");
-            }
-        }
-        if(capacity != null && capacity < 1){
-            addLocalizedError("errors.capacityNumberFormat");
-        }
-        return errors.size() == 0;
-    }
 
     public Long getUserId() {
         return userId;
@@ -118,7 +97,6 @@ public class RoomRequestForm extends Form {
         try {
             this.checkInDate = Date.valueOf(checkInDate);
         } catch (IllegalArgumentException iag){
-            addLocalizedError("errors.checkInDateIAG");
             this.checkInDate = null;
         }
     }
@@ -131,7 +109,7 @@ public class RoomRequestForm extends Form {
         try {
             this.checkOutDate = Date.valueOf(checkOutDate);
         } catch (IllegalArgumentException iag){
-            addLocalizedError("errors.checkOutDateIAG");
+            this.checkOutDate = null;
         }
     }
 

@@ -1,86 +1,46 @@
 package forms;
 
-import constants.RegexConstants;
 import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
-import models.base.SqlColumn;
-import models.base.SqlType;
+import validators.annotations.FieldsEquals;
+import validators.annotations.NotEmpty;
+import validators.annotations.Regex;
 
-import java.util.regex.Pattern;
-
+@FieldsEquals(
+        field1 = "password",
+        field2 = "repeatPassword",
+        localizedError = "errors.repeatPassword"
+)
 public class RegisterForm extends Form {
-    private static final Pattern loginPattern = RegexConstants.LOGIN_PATTERN;
-    private static final Pattern emailPattern = RegexConstants.EMAIL_PATTERN;
-    private static final Pattern passwordPattern = RegexConstants.PASSWORD_PATTERN;
-    private static final Pattern namePattern = RegexConstants.NAME_PATTERN;
 
     @HtmlInput(id = "login", type = InputType.TEXT, localizedPlaceholder = "login", literal = "class=\"form-control my-2\"")
-    @SqlColumn(columnName = "login", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullLogin")
+    @Regex(pattern = "[a-zA-Z_0-9-]+", localizedError = "errors.loginRegex")
     private String login;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "email", literal = "class=\"form-control my-2\"")
-    @SqlColumn(columnName = "email", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullEmail")
+    @Regex(pattern = "[a-z0-9.]+@[a-z]+(\\.com|\\.net|\\.ukr|\\.ru|\\.ua)", localizedError = "errors.emailRegex")
     private String email;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "password", literal = "class=\"form-control my-2\"")
-    @SqlColumn(columnName = "password", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullPassword")
+    @Regex(pattern = "[a-zA-Z_0-9-]+", localizedError = "errors.passwordRegex")
     private String password;
 
     @HtmlInput(type = InputType.PASSWORD, localizedPlaceholder = "repeatPassword", literal = "class=\"form-control my-2\"")
     private String repeatPassword;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "firstName", literal = "class=\"form-control my-2\"")
-    @SqlColumn(columnName = "first_name", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullFirstName")
+    @Regex(pattern = "[а-яА-Я|a-zA-Z]+", localizedError = "errors.firstNameRegex")
     private String firstName;
 
     @HtmlInput(type = InputType.TEXT, localizedPlaceholder = "lastName", literal = "class=\"form-control my-2\"")
-    @SqlColumn(columnName = "last_name", type = SqlType.STRING)
+    @NotEmpty(localizedError = "errors.nullLastName")
+    @Regex(pattern = "[а-яА-Я|a-zA-Z]+", localizedError = "errors.lastNameRegex")
     private String lastName;
-
-
-    @Override
-    public boolean validate() {
-        if(!password.equals("")) {
-            if (!passwordPattern.matcher(password).matches()) {
-                addLocalizedError("errors.passwordRegex");
-            }
-            if (!password.equals(repeatPassword)) {
-                addLocalizedError("errors.repeatPassword");
-            }
-        } else {
-            addLocalizedError("errors.nullPassword");
-        }
-        if(!login.equals("")) {
-            if (!loginPattern.matcher(login).matches()) {
-                addLocalizedError("errors.loginRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullLogin");
-        }
-        if(!email.equals("")) {
-            if (!emailPattern.matcher(email).matches()) {
-                addLocalizedError("errors.emailRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullEmail");
-        }
-        if(!firstName.equals("")) {
-            if (!namePattern.matcher(firstName).matches()) {
-                addLocalizedError("errors.firstNameRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullFirstName");
-        }
-        if(!lastName.equals("")) {
-            if (!namePattern.matcher(lastName).matches()) {
-                addLocalizedError("errors.lastNameRegex");
-            }
-        } else {
-            addLocalizedError("errors.nullLastName");
-        }
-        return errors.size() == 0;
-    }
 
     public String getLogin() {
         return login;
@@ -124,5 +84,9 @@ public class RegisterForm extends Form {
 
     public void setRepeatPassword(String repeatPassword) {
         this.repeatPassword = repeatPassword;
+    }
+
+    public String getRepeatPassword() {
+        return repeatPassword;
     }
 }

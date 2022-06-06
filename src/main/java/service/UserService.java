@@ -9,8 +9,6 @@ import models.User;
 
 public class UserService {
 
-    //private final UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao();
-
     private UserService(){
 
     }
