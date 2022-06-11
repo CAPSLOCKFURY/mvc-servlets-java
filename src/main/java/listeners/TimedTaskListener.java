@@ -45,7 +45,6 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
         }).collect(Collectors.toList());
     }
 
-
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         scheduler.shutdownNow();
