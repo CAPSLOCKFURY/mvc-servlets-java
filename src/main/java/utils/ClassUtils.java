@@ -22,10 +22,17 @@ public final class ClassUtils {
         List<File> files = getFilesInPackage(packageName);
         List<Class<?>> classes = files.stream()
                 .filter(File::isFile)
+                .filter(f -> f.getName().endsWith(".class"))
                 .map(f -> f.getName().replaceAll(".class", ""))
                 .map(f -> {
                     try {
-                        return Class.forName(packageName.concat('.' + f));
+                        String className;
+                        if(packageName.equals("")) {
+                            className = packageName.concat(f);
+                        } else {
+                            className = packageName.concat('.' + f);
+                        }
+                        return Class.forName(className);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                         return null;
@@ -34,7 +41,15 @@ public final class ClassUtils {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         files.stream().filter(File::isDirectory)
-                .forEach(f -> classes.addAll(getClassesInPackage(packageName.concat("." + f.getName()))));
+                .forEach(f -> {
+                    String dirName;
+                    if(packageName.equals("")){
+                        dirName = f.getName();
+                    } else {
+                        dirName = packageName.concat('.' + f.getName());
+                    }
+                    classes.addAll(getClassesInPackage(dirName));
+                });
         return classes;
     }
 
@@ -61,13 +76,6 @@ public final class ClassUtils {
         }
         return new ArrayList<>(Arrays.asList(files));
     }
-
-//    public static List<Class<?>> getControllerClassesInPackage(String packageName){
-//        List<Class<?>> classes = getClassesInPackage(packageName);
-//        return classes.stream()
-//                .filter(c -> c.isAnnotationPresent(WebController.class))
-//                .collect(Collectors.toList());
-//    }
 
     private ClassUtils(){
         throw new UnsupportedOperationException();
