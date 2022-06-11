@@ -3,10 +3,13 @@ package tasks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.BillingService;
+import tasks.base.Scheduled;
+import tasks.base.ScheduledTask;
 
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
-public class DeleteOldBillingsTask extends TimerTask {
+@Scheduled(period = 24,timeUnit = TimeUnit.HOURS)
+public class DeleteOldBillingsTask implements ScheduledTask {
 
     private static final BillingService billingService = BillingService.getInstance();
 

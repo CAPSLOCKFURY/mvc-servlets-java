@@ -3,10 +3,13 @@ package tasks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.RoomsService;
+import tasks.base.Scheduled;
+import tasks.base.ScheduledTask;
 
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
-public class UpdateRoomStatusTask extends TimerTask {
+@Scheduled(period = 2, timeUnit = TimeUnit.HOURS)
+public class UpdateRoomStatusTask implements ScheduledTask {
 
     private static final RoomsService roomService = RoomsService.getInstance();
 
