@@ -6,6 +6,7 @@ import models.base.SqlType;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PreparedStatementArrayMapper implements PreparedStatementMapper {
@@ -56,6 +57,15 @@ public class PreparedStatementArrayMapper implements PreparedStatementMapper {
             if (o.getClass() == SqlType.DECIMAL.getTypeClass()) {
                 try {
                     stmt.setBigDecimal(stmtCursor.getAndIncrement(), (BigDecimal) o);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new DaoException();
+                }
+            }
+            if(o.getClass() == LocalDate.class){
+                try {
+                    java.sql.Date date = java.sql.Date.valueOf((LocalDate) o);
+                    stmt.setDate(stmtCursor.getAndIncrement(), date);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     throw new DaoException();

@@ -6,11 +6,10 @@ import validators.base.Validator;
 import java.sql.Date;
 import java.time.LocalDate;
 
-public class MinDateTodayValidator implements Validator<MinDateToday, java.sql.Date> {
+public class MinDateTodayValidator implements Validator<MinDateToday, LocalDate> {
     @Override
-    public boolean validate(MinDateToday annotation, Date value) {
-        LocalDate date = value.toLocalDate();
+    public boolean validate(MinDateToday annotation, LocalDate value) {
         LocalDate today = new Date(System.currentTimeMillis()).toLocalDate();
-        return !date.isBefore(today);
+        return !value.isBefore(today);
     }
 }

@@ -4,12 +4,15 @@ import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
+import utils.DateUtils;
 import validators.annotations.FieldsNotEquals;
 import validators.annotations.FirstDateBeforeSecond;
 import validators.annotations.MinDateToday;
 import validators.annotations.NotNull;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 @FieldsNotEquals(
         firstField = "checkInDate",
@@ -27,34 +30,34 @@ public class BookRoomForm extends Form {
         label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
     @NotNull(localizedError = "errors.checkInDateIAG")
     @MinDateToday(localizedError = "errors.CheckInDateInPast")
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @HtmlInput(name = "checkOutDate", type = InputType.DATE, id="checkOutDate", literal = "onchange=\"dateChange()\" class=\"form-control my-1\"",
         label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
     @NotNull(localizedError = "errors.checkOutDateIAG")
     @MinDateToday(localizedError = "errors.CheckOutDateInPast")
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
     public void setCheckInDate(String checkInDate) {
         try {
-            this.checkInDate = Date.valueOf(checkInDate);
-        } catch (IllegalArgumentException iag){
+            this.checkInDate = DateUtils.stringToDate(checkInDate);
+        } catch (NullPointerException iag){
             this.checkInDate = null;
         }
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
     public void setCheckOutDate(String checkOutDate) {
         try {
-            this.checkOutDate = Date.valueOf(checkOutDate);
-        } catch (IllegalArgumentException iag){
+            this.checkOutDate = DateUtils.stringToDate(checkOutDate);
+        } catch (NullPointerException iag){
             this.checkOutDate = null;
         }
     }

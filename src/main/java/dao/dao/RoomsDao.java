@@ -11,6 +11,7 @@ import models.dto.RoomHistoryDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 
 public abstract class RoomsDao extends OrderableAbstractDao {
@@ -25,15 +26,15 @@ public abstract class RoomsDao extends OrderableAbstractDao {
 
     public abstract RoomExtendedInfo getExtendedRoomInfoById(Long id, String locale);
 
-    public abstract OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId);
+    public abstract OverlapCountDTO getDatesOverlapCount(LocalDate checkInDate, LocalDate checkOutDate, Long roomId);
 
     public abstract List<RoomHistoryDTO> getRoomHistory(Long userId, String locale, Pageable pageable);
 
-    public abstract List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable);
+    public abstract List<Room> findSuitableRoomsForDates(String locale, LocalDate checkInDate, LocalDate checkOutDate, Orderable orderable, Pageable pageable);
 
-    public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable);
+    public abstract List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(LocalDate checkInDate, LocalDate checkOutDate, Pageable pageable);
 
-    public abstract boolean removeAssignedRoomsOnOverlappingDates(Long roomId, java.sql.Date checkInDate, java.sql.Date checkOutDate);
+    public abstract boolean removeAssignedRoomsOnOverlappingDates(Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
 
     /**
      * Sets archived = true, for all old room registries
@@ -50,7 +51,7 @@ public abstract class RoomsDao extends OrderableAbstractDao {
      * @param endDate Approximate date of room closing, money will be refunded for all people,
      * which ordered on the overlapping dates of today - endDate
      */
-    public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate);
+    public abstract boolean setRoomUnavailableAndRefundMoney(Long roomId, LocalDate endDate);
 
     public RoomsDao(Connection connection) {
         super(connection);

@@ -3,7 +3,7 @@ package models;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class RoomRegistry {
 
@@ -17,22 +17,22 @@ public class RoomRegistry {
     private Long roomId;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     @SqlColumn(columnName = "archived", type = SqlType.BOOLEAN)
     private Boolean archived = false;
 
-    public RoomRegistry(Long userId, Long roomId, Date checkInDate, Date checkOutDate) {
+    public RoomRegistry(Long userId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
         this.userId = userId;
         this.roomId = roomId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
     }
 
-    public RoomRegistry(Long id, Long userId, Long roomId, Date checkInDate, Date checkOutDate, Boolean archived) {
+    public RoomRegistry(Long id, Long userId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate, Boolean archived) {
         this.id = id;
         this.userId = userId;
         this.roomId = roomId;
@@ -60,19 +60,19 @@ public class RoomRegistry {
         this.roomId = roomId;
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 

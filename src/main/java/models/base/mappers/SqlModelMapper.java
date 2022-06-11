@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static utils.StringUtils.capitalize;
@@ -32,7 +33,7 @@ public class SqlModelMapper<T> {
                 .forEach(f -> {
                     try {
                         SqlColumn sqlColumn = f.getAnnotation(SqlColumn.class);
-                        Method setterMethod = model.getClass().getMethod("set".concat(capitalize(f.getName())), sqlColumn.type().getTypeClass());
+                        Method setterMethod = model.getClass().getMethod("set".concat(capitalize(f.getName())), f.getType());
                         if(sqlColumn.type().getTypeClass() == Integer.class){
                             setterMethod.invoke(model, getIntFromRs(rs, sqlColumn.columnName()));
                             return;
@@ -50,7 +51,17 @@ public class SqlModelMapper<T> {
                             return;
                         }
                         if(sqlColumn.type().getTypeClass() == java.sql.Date.class){
-                            setterMethod.invoke(model, getDateFromRs(rs, sqlColumn.columnName()));
+                            java.sql.Date date = getDateFromRs(rs, sqlColumn.columnName());
+                            if(f.getType() == LocalDate.class){
+                                try {
+                                    setterMethod.invoke(model, date.toLocalDate());
+                                } catch (NullPointerException npe){
+                                    setterMethod.invoke(model, null);
+                                }
+                            }
+                            if(f.getType() == java.sql.Date.class){
+                                setterMethod.invoke(model, date);
+                            }
                             return;
                         }
                         if(sqlColumn.type().getTypeClass() == Boolean.class){

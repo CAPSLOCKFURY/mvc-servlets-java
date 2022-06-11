@@ -14,6 +14,7 @@ import models.base.pagination.Pageable;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class AdminRoomsService {
         return AdminRoomsService.SingletonHolder.instance;
     }
 
-    public List<Room> findSuitableRoomsForRequest(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable){
+    public List<Room> findSuitableRoomsForRequest(String locale, LocalDate checkInDate, LocalDate checkOutDate, Orderable orderable, Pageable pageable){
         try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();) {
             return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, orderable, pageable);
         }

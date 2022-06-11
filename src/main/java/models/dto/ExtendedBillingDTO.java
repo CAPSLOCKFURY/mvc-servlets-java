@@ -5,6 +5,7 @@ import models.base.SqlType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class ExtendedBillingDTO {
 
@@ -24,7 +25,7 @@ public class ExtendedBillingDTO {
     private Boolean paid;
 
     @SqlColumn(columnName = "pay_end_date", type = SqlType.DATE)
-    private java.sql.Date payEndDate;
+    private LocalDate payEndDate;
 
     public Long getId() {
         return id;
@@ -58,11 +59,11 @@ public class ExtendedBillingDTO {
         this.price = price;
     }
 
-    public Date getPayEndDate() {
+    public LocalDate getPayEndDate() {
         return payEndDate;
     }
 
-    public void setPayEndDate(Date payEndDate) {
+    public void setPayEndDate(LocalDate payEndDate) {
         this.payEndDate = payEndDate;
     }
 

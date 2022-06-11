@@ -5,6 +5,7 @@ import models.base.SqlType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class Billing {
 
@@ -18,7 +19,7 @@ public class Billing {
     private BigDecimal price;
 
     @SqlColumn(columnName = "pay_end_date", type = SqlType.DATE)
-    private java.sql.Date payEndDate;
+    private LocalDate payEndDate;
 
     @SqlColumn(columnName = "paid", type = SqlType.BOOLEAN)
     private Boolean paid = false;
@@ -47,9 +48,9 @@ public class Billing {
 
     public void setPrice(BigDecimal price) {this.price = price;}
 
-    public Date getPayEndDate() {return payEndDate;}
+    public LocalDate getPayEndDate() {return payEndDate;}
 
-    public void setPayEndDate(Date payEndDate) {this.payEndDate = payEndDate;}
+    public void setPayEndDate(LocalDate payEndDate) {this.payEndDate = payEndDate;}
 
     public Boolean getPaid() {return paid;}
 

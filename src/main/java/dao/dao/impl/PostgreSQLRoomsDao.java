@@ -12,6 +12,7 @@ import models.dto.*;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class PostgreSQLRoomsDao extends RoomsDao {
@@ -47,7 +48,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public OverlapCountDTO getDatesOverlapCount(java.sql.Date checkInDate, java.sql.Date checkOutDate, Long roomId) {
+    public OverlapCountDTO getDatesOverlapCount(LocalDate checkInDate, LocalDate checkOutDate, Long roomId) {
         return getOneByParams(SqlQueries.Room.FIND_OVERLAPPING_DATES_COUNT, new Object[]{roomId, checkInDate, checkOutDate}, OverlapCountDTO.class);
     }
 
@@ -57,17 +58,17 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public List<Room> findSuitableRoomsForDates(String locale, java.sql.Date checkInDate, java.sql.Date checkOutDate, Orderable orderable, Pageable pageable) {
+    public List<Room> findSuitableRoomsForDates(String locale, LocalDate checkInDate, LocalDate checkOutDate, Orderable orderable, Pageable pageable) {
         return getAllByParams(SqlQueries.Room.FIND_SUITABLE_ROOM_FOR_REQUEST, new Object[]{locale, checkInDate, checkOutDate, checkInDate, checkOutDate}, Room.class, orderable, pageable);
     }
 
     @Override
-    public boolean removeAssignedRoomsOnOverlappingDates(Long roomId, Date checkInDate, Date checkOutDate) {
+    public boolean removeAssignedRoomsOnOverlappingDates(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
         return updateEntity(SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, checkInDate, checkOutDate});
     }
 
     @Override
-    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(java.sql.Date checkInDate, java.sql.Date checkOutDate, Pageable pageable) {
+    public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(LocalDate checkInDate, LocalDate checkOutDate, Pageable pageable) {
         String sql = SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
         if(checkInDate != null || checkOutDate != null){
             sql = sql.concat(" where ");
@@ -96,7 +97,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
     }
 
     @Override
-    public boolean setRoomUnavailableAndRefundMoney(Long roomId, java.sql.Date endDate) {
+    public boolean setRoomUnavailableAndRefundMoney(Long roomId, LocalDate endDate) {
         try{
             connection.setAutoCommit(false);
             updateEntity(SqlQueries.Room.SET_ROOM_UNAVAILABLE, new Object[]{roomId});

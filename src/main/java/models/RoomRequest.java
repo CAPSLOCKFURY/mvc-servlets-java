@@ -5,6 +5,7 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class RoomRequest {
 
@@ -21,10 +22,10 @@ public class RoomRequest {
     private String roomClass;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     @SqlColumn(columnName = "comment", type = SqlType.STRING)
     private String comment;
@@ -77,19 +78,19 @@ public class RoomRequest {
         this.roomClass = roomClass;
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 

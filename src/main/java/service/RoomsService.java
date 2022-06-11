@@ -77,7 +77,7 @@ public class RoomsService {
                 form.addLocalizedError("errors.roomIsUnavailable");
                 return false;
             }
-            long differenceInDays = Duration.between(form.getCheckInDate().toLocalDate().atStartOfDay(), form.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
+            long differenceInDays = Duration.between(form.getCheckInDate().atStartOfDay(), form.getCheckOutDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             if(user.getBalance().compareTo(room.getPrice().multiply(decimalDifferenceInDays)) < 0){
                 form.addLocalizedError("errors.NotEnoughMoney");

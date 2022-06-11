@@ -6,9 +6,11 @@ import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
 import forms.base.annotations.HtmlSelect;
 import forms.base.annotations.HtmlTextArea;
+import utils.DateUtils;
 import validators.annotations.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 @FirstDateBeforeSecond(
         firstDateField = "checkInDate",
@@ -40,13 +42,13 @@ public class RoomRequestForm extends Form {
             label = @HtmlLabel(forElement = "checkInDate", localizedText = "checkInDate"))
     @NotNull(localizedError = "errors.checkInDateIAG")
     @MinDateToday(localizedError = "errors.CheckInDateInPast")
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @HtmlInput(id = "checkOutDate", name = "checkOutDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "checkOutDate", localizedText = "checkOutDate"))
     @NotNull(localizedError = "errors.checkOutDateIAG")
     @MinDateToday(localizedError = "errors.CheckOutDateInPast")
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     @HtmlTextArea(id = "comment", rows = "3", cols = "35", name = "comment", literal = "class=\"form-control my-2\"",
             label = @HtmlLabel(forElement = "comment", localizedText = "comment"))
@@ -89,26 +91,26 @@ public class RoomRequestForm extends Form {
         }
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
     public void setCheckInDate(String checkInDate) {
         try {
-            this.checkInDate = Date.valueOf(checkInDate);
-        } catch (IllegalArgumentException iag){
+            this.checkInDate = DateUtils.stringToDate(checkInDate);
+        } catch (NullPointerException iag){
             this.checkInDate = null;
         }
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
     public void setCheckOutDate(String checkOutDate) {
         try {
-            this.checkOutDate = Date.valueOf(checkOutDate);
-        } catch (IllegalArgumentException iag){
+            this.checkOutDate = DateUtils.stringToDate(checkOutDate);
+        } catch (NullPointerException iag){
             this.checkOutDate = null;
         }
     }

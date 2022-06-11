@@ -17,14 +17,12 @@ public class FirstDateBeforeSecondValidator implements Validator<FirstDateBefore
         try {
             Method firstDateGetter = cls.getClass().getDeclaredMethod(getGetterMethod(annotation.firstDateField()));
             Method secondDateGetter = cls.getClass().getDeclaredMethod(getGetterMethod(annotation.secondDateField()));
-            java.sql.Date firstDate = (java.sql.Date)firstDateGetter.invoke(cls);
-            java.sql.Date secondDate = (java.sql.Date)secondDateGetter.invoke(cls);
+            LocalDate firstDate = (LocalDate)firstDateGetter.invoke(cls);
+            LocalDate secondDate = (LocalDate)secondDateGetter.invoke(cls);
             if(firstDate == null || secondDate == null){
                 return false;
             }
-            LocalDate firstDateLocal = firstDate.toLocalDate();
-            LocalDate secondDateLocal = secondDate.toLocalDate();
-            return firstDateLocal.isBefore(secondDateLocal);
+            return firstDate.isBefore(secondDate);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
             throw new ValidatorError("error in FirstDateBeforeSecondValidator for class: " + cls.getClass().getSimpleName());

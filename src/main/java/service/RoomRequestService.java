@@ -79,7 +79,7 @@ public class RoomRequestService {
                 return false;
             }
             Room room = roomDao.getRoomById(roomRequest.getRoomId(), "en");
-            long differenceInDays = Duration.between(roomRequest.getCheckInDate().toLocalDate().atStartOfDay(), roomRequest.getCheckOutDate().toLocalDate().atStartOfDay()).toDays();
+            long differenceInDays = Duration.between(roomRequest.getCheckInDate().atStartOfDay(), roomRequest.getCheckOutDate().atStartOfDay()).toDays();
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
 

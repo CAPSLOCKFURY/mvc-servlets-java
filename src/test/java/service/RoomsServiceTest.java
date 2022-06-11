@@ -63,9 +63,9 @@ public class RoomsServiceTest {
         assertEquals(1, roomExtendedInfo.getId());
         assertEquals(1, roomExtendedInfo.getDates().size());
         LocalDateTime today = new java.sql.Date(System.currentTimeMillis()).toLocalDate().atStartOfDay();
-        assertEquals(today, roomExtendedInfo.getDates().get(0).getCheckInDate().toLocalDate().atStartOfDay());
+        assertEquals(today, roomExtendedInfo.getDates().get(0).getCheckInDate().atStartOfDay());
         LocalDateTime todayPlus7 = today.plusDays(7);
-        assertEquals(todayPlus7, roomExtendedInfo.getDates().get(0).getCheckOutDate().toLocalDate().atStartOfDay());
+        assertEquals(todayPlus7, roomExtendedInfo.getDates().get(0).getCheckOutDate().atStartOfDay());
     }
 
     @Test

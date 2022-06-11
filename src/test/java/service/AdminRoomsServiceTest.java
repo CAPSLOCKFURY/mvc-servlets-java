@@ -49,9 +49,9 @@ public class AdminRoomsServiceTest {
 
         Orderable orderable = new Orderable(RoomOrdering.ID.getColName(), OrderDirection.ASC);
 
-        List<Room> rooms = service.findSuitableRoomsForRequest("en", Date.valueOf(today.format(dateFormat)), Date.valueOf(todayPlus7.format(dateFormat)), orderable, pageable);
+        List<Room> rooms = service.findSuitableRoomsForRequest("en", today.toLocalDate(), todayPlus7.toLocalDate(), orderable, pageable);
         assertEquals(9, rooms.size());
-        List<Room> rooms2 = service.findSuitableRoomsForRequest("en", Date.valueOf(today.plusDays(14).format(dateFormat)), Date.valueOf(todayPlus7.plusDays(36).format(dateFormat)), orderable, pageable);
+        List<Room> rooms2 = service.findSuitableRoomsForRequest("en", today.plusDays(14).toLocalDate(), todayPlus7.plusDays(36).toLocalDate(), orderable, pageable);
         assertEquals(13, rooms2.size());
     }
 

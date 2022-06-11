@@ -4,6 +4,7 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class RoomRegistryPdfReportDto {
 
@@ -17,15 +18,15 @@ public class RoomRegistryPdfReportDto {
     private String lastName;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     @SqlColumn(columnName = "room_id", type = SqlType.LONG)
     private Long roomId;
 
-    public RoomRegistryPdfReportDto(Long userId, String firstName, String lastName, Date checkInDate, Date checkOutDate, Long roomId) {
+    public RoomRegistryPdfReportDto(Long userId, String firstName, String lastName, LocalDate checkInDate, LocalDate checkOutDate, Long roomId) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,13 +50,13 @@ public class RoomRegistryPdfReportDto {
 
     public void setLastName(String lastName) {this.lastName = lastName;}
 
-    public Date getCheckInDate() {return checkInDate;}
+    public LocalDate getCheckInDate() {return checkInDate;}
 
-    public void setCheckInDate(Date checkInDate) {this.checkInDate = checkInDate;}
+    public void setCheckInDate(LocalDate checkInDate) {this.checkInDate = checkInDate;}
 
-    public Date getCheckOutDate() {return checkOutDate;}
+    public LocalDate getCheckOutDate() {return checkOutDate;}
 
-    public void setCheckOutDate(Date checkOutDate) {this.checkOutDate = checkOutDate;}
+    public void setCheckOutDate(LocalDate checkOutDate) {this.checkOutDate = checkOutDate;}
 
     public Long getRoomId() {return roomId;}
 

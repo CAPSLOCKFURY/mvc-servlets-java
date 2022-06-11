@@ -5,6 +5,7 @@ import models.base.SqlType;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class RoomHistoryDTO {
 
@@ -30,10 +31,10 @@ public class RoomHistoryDTO {
     private String className;
 
     @SqlColumn(columnName = "check_in_date", type = SqlType.DATE)
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @SqlColumn(columnName = "check_out_date", type = SqlType.DATE)
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     public Long getId() {
         return id;
@@ -91,19 +92,19 @@ public class RoomHistoryDTO {
         this.className = className;
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 }

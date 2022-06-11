@@ -4,8 +4,11 @@ import forms.base.Form;
 import forms.base.InputType;
 import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
+import utils.DateUtils;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class ReportConfigurationForm extends Form {
 
@@ -17,10 +20,10 @@ public class ReportConfigurationForm extends Form {
     private Integer entitiesPerPage;
 
     @HtmlInput(id="startDate", name = "checkInDate", type = InputType.DATE, literal = "class=\"form-control\"", label = @HtmlLabel(forElement = "startDate", localizedText = "startDate"))
-    private java.sql.Date checkInDate;
+    private LocalDate checkInDate;
 
     @HtmlInput(id="endDate", name = "checkOutDate", type = InputType.DATE, literal = "class=\"form-control\"", label = @HtmlLabel(forElement = "endDate", localizedText = "endDate"))
-    private java.sql.Date checkOutDate;
+    private LocalDate checkOutDate;
 
     public Integer getPage() {
         return page;
@@ -46,26 +49,26 @@ public class ReportConfigurationForm extends Form {
         }
     }
 
-    public Date getCheckInDate() {
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
 
     public void setCheckInDate(String checkInDate) {
         try {
-            this.checkInDate = java.sql.Date.valueOf(checkInDate);
-        } catch (IllegalArgumentException iag){
+            this.checkInDate = DateUtils.stringToDate(checkInDate);
+        } catch (NullPointerException iag){
             this.checkInDate = null;
         }
     }
 
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
 
     public void setCheckOutDate(String checkOutDate) {
         try {
-            this.checkOutDate = java.sql.Date.valueOf(checkOutDate);
-        } catch (IllegalArgumentException iag){
+            this.checkOutDate = DateUtils.stringToDate(checkOutDate);
+        } catch (NullPointerException iag){
             this.checkOutDate = null;
         }
     }

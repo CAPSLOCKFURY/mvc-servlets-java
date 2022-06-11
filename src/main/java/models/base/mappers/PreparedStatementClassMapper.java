@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +82,13 @@ public class PreparedStatementClassMapper<T> implements PreparedStatementMapper 
                     }
                     if(sqlColumn.type().getTypeClass() == java.sql.Date.class){
                         try{
-                            java.sql.Date value = (java.sql.Date) getGetterMethod(f.getName()).invoke(form);
+                            java.sql.Date value = null;
+                            if(f.getType() == LocalDate.class){
+                                value = java.sql.Date.valueOf((LocalDate) getGetterMethod(f.getName()).invoke(form));
+                            }
+                            if(f.getType() == java.sql.Date.class){
+                                value = (java.sql.Date) getGetterMethod(f.getName()).invoke(form);
+                            }
                             stmt.setDate(stmtCursor.getAndIncrement(), value);
                         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SQLException e){
                             e.printStackTrace();
