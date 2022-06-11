@@ -42,6 +42,7 @@ public class BillingService {
             billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
             UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(billingDao.getConnection());
             RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(billingDao.getConnection());
+            billingDao.transaction.open();
 
             ExtendedBillingDTO extendedBilling = billingDao.getExtendedBillingById(billingId);
             User user = userDao.getUserById(userId);
@@ -55,7 +56,6 @@ public class BillingService {
                 return false;
             }
 
-            billingDao.transaction.open();
 
             Billing billing = billingDao.getBillingById(billingId);
             billing.setPaid(true);

@@ -68,6 +68,7 @@ public class RoomRequestService {
             RoomsDao roomDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao(roomRequestDao.getConnection());
             RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomRequestDao.getConnection());
             BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao(roomRequestDao.getConnection());
+            roomRequestDao.transaction.open();
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");
@@ -82,7 +83,6 @@ public class RoomRequestService {
             BigDecimal decimalDifferenceInDays = new BigDecimal(differenceInDays);
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
 
-            roomRequestDao.transaction.open();
             roomRequest.setStatus("awaiting payment");
             roomRequestDao.updateRoomRequest(roomRequest);
             RoomRegistry roomRegistry = new RoomRegistry(userId, roomRequest.getRoomId(), roomRequest.getCheckInDate(), roomRequest.getCheckOutDate());
@@ -92,7 +92,6 @@ public class RoomRequestService {
             billingDao.createBilling(billing);
 
             roomRequestDao.transaction.commit();
-
             return true;
         } catch (DaoException daoException){
             roomRequestDao.transaction.rollback();

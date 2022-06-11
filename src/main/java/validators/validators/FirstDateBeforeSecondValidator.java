@@ -16,7 +16,7 @@ public class FirstDateBeforeSecondValidator implements Validator<FirstDateBefore
     public boolean validate(FirstDateBeforeSecond annotation, Object cls) {
         try {
             Method firstDateGetter = cls.getClass().getDeclaredMethod(getGetterMethod(annotation.firstDateField()));
-            Method secondDateGetter = cls.getClass().getDeclaredMethod(getGetterMethod(annotation.firstDateField()));
+            Method secondDateGetter = cls.getClass().getDeclaredMethod(getGetterMethod(annotation.secondDateField()));
             java.sql.Date firstDate = (java.sql.Date)firstDateGetter.invoke(cls);
             java.sql.Date secondDate = (java.sql.Date)secondDateGetter.invoke(cls);
             if(firstDate == null || secondDate == null){

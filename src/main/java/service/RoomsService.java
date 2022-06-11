@@ -62,9 +62,10 @@ public class RoomsService {
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
         RoomsDao roomsDao = null;
         try {
-            roomsDao =  DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+            roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
             UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());
             RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomsDao.getConnection());
+            roomsDao.transaction.open();
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
                 form.addLocalizedError("errors.RoomDatesOverlap");
@@ -83,9 +84,6 @@ public class RoomsService {
                 return false;
             }
             BigDecimal roomPrice = room.getPrice().multiply(decimalDifferenceInDays);
-
-            roomsDao.transaction.open();
-
             user.setBalance(user.getBalance().subtract(roomPrice));
             userDao.updateUser(user);
             RoomRegistry roomRegistry = new RoomRegistry(userId, roomId, form.getCheckInDate(), form.getCheckOutDate());

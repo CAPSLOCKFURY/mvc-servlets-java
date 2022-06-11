@@ -36,7 +36,7 @@ public class AdminRoomsServiceTest {
 
     @Test
     void assignRoomToRequestTest(){
-        boolean result = service.assignRoomToRequest(12L, 3L);
+        boolean result = service.assignRoomToRequest(12L, 1L);
         assertTrue(result);
     }
 

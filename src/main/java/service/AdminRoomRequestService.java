@@ -3,6 +3,7 @@ package service;
 import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
+import models.RoomRequest;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
@@ -39,7 +40,10 @@ public class AdminRoomRequestService {
 
     public boolean closeRoomRequest(Long requestId, String comment){
         try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();) {
-            return roomRequestDao.adminCloseRequest(requestId, comment);
+            RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
+            roomRequest.setStatus("closed");
+            roomRequest.setManagerComment(comment);
+            return roomRequestDao.updateRoomRequest(roomRequest);
         }
     }
 

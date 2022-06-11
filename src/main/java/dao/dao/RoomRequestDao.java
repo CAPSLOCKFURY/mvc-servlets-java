@@ -23,11 +23,6 @@ public abstract class RoomRequestDao extends OrderableAbstractDao {
 
     public abstract AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale);
 
-    /**
-     * Closes room request and inserts manager comment into it
-     */
-    public abstract boolean adminCloseRequest(Long requestId, String comment);
-
     public RoomRequestDao(Connection connection) {
         super(connection);
     }

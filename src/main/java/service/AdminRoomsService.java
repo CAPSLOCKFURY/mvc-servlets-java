@@ -47,6 +47,9 @@ public class AdminRoomsService {
             if (overlapCount.getCount() != 0) {
                 return false;
             }
+            if(!roomRequest.getStatus().equals("awaiting")){
+                return false;
+            }
             roomRequest.setStatus("awaiting confirmation");
             roomRequest.setRoomId(roomId);
             return roomRequestDao.updateRoomRequest(roomRequest);
