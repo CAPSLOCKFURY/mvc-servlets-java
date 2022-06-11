@@ -13,7 +13,6 @@ import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 import web.base.messages.MessageTransport;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class BillingService {
@@ -56,7 +55,6 @@ public class BillingService {
                 return false;
             }
 
-
             Billing billing = billingDao.getBillingById(billingId);
             billing.setPaid(true);
             billingDao.updateBilling(billing);
@@ -76,11 +74,18 @@ public class BillingService {
     }
 
     public int deleteOldBillings(){
-        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
-            return billingDao.deleteOldBillings();
-        } catch (SQLException sqle){
+        BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+        try {
+            billingDao.transaction.open();
+            int result = billingDao.deleteOldBillings();
+            billingDao.transaction.commit();
+            return result;
+        } catch (DaoException sqle){
             sqle.printStackTrace();
+            billingDao.transaction.rollback();
             return -1;
+        } finally {
+            billingDao.close();
         }
     }
 }

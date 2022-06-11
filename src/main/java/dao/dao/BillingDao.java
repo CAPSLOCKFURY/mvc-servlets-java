@@ -6,7 +6,6 @@ import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BillingDao extends OrderableAbstractDao {
@@ -25,7 +24,7 @@ public abstract class BillingDao extends OrderableAbstractDao {
      * Should be used for deleting old billings from the database
      * @return number of affected rows
      */
-    public abstract int deleteOldBillings() throws SQLException;
+    public abstract int deleteOldBillings();
 
     public BillingDao(Connection connection) {
         super(connection);

@@ -7,9 +7,7 @@ import utils.DateUtils;
 import validators.annotations.MinDateToday;
 import validators.annotations.NotNull;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class CloseRoomForm extends Form {
 

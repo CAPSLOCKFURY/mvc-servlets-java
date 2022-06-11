@@ -6,9 +6,7 @@ import forms.base.annotations.HtmlInput;
 import forms.base.annotations.HtmlLabel;
 import utils.DateUtils;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class ReportConfigurationForm extends Form {
 

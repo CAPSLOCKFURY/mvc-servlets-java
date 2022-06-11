@@ -7,7 +7,6 @@ import models.base.pagination.Pageable;
 import models.dto.ExtendedBillingDTO;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class PostgreSQLBillingDao extends BillingDao {
@@ -39,26 +38,11 @@ public class PostgreSQLBillingDao extends BillingDao {
         return getAllByParams(SqlQueries.Billing.FIND_ALL_BILLING_BY_USER_ID, new Object[]{userId}, Billing.class, pageable);
     }
 
-
     @Override
-    public int deleteOldBillings() throws SQLException {
-        try{
-            connection.setAutoCommit(false);
-            updatePlain(SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
-            updatePlain(SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
-            int affectedRows = updatePlain(SqlQueries.Billing.DELETE_OLD_BILLINGS);
-            connection.commit();
-            return affectedRows;
-        } catch (SQLException sqle){
-            sqle.printStackTrace();
-            connection.rollback();
-            return -1;
-        } finally {
-            if(connection != null) {
-                connection.setAutoCommit(true);
-                //connection.close();
-            }
-        }
+    public int deleteOldBillings() {
+        updatePlain(SqlQueries.Billing.DELETE_ROOM_REQUESTS_CONNECTED_TO_OLD_BILLING);
+        updatePlain(SqlQueries.Billing.DELETE_ROOM_REGISTRIES_CONNECTED_TO_OLD_BILLING);
+        return updatePlain(SqlQueries.Billing.DELETE_OLD_BILLINGS);
     }
 
     public PostgreSQLBillingDao(Connection connection) {

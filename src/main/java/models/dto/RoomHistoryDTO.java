@@ -4,7 +4,6 @@ import models.base.SqlColumn;
 import models.base.SqlType;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
 public class RoomHistoryDTO {

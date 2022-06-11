@@ -10,9 +10,7 @@ import validators.annotations.FirstDateBeforeSecond;
 import validators.annotations.MinDateToday;
 import validators.annotations.NotNull;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 @FieldsNotEquals(
         firstField = "checkInDate",

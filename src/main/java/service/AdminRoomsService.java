@@ -68,11 +68,18 @@ public class AdminRoomsService {
     }
 
     public boolean closeRoom(Long id, CloseRoomForm form){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();){
-            return roomsDao.setRoomUnavailableAndRefundMoney(id, form.getEndDate());
+        RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+        try{
+            roomsDao.transaction.open();
+            boolean result = roomsDao.setRoomUnavailableAndRefundMoney(id, form.getEndDate());
+            roomsDao.transaction.commit();
+            return result;
         } catch (DaoException sqle){
             form.addError("Database error");
+            roomsDao.transaction.rollback();
             return false;
+        } finally {
+            roomsDao.transaction.close();
         }
     }
 

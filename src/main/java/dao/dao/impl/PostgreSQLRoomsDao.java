@@ -2,7 +2,6 @@ package dao.dao.impl;
 
 import constants.SqlQueries;
 import dao.dao.RoomsDao;
-import exceptions.db.DaoException;
 import models.Room;
 import models.RoomClass;
 import models.base.ordering.Orderable;
@@ -10,8 +9,6 @@ import models.base.pagination.Pageable;
 import models.dto.*;
 
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -98,35 +95,13 @@ public class PostgreSQLRoomsDao extends RoomsDao {
 
     @Override
     public boolean setRoomUnavailableAndRefundMoney(Long roomId, LocalDate endDate) {
-        try{
-            connection.setAutoCommit(false);
-            updateEntity(SqlQueries.Room.SET_ROOM_UNAVAILABLE, new Object[]{roomId});
-            updateEntity(SqlQueries.Room.REFUND_MONEY_FROM_BILLINGS, new Object[]{endDate, roomId, endDate, roomId});
-            updateEntity(SqlQueries.Room.REFUND_MONEY_FROM_ROOM_REGISTRY, new Object[]{endDate, roomId, endDate, roomId});
-            updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new Object[]{endDate, roomId});
-            updateEntity(SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new Object[]{endDate, roomId});
-            updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new Object[]{endDate, roomId});
-            connection.commit();
-            return true;
-        } catch (SQLException sqle){
-            try {
-                sqle.printStackTrace();
-                connection.rollback();
-            } catch (SQLException sqle1){
-                sqle1.printStackTrace();
-                throw new DaoException();
-            }
-            throw new DaoException();
-        } finally {
-            if(connection != null) {
-                try {
-                    connection.setAutoCommit(true);
-                    //connection.close();
-                } catch (SQLException sqle){
-                    sqle.printStackTrace();
-                }
-            }
-        }
+        updateEntity(SqlQueries.Room.SET_ROOM_UNAVAILABLE, new Object[]{roomId});
+        updateEntity(SqlQueries.Room.REFUND_MONEY_FROM_BILLINGS, new Object[]{endDate, roomId, endDate, roomId});
+        updateEntity(SqlQueries.Room.REFUND_MONEY_FROM_ROOM_REGISTRY, new Object[]{endDate, roomId, endDate, roomId});
+        updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new Object[]{endDate, roomId});
+        updateEntity(SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new Object[]{endDate, roomId});
+        updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new Object[]{endDate, roomId});
+        return true;
     }
 
 

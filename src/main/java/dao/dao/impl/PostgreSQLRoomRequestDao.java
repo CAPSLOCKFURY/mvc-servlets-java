@@ -47,14 +47,6 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
         return getOneByParams(SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Object[]{locale, requestId}, AdminRoomRequestDTO.class);
     }
 
-   public boolean declineAssignedRoom(String comment, Long requestId) {
-        return updateEntityById(SqlQueries.RoomRequest.DECLINE_ASSIGNED_ROOM, new Object[]{comment}, requestId);
-    }
-
-   public boolean adminCloseRequest(Long requestId, String comment) {
-        return updateEntityById(SqlQueries.RoomRequest.ADMIN_CLOSE_REQUEST, new Object[]{comment}, requestId);
-   }
-
     public PostgreSQLRoomRequestDao(Connection connection) {
         super(connection);
     }

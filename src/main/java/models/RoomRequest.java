@@ -4,7 +4,6 @@ import forms.RoomRequestForm;
 import models.base.SqlColumn;
 import models.base.SqlType;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 public class RoomRequest {
