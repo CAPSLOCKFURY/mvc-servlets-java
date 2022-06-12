@@ -12,10 +12,10 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.security.ManagerOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.Form;
+import web.resolvers.annotations.GetParameter;
 
-import java.util.Locale;
 
-import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
@@ -24,20 +24,12 @@ public class AdminRoomController {
     private final AdminRoomsService roomService = AdminRoomsService.getInstance();
 
     @WebMapping(url = "/admin/room/close", method = RequestMethod.POST)
-    public WebResult closeRoom(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult closeRoom(HttpServletRequest request, HttpServletResponse response,
+                               @Form(CloseRoomForm.class) CloseRoomForm form, @GetParameter(required = true, value = "id") Long roomId) {
         Security security = new ManagerOnly();
         if (!security.doSecurity(request, response)) {
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        CloseRoomForm form = new CloseRoomForm();
-        form.mapRequestToForm(request);
-        Long roomId = null;
-        try {
-            roomId = Long.parseLong(request.getParameter("id"));
-        } catch (IllegalArgumentException iag) {
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -51,15 +43,10 @@ public class AdminRoomController {
     }
 
     @WebMapping(url = "/admin/room/open", method = RequestMethod.POST)
-    public WebResult openRoom(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult openRoom(HttpServletRequest request, HttpServletResponse response,
+                              @GetParameter(required = true, value = "roomId") Long roomId) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        Long roomId;
-        try{
-            roomId = Long.parseLong(request.getParameter("roomId"));
-        } catch (IllegalArgumentException iag){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         roomService.openRoom(roomId);

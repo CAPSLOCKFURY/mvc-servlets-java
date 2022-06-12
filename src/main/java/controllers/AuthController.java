@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.User;
 import service.UserService;
-import utils.LocaleUtils;
 import web.base.RequestDirection;
 import web.base.RequestMethod;
 import web.base.WebResult;
@@ -19,10 +18,9 @@ import web.base.annotations.WebMapping;
 import web.base.security.AuthenticatedOnly;
 import web.base.security.NonAuthenticatedOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.Form;
 
-import java.util.Locale;
 
-import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
@@ -42,14 +40,11 @@ public class AuthController {
     }
 
     @WebMapping(url = "/login", method = RequestMethod.POST)
-    public WebResult login(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult login(HttpServletRequest request, HttpServletResponse response, @Form(LoginForm.class) LoginForm form) {
         Security security = new NonAuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        LoginForm form = new LoginForm();
-        form.mapRequestToForm(request);
-        form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -77,10 +72,7 @@ public class AuthController {
     }
 
     @WebMapping(url = "/register", method = RequestMethod.POST)
-    public WebResult register(HttpServletRequest request, HttpServletResponse response) {
-        RegisterForm form = new RegisterForm();
-        form.mapRequestToForm(request);
-        form.setLocale(new Locale(LocaleUtils.getLocaleFromCookies(request.getCookies())));
+    public WebResult register(HttpServletRequest request, HttpServletResponse response, @Form(RegisterForm.class) RegisterForm form) {
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -110,19 +102,17 @@ public class AuthController {
     }
 
     @WebMapping(url = "/profile/change-password", method = RequestMethod.POST)
-    public WebResult changePassword(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult changePassword(HttpServletRequest request, HttpServletResponse response,
+                                    @Form(ChangePasswordForm.class) ChangePasswordForm form, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        ChangePasswordForm form = new ChangePasswordForm();
-        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
-        form.mapRequestToForm(request);
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         }
         HttpSession session = request.getSession();
-        Long userId = ((User) session.getAttribute("user")).getId();
+        Long userId = user.getId();
         boolean isChanged = userService.changeUserPassword(form, userId);
         if(!isChanged){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -133,7 +123,7 @@ public class AuthController {
     }
 
     @WebMapping(url = "/logout", method = RequestMethod.GET)
-    public WebResult logout(HttpServletRequest request, HttpServletResponse response){
+    public WebResult logout(HttpServletRequest request){
         request.getSession().invalidate();
         return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
     }

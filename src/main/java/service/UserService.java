@@ -77,7 +77,7 @@ public class UserService {
                 return false;
             }
             user.setPassword(form.getNewPassword());
-            return userDao.updateUser(user);
+            return userDao.changePassword(form.getNewPassword(), userId);
         }
     }
 }

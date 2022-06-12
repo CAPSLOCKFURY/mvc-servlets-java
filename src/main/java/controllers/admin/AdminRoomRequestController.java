@@ -19,6 +19,7 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.security.ManagerOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 
@@ -32,17 +33,11 @@ public class AdminRoomRequestController {
     private final AdminRoomRequestService roomRequestService = AdminRoomRequestService.getInstance();
 
     @WebMapping(url = "/admin/room-request/assign", method = RequestMethod.POST)
-    public WebResult assignRoomToRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult assignRoomToRequest(HttpServletRequest request, HttpServletResponse response,
+                                         @GetParameter(required = true, value = "roomId") Long roomId,
+                                         @GetParameter(required = true, value = "requestId") Long requestId) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        Long roomId;
-        Long requestId;
-        try {
-            roomId = Long.parseLong(request.getParameter("roomId"));
-            requestId = Long.parseLong(request.getParameter("requestId"));
-        } catch (NumberFormatException nfe){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         boolean assigned = roomsService.assignRoomToRequest(roomId, requestId);
@@ -70,15 +65,10 @@ public class AdminRoomRequestController {
     }
 
     @WebMapping(url = "/admin/room-request", method = RequestMethod.GET)
-    public WebResult getRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult getRoomRequest(HttpServletRequest request, HttpServletResponse response,
+                                    @GetParameter(required = true, value = "id") Long requestId) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        Long requestId;
-        try{
-            requestId = Long.parseLong(request.getParameter("id"));
-        } catch (NumberFormatException nfe){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         String locale = getLocaleFromCookies(request.getCookies());
@@ -96,17 +86,11 @@ public class AdminRoomRequestController {
     }
 
     @WebMapping(url = "/admin/room-request/close", method = RequestMethod.POST)
-    public WebResult closeRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult closeRoomRequest(HttpServletRequest request, HttpServletResponse response,
+                                      @GetParameter("managerComment") String managerComment,
+                                      @GetParameter(required = true,value = "requestId") Long requestId) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        String managerComment;
-        Long requestId;
-        try{
-            managerComment = request.getParameter("managerComment");
-            requestId = Long.parseLong(request.getParameter("requestId"));
-        } catch (NumberFormatException nfe){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         roomRequestService.closeRoomRequest(requestId, managerComment);

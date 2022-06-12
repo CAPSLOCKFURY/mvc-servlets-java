@@ -16,6 +16,7 @@ import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
 import web.base.security.AuthenticatedOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 import java.util.Locale;
@@ -29,18 +30,13 @@ public class BillingController {
     private final BillingService billingService = BillingService.getInstance();
 
     @WebMapping(url = "/profile/my-billings/pay", method = RequestMethod.POST)
-    public WebResult payBilling(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult payBilling(HttpServletRequest request, HttpServletResponse response,
+                                @GetParameter(required = true, value = "billingId") Long billingId, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        Long userId = ((User)request.getSession().getAttribute("user")).getId();
-        Long billingId;
-        try{
-            billingId = Long.parseLong(request.getParameter("billingId"));
-        } catch (NumberFormatException nfe){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+        Long userId = user.getId();
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean billingPaid = billingService.payBilling(userId, billingId, messageTransport);
@@ -53,7 +49,7 @@ public class BillingController {
     }
 
     @WebMapping(url = "/profile/my-billings", method = RequestMethod.GET)
-    public WebResult getUserBillings(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult getUserBillings(HttpServletRequest request, HttpServletResponse response, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
@@ -61,7 +57,6 @@ public class BillingController {
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
         Pageable pageable = Pageable.of(request, 10, true);
         List<Billing> billings = billingService.findBillingsByUserId(user.getId(), pageable);
         request.setAttribute("billings", billings);

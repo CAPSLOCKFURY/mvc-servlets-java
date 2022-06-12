@@ -15,6 +15,7 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.security.ManagerOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.Form;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,13 +39,12 @@ public class AdminPDFReportController {
     }
 
     @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
-    public WebResult generateReport(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult generateReport(HttpServletRequest request, HttpServletResponse response,
+                                    @Form(ReportConfigurationForm.class) ReportConfigurationForm form) {
         Security security = new ManagerOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        ReportConfigurationForm form = new ReportConfigurationForm();
-        form.mapRequestToForm(request);
         Pageable pageable = new Pageable(form.getPage(), form.getEntitiesPerPage());
         ServletOutputStream out = null;
         try {

@@ -5,7 +5,6 @@ import forms.base.prg.CookieFormErrorsPRG;
 import forms.base.prg.FormErrorPRG;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import models.RoomClass;
 import models.User;
 import service.RoomRequestService;
@@ -19,6 +18,8 @@ import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
 import web.base.security.AuthenticatedOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.Form;
+import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,16 +36,11 @@ public class RoomRequestController {
     private final RoomsService roomsService = RoomsService.getInstance();
 
     @WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
-    public WebResult confirmRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult confirmRoomRequest(HttpServletRequest request, HttpServletResponse response,
+                                        @GetParameter(required = true, value = "requestId") Long requestId) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        Long requestId;
-        try{
-            requestId = Long.parseLong(request.getParameter("requestId"));
-        } catch (NumberFormatException nfe){
-            return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
         }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
@@ -58,20 +54,13 @@ public class RoomRequestController {
     }
 
     @WebMapping(url = "/profile/my-room-requests/decline", method = RequestMethod.POST)
-    public WebResult declineAssignedRoom(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult declineAssignedRoom(HttpServletRequest request, HttpServletResponse response,
+                                         @GetParameter(required = true, value = "requestId") Long requestId,
+                                         @GetParameter(required = true, value = "comment") String comment, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        Long requestId;
-        String comment;
-        try{
-            requestId = Long.parseLong(request.getParameter("requestId"));
-            comment = request.getParameter("comment");
-        } catch (NumberFormatException nfe){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        User user = (User)request.getSession().getAttribute("user");
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         roomRequestService.declineAssignedRoom(comment, user.getId(), requestId, messageTransport);
@@ -80,21 +69,13 @@ public class RoomRequestController {
     }
 
     @WebMapping(url = "/profile/my-room-requests/disable", method = RequestMethod.GET)
-    public WebResult disableRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult disableRoomRequest(HttpServletRequest request, HttpServletResponse response,
+                                        @GetParameter("id") Long id, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        Long id;
-        Long userId;
-        try {
-            id = Long.parseLong(request.getParameter("id"));
-            HttpSession session = request.getSession();
-            User user = (User)session.getAttribute("user");
-            userId = user.getId();
-        } catch (NumberFormatException nfe){
-            return new WebResult(getAbsoluteUrl("/profile/my-room-requests", request), RequestDirection.REDIRECT);
-        }
+        Long userId = user.getId();
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         roomRequestService.disableRoomRequest(id, userId, messageTransport);
@@ -103,21 +84,17 @@ public class RoomRequestController {
     }
 
     @WebMapping(url = "/room-request", method = RequestMethod.POST)
-    public WebResult createRoomRequest(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult createRoomRequest(HttpServletRequest request, HttpServletResponse response,
+                                       @Form(RoomRequestForm.class)RoomRequestForm form, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
-        RoomRequestForm form = new RoomRequestForm();
-        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
-        form.mapRequestToForm(request);
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new WebResult(getAbsoluteUrl("/room-request", request), RequestDirection.REDIRECT);
         }
-        HttpSession session = request.getSession();
-        User user = (User)session.getAttribute("user");
         Long userId = user.getId();
         form.setUserId(userId);
         roomRequestService.createRoomRequest(form);

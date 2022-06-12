@@ -150,7 +150,9 @@ public final class SqlQueries {
 
         public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name, balance, role) values (?, ?, md5(?), ?, ?, ?, ?)";
 
-        public static final String UPDATE_USER = "update users set login = ?, email = ?, password = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
+        public static final String UPDATE_USER = "update users set login = ?, email = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
+
+        public static final String CHANGE_USER_PASSWORD = "update users set password = md5(?) where id = ?";
 
         public static final String FIND_BY_LOGIN = "select id, login, email, password, first_name, last_name, role, balance from users where login = ?";
 
