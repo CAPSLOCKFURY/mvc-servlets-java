@@ -21,9 +21,10 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.security.AuthenticatedOnly;
 import web.base.security.Security;
+import web.resolvers.annotations.Form;
+import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
-import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 import static utils.UrlUtils.getAbsoluteUrl;
@@ -34,7 +35,7 @@ public class RoomController {
     private final RoomsService roomsService = RoomsService.getInstance();
 
     @WebMapping(url = "", method = RequestMethod.GET)
-    public WebResult listRooms(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult listRooms(HttpServletRequest request) {
         Pageable pageable = Pageable.of(request, 10, true);
         RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
         OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
@@ -44,13 +45,7 @@ public class RoomController {
     }
 
     @WebMapping(url = "/room", method = RequestMethod.GET)
-    public WebResult getRoom(HttpServletRequest request, HttpServletResponse response) {
-        Long roomId = null;
-        try {
-            roomId = Long.parseLong(request.getParameter("id"));
-        } catch (NumberFormatException nfe){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult getRoom(HttpServletRequest request, HttpServletResponse response, @GetParameter(value = "id", required = true) Long roomId) {
         FormErrorPRG errorsProcessor = new CookieFormErrorsPRG();
         errorsProcessor.processErrors(request, response);
         RoomExtendedInfo room = roomsService.getExtendedRoomInfo(roomId, getLocaleFromCookies(request.getCookies()));
@@ -59,20 +54,11 @@ public class RoomController {
     }
 
     @WebMapping(url = "/room", method = RequestMethod.POST)
-    public WebResult bookRoom(HttpServletRequest request, HttpServletResponse response) {
+    public WebResult bookRoom(HttpServletRequest request, HttpServletResponse response,
+                              @GetParameter(value = "id", required = true) Long roomId,
+                              @Form(BookRoomForm.class) BookRoomForm form, User user) {
         Security security = new AuthenticatedOnly();
         if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
-        BookRoomForm form = new BookRoomForm();
-        form.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
-        form.mapRequestToForm(request);
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        Long roomId;
-        try{
-            roomId = Long.parseLong(request.getParameter("id"));
-        } catch (NumberFormatException nfe){
             return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
         }
         boolean isValid = form.validate();

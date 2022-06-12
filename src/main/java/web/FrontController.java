@@ -37,9 +37,11 @@ public class FrontController extends HttpServlet {
         try {
             logger.debug("Started handling request");
             Method method = controllerRegistry.resolveMethod(request);
-            logger.debug("Resolved command");
+            logger.debug("Resolved web method");
             Object controllerInstance = controllerRegistry.getControllerObject(method.getDeclaringClass());
-            WebResult result = (WebResult) method.invoke(controllerInstance, request, response);
+            ArgumentResolver argumentResolver = new ArgumentResolver(method);
+            Object[] arguments = argumentResolver.resolveArguments(request, response);
+            WebResult result = (WebResult) method.invoke(controllerInstance, arguments);
             logger.debug("Executed web method");
             if(result.getDirection() == RequestDirection.FORWARD){
                 request.getRequestDispatcher("/pages/" + result.getUrl()).forward(request, response);
