@@ -18,15 +18,13 @@ import web.base.RequestMethod;
 import web.base.WebResult;
 import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
-import web.base.security.AuthenticatedOnly;
-import web.base.security.Security;
+import web.base.security.annotations.AuthenticatedOnly;
 import web.resolvers.annotations.Form;
 import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
-import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
 public class RoomController {
@@ -52,24 +50,21 @@ public class RoomController {
         return new WebResult("room.jsp", RequestDirection.FORWARD);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/room", method = RequestMethod.POST)
     public WebResult bookRoom(HttpServletRequest request, HttpServletResponse response,
                               @GetParameter(value = "id", required = true) Long roomId,
                               @Form(BookRoomForm.class) BookRoomForm form, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/room?id=" + roomId, request), RequestDirection.REDIRECT);
+            return new WebResult("/room?id=" + roomId, RequestDirection.REDIRECT);
         }
         roomsService.bookRoom(form, roomId, user.getId());
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/room?id=" + roomId, request), RequestDirection.REDIRECT);
+            return new WebResult("/room?id=" + roomId, RequestDirection.REDIRECT);
         }
-        return new WebResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
+        return new WebResult("/profile", RequestDirection.REDIRECT);
     }
 }

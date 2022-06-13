@@ -17,14 +17,12 @@ import web.base.RequestMethod;
 import web.base.WebResult;
 import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
-import web.base.security.ManagerOnly;
-import web.base.security.Security;
+import web.base.security.annotations.ManagerOnly;
 import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
-import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
 public class AdminRoomRequestController {
@@ -32,28 +30,22 @@ public class AdminRoomRequestController {
     private final AdminRoomsService roomsService = AdminRoomsService.getInstance();
     private final AdminRoomRequestService roomRequestService = AdminRoomRequestService.getInstance();
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/room-request/assign", method = RequestMethod.POST)
-    public WebResult assignRoomToRequest(HttpServletRequest request, HttpServletResponse response,
+    public WebResult assignRoomToRequest(HttpServletRequest request,
                                          @GetParameter(required = true, value = "roomId") Long roomId,
                                          @GetParameter(required = true, value = "requestId") Long requestId) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         boolean assigned = roomsService.assignRoomToRequest(roomId, requestId);
         if(assigned){
-            return new WebResult(getAbsoluteUrl("/admin/room-requests", request), RequestDirection.REDIRECT);
+            return new WebResult("/admin/room-requests", RequestDirection.REDIRECT);
         } else {
             return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT);
         }
     }
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/room-requests", method = RequestMethod.GET)
-    public WebResult listRoomRequests(HttpServletRequest request, HttpServletResponse response) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult listRoomRequests(HttpServletRequest request) {
         RoomRequestOrdering requestOrdering = RoomRequestOrdering.valueOfOrDefault(request.getParameter("requestOrdering"));
         OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
         Orderable orderable = new Orderable(requestOrdering.getColName(), orderDirection);
@@ -64,13 +56,9 @@ public class AdminRoomRequestController {
         return new WebResult("/admin/admin-room-requests.jsp", RequestDirection.FORWARD);
     }
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/room-request", method = RequestMethod.GET)
-    public WebResult getRoomRequest(HttpServletRequest request, HttpServletResponse response,
-                                    @GetParameter(required = true, value = "id") Long requestId) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult getRoomRequest(HttpServletRequest request, @GetParameter(required = true, value = "id") Long requestId) {
         String locale = getLocaleFromCookies(request.getCookies());
         AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale);
         request.setAttribute("roomRequest", roomRequest);
@@ -85,16 +73,12 @@ public class AdminRoomRequestController {
         return new WebResult("/admin/admin-room-request.jsp", RequestDirection.FORWARD);
     }
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/room-request/close", method = RequestMethod.POST)
-    public WebResult closeRoomRequest(HttpServletRequest request, HttpServletResponse response,
-                                      @GetParameter("managerComment") String managerComment,
+    public WebResult closeRoomRequest(@GetParameter("managerComment") String managerComment,
                                       @GetParameter(required = true,value = "requestId") Long requestId) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         roomRequestService.closeRoomRequest(requestId, managerComment);
-        return new WebResult(getAbsoluteUrl("/admin/room-requests", request), RequestDirection.REDIRECT);
+        return new WebResult("/admin/room-requests", RequestDirection.REDIRECT);
     }
 
 }

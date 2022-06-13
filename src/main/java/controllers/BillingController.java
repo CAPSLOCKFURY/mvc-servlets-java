@@ -14,46 +14,38 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
-import web.base.security.AuthenticatedOnly;
-import web.base.security.Security;
+import web.base.security.annotations.AuthenticatedOnly;
 import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
 import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
-import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
 public class BillingController {
 
     private final BillingService billingService = BillingService.getInstance();
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-billings/pay", method = RequestMethod.POST)
     public WebResult payBilling(HttpServletRequest request, HttpServletResponse response,
                                 @GetParameter(required = true, value = "billingId") Long billingId, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         Long userId = user.getId();
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
         boolean billingPaid = billingService.payBilling(userId, billingId, messageTransport);
         messageTransport.setMessage(request, response);
         if(!billingPaid){
-            return new WebResult(getAbsoluteUrl("/profile/my-billings", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/my-billings", RequestDirection.REDIRECT);
         } else {
-            return new WebResult(getAbsoluteUrl("/profile/room-history", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/room-history", RequestDirection.REDIRECT);
         }
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-billings", method = RequestMethod.GET)
     public WebResult getUserBillings(HttpServletRequest request, HttpServletResponse response, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
         HttpSession session = request.getSession();

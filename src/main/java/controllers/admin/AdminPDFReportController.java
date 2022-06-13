@@ -13,8 +13,7 @@ import web.base.RequestMethod;
 import web.base.WebResult;
 import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
-import web.base.security.ManagerOnly;
-import web.base.security.Security;
+import web.base.security.annotations.ManagerOnly;
 import web.resolvers.annotations.Form;
 
 import java.io.IOException;
@@ -22,29 +21,22 @@ import java.util.List;
 import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
-import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
 public class AdminPDFReportController {
 
     private final AdminRoomsService roomsService = AdminRoomsService.getInstance();
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/report", method = RequestMethod.GET)
-    public WebResult configureReport(HttpServletRequest request, HttpServletResponse response) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult configureReport() {
         return new WebResult("/admin/configure-report.jsp", RequestDirection.FORWARD);
     }
 
+    @ManagerOnly("")
     @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
     public WebResult generateReport(HttpServletRequest request, HttpServletResponse response,
                                     @Form(ReportConfigurationForm.class) ReportConfigurationForm form) {
-        Security security = new ManagerOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         Pageable pageable = new Pageable(form.getPage(), form.getEntitiesPerPage());
         ServletOutputStream out = null;
         try {

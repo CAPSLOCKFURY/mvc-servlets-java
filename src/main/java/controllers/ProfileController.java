@@ -22,15 +22,12 @@ import web.base.annotations.WebController;
 import web.base.annotations.WebMapping;
 import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
-import web.base.security.AuthenticatedOnly;
-import web.base.security.Security;
+import web.base.security.annotations.AuthenticatedOnly;
 import web.resolvers.annotations.Form;
 
 import java.util.List;
-import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
-import static utils.UrlUtils.getAbsoluteUrl;
 
 @WebController
 public class ProfileController {
@@ -41,12 +38,9 @@ public class ProfileController {
 
     private final RoomRequestService roomRequestService = RoomRequestService.getInstance();
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile", method = RequestMethod.GET)
-    public WebResult getProfile(HttpServletRequest request, HttpServletResponse response, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)) {
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult getProfile(HttpServletRequest request, User user) {
         HttpSession session = request.getSession();
         Long userId = user.getId();
         User dbUser = userService.getUserById(userId);
@@ -54,12 +48,9 @@ public class ProfileController {
         return new WebResult("profile.jsp", RequestDirection.FORWARD);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/update", method = RequestMethod.GET)
     public WebResult showUpdateProfile(HttpServletRequest request, HttpServletResponse response, User sessionUser) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
         errorProcessor.processErrors(request, response);
         User user = userService.getUserById(sessionUser.getId());
@@ -67,68 +58,56 @@ public class ProfileController {
         return new WebResult("profile-update.jsp", RequestDirection.FORWARD);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/update", method = RequestMethod.POST)
     public WebResult updateProfile(HttpServletRequest request, HttpServletResponse response,
                                    @Form(UserUpdateProfileForm.class) UserUpdateProfileForm form) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/profile/update", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/update", RequestDirection.REDIRECT);
         }
         User user = (User) request.getSession().getAttribute("user");
         boolean isUpdated = userService.updateUser(form, user.getId());
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/profile/update", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/update", RequestDirection.REDIRECT);
         }
         if(isUpdated){
-            return new WebResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile", RequestDirection.REDIRECT);
         } else {
-            return new WebResult(getAbsoluteUrl("/profile/update", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/update", RequestDirection.REDIRECT);
         }
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/balance", method = RequestMethod.POST)
-    public WebResult addBalance(HttpServletRequest request, HttpServletResponse response,
+    public WebResult addBalance(HttpServletResponse response,
                                 @Form(AddBalanceForm.class) AddBalanceForm form, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/profile/balance", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/balance", RequestDirection.REDIRECT);
         }
         userService.addUserBalance(form, user.getId());
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
-            return new WebResult(getAbsoluteUrl("/profile/balance", request), RequestDirection.REDIRECT);
+            return new WebResult("/profile/balance", RequestDirection.REDIRECT);
         }
-        return new WebResult(getAbsoluteUrl("/profile", request), RequestDirection.REDIRECT);
+        return new WebResult("/profile", RequestDirection.REDIRECT);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/room-history", method = RequestMethod.GET)
-    public WebResult getRoomHistory(HttpServletRequest request, HttpServletResponse response, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
+    public WebResult getRoomHistory(HttpServletRequest request, User user) {
         Pageable pageable = Pageable.of(request, 10, true);
         List<RoomHistoryDTO> roomHistory = roomsService.getUserRoomHistory(user.getId(), getLocaleFromCookies(request.getCookies()), pageable);
         request.setAttribute("rooms", roomHistory);
         return new WebResult("user-room-history.jsp", RequestDirection.FORWARD);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-room-requests", method = RequestMethod.GET)
     public WebResult getMyRoomRequests(HttpServletRequest request, HttpServletResponse response, User user) {
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
         Pageable pageable = Pageable.of(request, 10, true);
@@ -145,12 +124,9 @@ public class ProfileController {
         return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT);
     }
 
+    @AuthenticatedOnly("")
     @WebMapping(url = "/profile/balance", method = RequestMethod.GET)
     public WebResult showProfileBalance(HttpServletRequest request, HttpServletResponse response){
-        Security security = new AuthenticatedOnly();
-        if(!security.doSecurity(request, response)){
-            return new WebResult(getAbsoluteUrl("", request), RequestDirection.REDIRECT);
-        }
         FormErrorPRG errorProcessor = new CookieFormErrorsPRG();
         errorProcessor.processErrors(request, response);
         return new WebResult("balance.jsp", RequestDirection.FORWARD);
