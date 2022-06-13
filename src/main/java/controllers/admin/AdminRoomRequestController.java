@@ -1,7 +1,6 @@
 package controllers.admin;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import models.Room;
 import models.base.ordering.OrderDirection;
 import models.base.ordering.Orderable;
