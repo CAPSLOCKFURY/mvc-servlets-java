@@ -8,6 +8,7 @@ import validators.annotations.MinDateToday;
 import validators.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class CloseRoomForm extends Form {
 
@@ -23,7 +24,7 @@ public class CloseRoomForm extends Form {
     public void setEndDate(String endDate) {
         try {
             this.endDate = DateUtils.stringToDate(endDate);
-        } catch (NullPointerException iag){
+        } catch (NullPointerException | DateTimeParseException iag){
             this.endDate = null;
         }
     }

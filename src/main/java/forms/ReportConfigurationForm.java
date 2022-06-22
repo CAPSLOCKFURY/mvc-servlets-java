@@ -7,6 +7,7 @@ import forms.base.annotations.HtmlLabel;
 import utils.DateUtils;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class ReportConfigurationForm extends Form {
 
@@ -54,7 +55,7 @@ public class ReportConfigurationForm extends Form {
     public void setCheckInDate(String checkInDate) {
         try {
             this.checkInDate = DateUtils.stringToDate(checkInDate);
-        } catch (NullPointerException iag){
+        } catch (NullPointerException | DateTimeParseException iag){
             this.checkInDate = null;
         }
     }
@@ -66,7 +67,7 @@ public class ReportConfigurationForm extends Form {
     public void setCheckOutDate(String checkOutDate) {
         try {
             this.checkOutDate = DateUtils.stringToDate(checkOutDate);
-        } catch (NullPointerException iag){
+        } catch (NullPointerException | DateTimeParseException iag){
             this.checkOutDate = null;
         }
     }

@@ -10,6 +10,7 @@ import utils.DateUtils;
 import validators.annotations.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 @FirstDateBeforeSecond(
         firstDateField = "checkInDate",
@@ -97,7 +98,7 @@ public class RoomRequestForm extends Form {
     public void setCheckInDate(String checkInDate) {
         try {
             this.checkInDate = DateUtils.stringToDate(checkInDate);
-        } catch (NullPointerException iag){
+        } catch (NullPointerException | DateTimeParseException iag){
             this.checkInDate = null;
         }
     }
@@ -109,7 +110,7 @@ public class RoomRequestForm extends Form {
     public void setCheckOutDate(String checkOutDate) {
         try {
             this.checkOutDate = DateUtils.stringToDate(checkOutDate);
-        } catch (NullPointerException iag){
+        } catch (NullPointerException | DateTimeParseException iag){
             this.checkOutDate = null;
         }
     }
