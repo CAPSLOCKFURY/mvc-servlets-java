@@ -1,5 +1,8 @@
 package service;
 
+import dao.dao.RoomRequestDao;
+import dao.factory.DaoAbstractFactory;
+import dao.factory.SqlDB;
 import web.base.messages.CookieMessageTransport;
 import web.base.messages.MessageTransport;
 import db.ConnectionPool;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -21,9 +25,12 @@ public class RoomRequestServiceTest {
 
     private final static RoomRequestService service = RoomRequestService.getInstance();
 
+    public static Connection connection;
+
     @BeforeAll
     public static void setUp(){
         ConnectionPool.initPool();
+        connection = ConnectionPool.getConnection();
     }
 
     @AfterEach
@@ -60,22 +67,31 @@ public class RoomRequestServiceTest {
 
     @Test
     void confirmRoomRequestTest(){
+        RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(connection);
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.confirmRoomRequest(2L, 3L, messageTransport);
         assertTrue(result);
+        RoomRequest roomRequest = roomRequestDao.getRoomRequestById(2L);
+        assertEquals("awaiting payment", roomRequest.getStatus());
     }
 
     @Test
     void declineAssignedRoomTest(){
+        RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(connection);
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.declineAssignedRoom("123", 3L, 3L, messageTransport);
         assertTrue(result);
+        RoomRequest roomRequest = roomRequestDao.getRoomRequestById(3L);
+        assertEquals("awaiting", roomRequest.getStatus());
     }
 
     @Test
     void disableRoomRequestTest(){
+        RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(connection);
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.disableRoomRequest(4L, 3L, messageTransport);
         assertTrue(result);
+        RoomRequest roomRequest = roomRequestDao.getRoomRequestById(4L);
+        assertEquals("closed", roomRequest.getStatus());
     }
 }

@@ -1,5 +1,8 @@
 package service;
 
+import dao.dao.UserDao;
+import dao.factory.DaoAbstractFactory;
+import dao.factory.SqlDB;
 import db.ConnectionPool;
 import forms.AddBalanceForm;
 import forms.LoginForm;
@@ -9,6 +12,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +22,12 @@ public class UserServiceTest {
 
     public final static UserService service = UserService.getInstance();
 
+    public static Connection connection;
+
     @BeforeAll
     public static void setUp(){
         ConnectionPool.initPool();
+        connection = ConnectionPool.getConnection();
     }
 
     @AfterEach
@@ -77,9 +85,12 @@ public class UserServiceTest {
 
     @Test
     void addUserBalance(){
+        UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(connection);
         AddBalanceForm form = new AddBalanceForm();
         form.setAmount("1000");
         boolean result = service.addUserBalance(form, 1L);
         assertTrue(result);
+        User user = userDao.getUserById(1L);
+        assertEquals(new BigDecimal("1000.00"), user.getBalance());
     }
 }
