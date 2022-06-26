@@ -7,6 +7,8 @@ import models.RoomClass;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.*;
+import sqlbuilder.builder.SqlBuilder;
+import sqlbuilder.model.SqlModel;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -66,21 +68,23 @@ public class PostgreSQLRoomsDao extends RoomsDao {
 
     @Override
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(LocalDate checkInDate, LocalDate checkOutDate, Pageable pageable) {
-        String sql = SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT;
+        SqlBuilder sb = new SqlBuilder();
+        SqlModel model = new SqlModel();
+        sb.select(model.get("user_id"), model.get("u.first_name"), model.get("u.last_name"), model.get("check_in_date"), model.get("check_out_date"), model.get("room_id"))
+                .from("room_registry").join(model.get("users"), "u").on(model.get("room_registry.user_id").eq("u.id"));
         if(checkInDate != null || checkOutDate != null){
-            sql = sql.concat(" where ");
             if(checkInDate != null && checkOutDate != null){
-                sql = sql.concat(" check_in_date >= ? and check_out_date <= ? ");
-                return getAllByParams(sql, new Object[]{checkInDate, checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
+                sb.where(model.get("check_in_date").gte("?"), model.get("check_out_date").lte("?"));
+                return getAllByParams(sb.getSql(), new Object[]{checkInDate, checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
             } else if (checkInDate != null){
-                sql = sql.concat(" check_in_date >= ? ");
-                return getAllByParams(sql, new Object[]{checkInDate}, RoomRegistryPdfReportDto.class, pageable);
+                sb.where(model.get("check_in_date").gte("?"));
+                return getAllByParams(sb.getSql(), new Object[]{checkInDate}, RoomRegistryPdfReportDto.class, pageable);
             } else {
-                sql = sql.concat(" check_out_date <= ? ");
-                return getAllByParams(sql, new Object[]{checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
+                sb.where(model.get("check_out_date").lte("?"));
+                return getAllByParams(sb.getSql(), new Object[]{checkOutDate}, RoomRegistryPdfReportDto.class, pageable);
             }
         }
-        return getAll(SqlQueries.Room.FIND_DATA_FOR_ROOM_REGISTRY_REPORT, RoomRegistryPdfReportDto.class, pageable);
+        return getAll(sb.getSql(), RoomRegistryPdfReportDto.class, pageable);
     }
 
     @Override
