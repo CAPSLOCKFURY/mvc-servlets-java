@@ -22,7 +22,7 @@ public class AdminRoomController {
     @ManagerOnly("")
     @WebMapping(url = "/admin/room/close", method = RequestMethod.POST)
     public WebResult closeRoom(HttpServletRequest request, HttpServletResponse response,
-                               @Form(CloseRoomForm.class) CloseRoomForm form, @GetParameter(required = true, value = "id") Long roomId) {
+                               @Form CloseRoomForm form, @GetParameter(required = true, value = "id") Long roomId) {
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));

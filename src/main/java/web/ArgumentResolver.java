@@ -36,7 +36,7 @@ public class ArgumentResolver {
             Arrays.stream(annotations).forEach(a -> {
                 WebMethodArgumentResolver resolver = resolversRegistry.getResolver(a.annotationType());
                 if(resolver != null) {
-                    Object prevResolved = resolveAnnotation(request, response, previousResolved, a);
+                    Object prevResolved = resolveAnnotation(request, response, previousResolved, a, p);
                     previousResolved.set(prevResolved);
                     annotationResolved.set(true);
                 }
@@ -56,12 +56,12 @@ public class ArgumentResolver {
 
     private Object resolveParameter(HttpServletRequest request, HttpServletResponse response, AtomicReference<Object> previousResolved, Parameter parameter){
         WebMethodArgumentResolver<?> parameterResolver = resolversRegistry.getResolver(parameter.getType());
-        return parameterResolver.resolve(request, response, previousResolved.get());
+        return parameterResolver.resolve(request, response, previousResolved.get(), parameter);
     }
 
-    private Object resolveAnnotation(HttpServletRequest request, HttpServletResponse response, AtomicReference<Object> previousResolved, Annotation annotation){
+    private Object resolveAnnotation(HttpServletRequest request, HttpServletResponse response, AtomicReference<Object> previousResolved, Annotation annotation, Parameter parameter){
         WebMethodArgumentResolver resolver = resolversRegistry.getResolver(annotation.annotationType());
-        Object resolvedValue = resolver.resolve(request, response, previousResolved.get(), annotation);
+        Object resolvedValue = resolver.resolve(request, response, previousResolved.get(), parameter, annotation);
         previousResolved.set(resolvedValue);
         return resolvedValue;
     }

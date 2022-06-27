@@ -54,7 +54,7 @@ public class RoomController {
     @WebMapping(url = "/room", method = RequestMethod.POST)
     public WebResult bookRoom(HttpServletRequest request, HttpServletResponse response,
                               @GetParameter(value = "id", required = true) Long roomId,
-                              @Form(BookRoomForm.class) BookRoomForm form, User user) {
+                              @Form BookRoomForm form, User user) {
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));

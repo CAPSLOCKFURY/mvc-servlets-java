@@ -61,7 +61,7 @@ public class ProfileController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/update", method = RequestMethod.POST)
     public WebResult updateProfile(HttpServletRequest request, HttpServletResponse response,
-                                   @Form(UserUpdateProfileForm.class) UserUpdateProfileForm form) {
+                                   @Form UserUpdateProfileForm form) {
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new WebResult("/profile/update", RequestDirection.REDIRECT);
@@ -82,7 +82,7 @@ public class ProfileController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/balance", method = RequestMethod.POST)
     public WebResult addBalance(HttpServletResponse response,
-                                @Form(AddBalanceForm.class) AddBalanceForm form, User user) {
+                                @Form AddBalanceForm form, User user) {
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));

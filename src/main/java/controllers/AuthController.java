@@ -35,7 +35,7 @@ public class AuthController {
 
     @NonAuthenticatedOnly("")
     @WebMapping(url = "/login", method = RequestMethod.POST)
-    public WebResult login(HttpServletRequest request, HttpServletResponse response, @Form(LoginForm.class) LoginForm form) {
+    public WebResult login(HttpServletRequest request, HttpServletResponse response, @Form LoginForm form) {
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -60,7 +60,7 @@ public class AuthController {
     }
 
     @WebMapping(url = "/register", method = RequestMethod.POST)
-    public WebResult register(HttpServletRequest request, HttpServletResponse response, @Form(RegisterForm.class) RegisterForm form) {
+    public WebResult register(HttpServletRequest request, HttpServletResponse response, @Form RegisterForm form) {
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -89,7 +89,7 @@ public class AuthController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/change-password", method = RequestMethod.POST)
     public WebResult changePassword(HttpServletRequest request, HttpServletResponse response,
-                                    @Form(ChangePasswordForm.class) ChangePasswordForm form, User user) {
+                                    @Form ChangePasswordForm form, User user) {
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         }

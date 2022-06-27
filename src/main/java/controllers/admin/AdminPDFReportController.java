@@ -36,7 +36,7 @@ public class AdminPDFReportController {
     @ManagerOnly("")
     @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
     public WebResult generateReport(HttpServletRequest request, HttpServletResponse response,
-                                    @Form(ReportConfigurationForm.class) ReportConfigurationForm form) {
+                                    @Form ReportConfigurationForm form) {
         Pageable pageable = new Pageable(form.getPage(), form.getEntitiesPerPage());
         ServletOutputStream out = null;
         try {

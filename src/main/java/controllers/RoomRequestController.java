@@ -75,7 +75,7 @@ public class RoomRequestController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/room-request", method = RequestMethod.POST)
     public WebResult createRoomRequest(HttpServletResponse response,
-                                       @Form(RoomRequestForm.class)RoomRequestForm form, User user) {
+                                       @Form RoomRequestForm form, User user) {
         boolean isValid = form.validate();
         if(!isValid){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
