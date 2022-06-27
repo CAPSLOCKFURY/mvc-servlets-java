@@ -21,7 +21,7 @@ public class AdminRoomController {
 
     @ManagerOnly("")
     @WebMapping(url = "/admin/room/close", method = RequestMethod.POST)
-    public WebResult closeRoom(HttpServletRequest request, HttpServletResponse response,
+    public WebResult closeRoom(HttpServletResponse response,
                                @Form CloseRoomForm form, @GetParameter(required = true, value = "id") Long roomId) {
         boolean isValid = form.validate();
         if(!isValid){
@@ -37,8 +37,7 @@ public class AdminRoomController {
 
     @ManagerOnly("")
     @WebMapping(url = "/admin/room/open", method = RequestMethod.POST)
-    public WebResult openRoom(HttpServletRequest request, HttpServletResponse response,
-                              @GetParameter(required = true, value = "roomId") Long roomId) {
+    public WebResult openRoom(@GetParameter(required = true, value = "roomId") Long roomId) {
         roomService.openRoom(roomId);
         return new WebResult("/room?id=" + roomId, RequestDirection.REDIRECT);
     }

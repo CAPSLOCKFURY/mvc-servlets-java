@@ -52,9 +52,9 @@ public class FrontController extends HttpServlet {
                 Security security = SecurityStrategyFactory.getStrategy(securityAnnotation);
                 boolean securityResult = security.doSecurity(request, response);
                 if(!securityResult){
-                    WebResult securityWebResult = new WebResult("", RequestDirection.REDIRECT);
+                    WebResult securityWebResult = new WebResult(getSecurityAnnotationRedirectUrl(securityAnnotation), RequestDirection.REDIRECT);
                     handleWebResult(securityWebResult, request, response);
-                    logger.debug("Method {} not passed web security", method.getName());
+                    logger.debug("Method did {} not passed web security", method.getName());
                     return;
                 }
             }
@@ -76,7 +76,11 @@ public class FrontController extends HttpServlet {
         if(webResult.getDirection() == RequestDirection.FORWARD){
             request.getRequestDispatcher("/pages/" + webResult.getUrl()).forward(request, response);
         } else if(webResult.getDirection() == RequestDirection.REDIRECT){
-            response.sendRedirect(getAbsoluteUrl(webResult.getUrl(), request));
+            if(webResult.isAbsolute()){
+                response.sendRedirect(webResult.getUrl());
+            } else {
+                response.sendRedirect(getAbsoluteUrl(webResult.getUrl(), request));
+            }
         } else if(webResult.getDirection() == RequestDirection.VOID){
             //this intentionally left blank
         }

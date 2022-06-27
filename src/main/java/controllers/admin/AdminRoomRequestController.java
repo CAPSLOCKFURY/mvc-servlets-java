@@ -38,7 +38,7 @@ public class AdminRoomRequestController {
         if(assigned){
             return new WebResult("/admin/room-requests", RequestDirection.REDIRECT);
         } else {
-            return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT);
+            return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT, true);
         }
     }
 

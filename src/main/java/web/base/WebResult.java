@@ -9,10 +9,17 @@ public class WebResult {
 
     private final String url;
     private final RequestDirection direction;
+    private boolean isAbsolute = false;
 
     public WebResult(String url, RequestDirection direction){
         this.url = url;
         this.direction = direction;
+    }
+
+    public WebResult(String url, RequestDirection direction, boolean isAbsolute){
+        this.url = url;
+        this.direction = direction;
+        this.isAbsolute = isAbsolute;
     }
 
     public String getUrl() {
@@ -21,5 +28,9 @@ public class WebResult {
 
     public RequestDirection getDirection() {
         return direction;
+    }
+
+    public boolean isAbsolute() {
+        return isAbsolute;
     }
 }

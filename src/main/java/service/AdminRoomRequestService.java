@@ -43,6 +43,7 @@ public class AdminRoomRequestService {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             roomRequest.setStatus("closed");
             roomRequest.setManagerComment(comment);
+            roomRequest.setRoomId(null);
             return roomRequestDao.updateRoomRequest(roomRequest);
         }
     }

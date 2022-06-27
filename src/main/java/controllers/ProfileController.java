@@ -121,7 +121,7 @@ public class ProfileController {
         Cookie langCookie = new Cookie("Content-Language", request.getParameter("lang"));
         langCookie.setMaxAge(-1);
         response.addCookie(langCookie);
-        return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT);
+        return new WebResult(request.getHeader("referer"), RequestDirection.REDIRECT, true);
     }
 
     @AuthenticatedOnly("")
