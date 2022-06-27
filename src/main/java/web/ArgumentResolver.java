@@ -36,7 +36,8 @@ public class ArgumentResolver {
             Arrays.stream(annotations).forEach(a -> {
                 WebMethodArgumentResolver resolver = resolversRegistry.getResolver(a.annotationType());
                 if(resolver != null) {
-                    resolveAnnotation(request, response, previousResolved, a);
+                    Object prevResolved = resolveAnnotation(request, response, previousResolved, a);
+                    previousResolved.set(prevResolved);
                     annotationResolved.set(true);
                 }
             });
