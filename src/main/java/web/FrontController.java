@@ -54,7 +54,7 @@ public class FrontController extends HttpServlet {
                 if(!securityResult){
                     WebResult securityWebResult = new WebResult(getSecurityAnnotationRedirectUrl(securityAnnotation), RequestDirection.REDIRECT);
                     handleWebResult(securityWebResult, request, response);
-                    logger.debug("Method did {} not passed web security", method.getName());
+                    logger.debug("Method {} not passed web security", method.getName());
                     return;
                 }
             }
