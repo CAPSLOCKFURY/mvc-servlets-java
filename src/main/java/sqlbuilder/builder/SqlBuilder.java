@@ -31,6 +31,11 @@ public class SqlBuilder {
         return this;
     }
 
+    public SqlBuilder from(SqlField sqlField){
+        appendSql(new FromClause(sqlField.toString()));
+        return this;
+    }
+
     public SqlBuilder from(SqlBuilder sqlBuilder){
         return from(sqlBuilder.getSql());
     }
@@ -96,11 +101,17 @@ public class SqlBuilder {
     }
 
     public String getSql(){
-        return isSubquery ? new SubqueryClause(sql).toSqlString() : sql;
+        return isSubquery ? new SubqueryClause(sql).toSqlString().trim() : sql.trim();
     }
 
     public void appendSql(SqlClause clause){
         sql = sql.concat(clause.toSqlString()) + " ";
+    }
+
+    public String clear(){
+        String returnCopy = getSql();
+        sql = "";
+        return returnCopy;
     }
 
 }

@@ -15,13 +15,13 @@ public class SqlCondition {
 
     public SqlCondition or(SqlCondition sqlCondition){
         nestedCondition = true;
-        sql = sql.concat(new OrClause(sqlCondition.getSql()).toSqlString());
+        sql = sql.concat(" " + new OrClause(sqlCondition.getSql()).toSqlString());
         return this;
     }
 
     public SqlCondition and(SqlCondition sqlCondition){
         nestedCondition = true;
-        sql = sql.concat(new AndClause(sqlCondition.getSql()).toSqlString());
+        sql = sql.concat(" " + new AndClause(sqlCondition.getSql()).toSqlString());
         return this;
     }
 

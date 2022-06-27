@@ -20,6 +20,6 @@ public class JoinClause implements SqlClause {
 
     @Override
     public String toSqlString() {
-        return joinAlias == null ? joinType + " join " + tableName : joinType + " join " + tableName + " " + joinAlias;
+        return (joinAlias == null || joinAlias.equals("")) ? joinType + " join " + tableName : joinType + " join " + tableName + " " + joinAlias;
     }
 }

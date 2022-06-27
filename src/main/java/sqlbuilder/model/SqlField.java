@@ -75,7 +75,7 @@ public class SqlField {
     }
 
     public void appendSql(SqlClause clause){
-        sql = sql.concat(clause.toSqlString()) + " ";
+        sql = sql.concat(clause.toSqlString());
     }
 
 }
