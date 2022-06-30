@@ -24,6 +24,8 @@ public final class SqlQueries {
                 "where room_id = ? and archived = false and (daterange(?::date, ?::date, '[]') &&\n" +
                 "      daterange(room_registry.check_in_date::date, room_registry.check_out_date::date, '[]') )";
 
+        public static final String IS_ROOM_ASSIGNED_TO_ROOM_REQUEST = "select exists(select room_id from room_requests where room_id = ? and (daterange(?::date, ?::date, '[]') && daterange(check_in_date::date, check_out_date::date, '[]'))) as assigned";
+
         public static final String FIND_ROOM_HISTORY_BY_USER_ID = "select r.*, rct.name as class_name, room_registry.check_in_date, room_registry.check_out_date from room_registry\n" +
                 "    left outer join rooms r on room_registry.room_id = r.id\n" +
                 "    left outer join room_class_translation rct on r.class = rct.class_id and rct.language = ?\n" +

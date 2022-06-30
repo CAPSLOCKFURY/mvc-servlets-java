@@ -11,6 +11,7 @@ import models.Room;
 import models.RoomRequest;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
+import models.dto.IsRoomAssigned;
 import models.dto.OverlapCountDTO;
 import models.dto.RoomRegistryPdfReportDto;
 
@@ -44,6 +45,10 @@ public class AdminRoomsService {
             roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
             RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(roomsDao.getConnection());
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
+            IsRoomAssigned isRoomAssigned = roomRequestDao.isRoomAssigned(roomId, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate());
+            if(isRoomAssigned.getAssigned()){
+                return false;
+            }
             OverlapCountDTO overlapCount = roomsDao.getDatesOverlapCount(roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), roomId);
             if (overlapCount.getCount() != 0) {
                 return false;

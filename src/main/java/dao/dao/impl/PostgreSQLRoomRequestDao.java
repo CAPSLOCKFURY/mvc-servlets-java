@@ -6,8 +6,10 @@ import models.RoomRequest;
 import models.base.ordering.Orderable;
 import models.base.pagination.Pageable;
 import models.dto.AdminRoomRequestDTO;
+import models.dto.IsRoomAssigned;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 
 public class PostgreSQLRoomRequestDao extends RoomRequestDao {
@@ -46,6 +48,12 @@ public class PostgreSQLRoomRequestDao extends RoomRequestDao {
     public AdminRoomRequestDTO getRoomRequestForAdmin(Long requestId, String locale){
         return getOneByParams(SqlQueries.RoomRequest.ADMIN_GET_ROOM_REQUEST_BY_ID, new Object[]{locale, requestId}, AdminRoomRequestDTO.class);
     }
+
+    @Override
+    public IsRoomAssigned isRoomAssigned(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        return getOneByParams(SqlQueries.Room.IS_ROOM_ASSIGNED_TO_ROOM_REQUEST, new Object[]{roomId, checkInDate, checkOutDate}, IsRoomAssigned.class);
+    }
+
 
     public PostgreSQLRoomRequestDao(Connection connection) {
         super(connection);
