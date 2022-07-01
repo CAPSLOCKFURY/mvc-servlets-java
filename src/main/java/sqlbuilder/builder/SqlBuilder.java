@@ -12,10 +12,6 @@ import sqlbuilder.model.SqlField;
 
 public class SqlBuilder extends AbstractSqlBuilder {
 
-    public SqlBuilder() {
-
-    }
-
     @Override
     public SqlBuilder select(SqlField ...sqlFields){
         sqlClauses.add(new SelectClause(sqlFields));
@@ -115,7 +111,11 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public String getSql(){
-        Visitor visitor = new PostgreSQLVisitor();
+        return getSql(new PostgreSQLVisitor());
+    }
+
+    @Override
+    public String getSql(Visitor visitor){
         for (SqlClause sqlClause : sqlClauses){
             sqlClause.accept(visitor);
         }

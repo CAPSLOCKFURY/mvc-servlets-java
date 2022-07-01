@@ -3,6 +3,7 @@ package sqlbuilder.builder.base;
 import sqlbuilder.builder.JoinType;
 import sqlbuilder.builder.SortDirection;
 import sqlbuilder.builder.SqlBuilder;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
@@ -47,6 +48,8 @@ public abstract class AbstractSqlBuilder {
     public abstract SqlBuilder groupBy(SqlField sqlField);
 
     public abstract String getSql();
+
+    public abstract String getSql(Visitor visitor);
 
     public abstract String clear();
 }
