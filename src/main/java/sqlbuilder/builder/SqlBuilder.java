@@ -1,6 +1,9 @@
 package sqlbuilder.builder;
 
 import sqlbuilder.builder.base.AbstractSqlBuilder;
+import sqlbuilder.builder.base.visitor.PostgreSQLVisitor;
+import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.clauses.conditional.AndClause;
 import sqlbuilder.clauses.conditional.OrClause;
 import sqlbuilder.clauses.general.*;
@@ -9,40 +12,38 @@ import sqlbuilder.model.SqlField;
 
 public class SqlBuilder extends AbstractSqlBuilder {
 
-    public SqlBuilder(boolean isSubquery) {
-        super(isSubquery);
-    }
-
     public SqlBuilder() {
 
     }
 
     @Override
     public SqlBuilder select(SqlField ...sqlFields){
-        appendSql(new SelectClause(sqlFields));
+        sqlClauses.add(new SelectClause(sqlFields));
         return this;
     }
 
     @Override
     public SqlBuilder from(String tableName){
-        appendSql(new FromClause(tableName));
+        sqlClauses.add(new FromClause(tableName));
         return this;
     }
 
     @Override
     public SqlBuilder from(SqlField sqlField){
-        appendSql(new FromClause(sqlField.toString()));
+        sqlClauses.add(new FromClause(sqlField.toString()));
         return this;
     }
 
     @Override
     public SqlBuilder from(SqlBuilder sqlBuilder){
-        return from(sqlBuilder.getSql());
+        sqlClauses.add(new FromClause(null));
+        sqlClauses.add(new SubqueryClause(sqlBuilder));
+        return this;
     }
 
     @Override
     public SqlBuilder subquery(){
-        return new SqlBuilder(true);
+        return new SqlBuilder();
     }
 
     @Override
@@ -52,25 +53,25 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder join(SqlField tableName, String joinAlias, JoinType joinType){
-        appendSql(new JoinClause(tableName, joinAlias, joinType));
+        sqlClauses.add(new JoinClause(tableName, joinAlias, joinType));
         return this;
     }
 
     @Override
     public SqlBuilder join(SqlBuilder sqlBuilder){
-        sql = sql.concat(sqlBuilder.getSql()) + " ";
+        sqlClauses.add(new SubqueryClause(sqlBuilder));
         return this;
     }
 
     @Override
     public SqlBuilder on(SqlCondition sqlCondition){
-        appendSql(new OnClause(sqlCondition));
+        sqlClauses.add(new OnClause(sqlCondition));
         return this;
     }
 
     @Override
     public SqlBuilder where(SqlCondition sqlCondition){
-        appendSql(new WhereClause(sqlCondition.getSql()));
+        sqlClauses.add(new WhereClause(sqlCondition));
         return this;
     }
 
@@ -85,13 +86,13 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder and(SqlCondition sqlCondition){
-        appendSql(new AndClause(sqlCondition.getSql()));
+        sqlClauses.add(new AndClause(sqlCondition));
         return this;
     }
 
     @Override
     public SqlBuilder or(SqlCondition sqlCondition){
-        appendSql(new OrClause(sqlCondition.getSql()));
+        sqlClauses.add(new OrClause(sqlCondition));
         return this;
     }
 
@@ -102,25 +103,29 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder orderBy(SqlField sqlField, SortDirection sortDirection){
-        appendSql(new OrderByClause(sqlField, sortDirection));
+        sqlClauses.add(new OrderByClause(sqlField, sortDirection));
         return this;
     }
 
     @Override
     public SqlBuilder groupBy(SqlField sqlField){
-        appendSql(new GroupByClause(sqlField));
+        sqlClauses.add(new GroupByClause(sqlField));
         return this;
     }
 
     @Override
     public String getSql(){
-        return isSubquery ? new SubqueryClause(sql).toSqlString().trim() : sql.trim();
+        Visitor visitor = new PostgreSQLVisitor();
+        for (SqlClause sqlClause : sqlClauses){
+            sqlClause.accept(visitor);
+        }
+        return visitor.toSqlString();
     }
 
     @Override
     public String clear(){
         String returnCopy = getSql();
-        sql = "";
+        sqlClauses.clear();
         return returnCopy;
     }
 

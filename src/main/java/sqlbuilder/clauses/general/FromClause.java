@@ -1,5 +1,6 @@
 package sqlbuilder.clauses.general;
 
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 
 public class FromClause implements SqlClause {
@@ -11,7 +12,11 @@ public class FromClause implements SqlClause {
     }
 
     @Override
-    public String toSqlString() {
-        return "from ".concat(tableName);
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 }

@@ -7,19 +7,12 @@ import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public abstract class AbstractSqlBuilder {
 
-    protected String sql = "";
-
-    protected boolean isSubquery = false;
-
-    public AbstractSqlBuilder(boolean isSubquery) {
-        this.isSubquery = isSubquery;
-    }
-
-    public AbstractSqlBuilder() {
-
-    }
+    protected final List<SqlClause> sqlClauses = new LinkedList<>();
 
     public abstract SqlBuilder select(SqlField...sqlFields);
 
@@ -54,10 +47,6 @@ public abstract class AbstractSqlBuilder {
     public abstract SqlBuilder groupBy(SqlField sqlField);
 
     public abstract String getSql();
-
-    public void appendSql(SqlClause clause){
-        sql = sql.concat(clause.toSqlString()) + " ";
-    }
 
     public abstract String clear();
 }

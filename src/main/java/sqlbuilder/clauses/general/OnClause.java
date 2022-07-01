@@ -1,7 +1,8 @@
 package sqlbuilder.clauses.general;
 
-import sqlbuilder.conditions.SqlCondition;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.conditions.SqlCondition;
 
 public class OnClause implements SqlClause {
 
@@ -12,7 +13,8 @@ public class OnClause implements SqlClause {
     }
 
     @Override
-    public String toSqlString() {
-        return "on " + sqlCondition.getSql();
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        sqlCondition.accept(visitor);
     }
 }

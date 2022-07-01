@@ -15,7 +15,8 @@ public class SqlBuilderTest {
 
     @ParameterizedTest
     @MethodSource("sqlBuilderCases")
-    void testSqlBuilder(String actual, String expected){
+    void
+    testSqlBuilder(String actual, String expected){
         assertEquals(expected, actual);
     }
 
@@ -44,8 +45,11 @@ public class SqlBuilderTest {
                                         m.get("c").eq(1L)
                                         .and(m.get("c").eq(2L))
                         ).clear(),
-                        "select a from sample_table where a = 1 and b = 'abc' or (c = 1 and c = 2)"
-                )
+                        "select a from sample_table where a = 1 and b = 'abc' or (c = 1 and c = 2 )"
+                ),
+                Arguments.of(sb.select(m.get("a").sum().as("sm")).from("table").clear(), "select sum(a) as sm from table"),
+                Arguments.of(sb.select(m.get("a").as("b")).from("table").where(m.get("b").sum().eq(100L)).clear(),
+                        "select a as b from table where sum(b) = 100")
         );
     }
 

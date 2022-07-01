@@ -1,7 +1,7 @@
 package sqlbuilder.model.base;
 
 import sqlbuilder.builder.SqlBuilder;
-import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
 
@@ -35,10 +35,10 @@ public abstract class AbstractSqlField {
 
     public abstract SqlField avg();
 
-    public abstract String getSql();
+    public abstract void accept(Visitor visitor);
 
-    public void appendSql(SqlClause clause){
-        sql = sql.concat(clause.toSqlString());
-    }
+//    public void appendSql(SqlClause clause){
+//        sql = sql.concat(clause.toSqlString());
+//    }
 
 }

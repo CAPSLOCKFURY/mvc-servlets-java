@@ -1,6 +1,7 @@
 package sqlbuilder.clauses.general;
 
 import sqlbuilder.builder.SortDirection;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.model.SqlField;
 
@@ -16,7 +17,16 @@ public class OrderByClause implements SqlClause {
     }
 
     @Override
-    public String toSqlString() {
-        return "order by " + sqlField + " " + sortDirection.getSortDirection();
+    public void accept(Visitor visitor) {
+        sqlField.accept(visitor);
+        visitor.visit(this);
+    }
+
+    public SqlField getSqlField() {
+        return sqlField;
+    }
+
+    public SortDirection getSortDirection() {
+        return sortDirection;
     }
 }

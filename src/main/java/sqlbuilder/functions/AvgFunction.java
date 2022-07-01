@@ -1,23 +1,23 @@
-package sqlbuilder.clauses.general;
+package sqlbuilder.functions;
 
 import sqlbuilder.builder.base.visitor.Visitor;
-import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
 
-public class GroupByClause implements SqlClause {
+public class AvgFunction implements SqlFunction {
 
     private final SqlField sqlField;
 
-    public GroupByClause(SqlField sqlField) {
+    public AvgFunction(SqlField sqlField) {
         this.sqlField = sqlField;
+    }
+
+    public SqlField getSqlField() {
+        return sqlField;
     }
 
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    public SqlField getSqlField() {
-        return sqlField;
     }
 }

@@ -1,8 +1,8 @@
-package sqlbuilder.clauses.base;
+package sqlbuilder.functions.base;
 
 import sqlbuilder.builder.base.visitor.Visitor;
 
-public interface SqlClause {
+public interface SqlFunction {
 
     void accept(Visitor visitor);
 

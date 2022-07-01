@@ -1,27 +1,20 @@
-package sqlbuilder.clauses.conditional;
+package sqlbuilder.functions;
 
 import sqlbuilder.builder.base.visitor.Visitor;
-import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
 
-public class GreaterThanClause<V> implements SqlClause {
+public class SumFunction implements SqlFunction {
 
     private final SqlField sqlField;
 
-    private final V value;
-
-    public GreaterThanClause(SqlField sqlField, V value) {
+    public SumFunction(SqlField sqlField) {
         this.sqlField = sqlField;
-        this.value = value;
     }
 
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
-    }
-
-    public V getValue() {
-        return value;
     }
 
     public SqlField getSqlField() {

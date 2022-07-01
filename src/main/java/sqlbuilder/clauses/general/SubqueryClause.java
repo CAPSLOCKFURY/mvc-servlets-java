@@ -1,17 +1,23 @@
 package sqlbuilder.clauses.general;
 
+import sqlbuilder.builder.SqlBuilder;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 
 public class SubqueryClause implements SqlClause {
 
-    private final String sql;
+    private final SqlBuilder sqlBuilder;
 
-    public SubqueryClause(String sql) {
-        this.sql = sql;
+    public SubqueryClause(SqlBuilder sqlBuilder) {
+        this.sqlBuilder = sqlBuilder;
     }
 
     @Override
-    public String toSqlString() {
-        return "(" + sql + ")";
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public SqlBuilder getSqlBuilder() {
+        return sqlBuilder;
     }
 }

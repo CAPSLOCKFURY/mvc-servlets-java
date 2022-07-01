@@ -1,17 +1,21 @@
 package sqlbuilder.clauses.conditional;
 
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.conditions.SqlCondition;
 
 public class OrClause implements SqlClause {
 
-    private final String expression;
+    private final SqlCondition sqlCondition;
 
-    public OrClause(String expression) {
-        this.expression = expression;
+    public OrClause(SqlCondition sqlCondition) {
+        this.sqlCondition = sqlCondition;
     }
 
     @Override
-    public String toSqlString() {
-        return "or " + expression;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+        sqlCondition.accept(visitor);
     }
+
 }

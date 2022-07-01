@@ -1,5 +1,6 @@
 package sqlbuilder.clauses.general;
 
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.model.SqlField;
 
@@ -12,11 +13,11 @@ public class SelectClause implements SqlClause {
     }
 
     @Override
-    public String toSqlString() {
-        String[] sqlFieldNames = new String[sqlFields.length];
-        for (int i = 0; i < sqlFields.length; i++) {
-            sqlFieldNames[i] = sqlFields[i].toString();
-        }
-        return "select ".concat(String.join(", ", sqlFieldNames));
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public SqlField[] getSqlFields() {
+        return sqlFields;
     }
 }

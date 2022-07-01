@@ -1,8 +1,9 @@
 package sqlbuilder.clauses.general;
 
 import sqlbuilder.builder.JoinType;
-import sqlbuilder.model.SqlField;
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.model.SqlField;
 
 public class JoinClause implements SqlClause {
 
@@ -19,7 +20,19 @@ public class JoinClause implements SqlClause {
     }
 
     @Override
-    public String toSqlString() {
-        return (joinAlias == null || joinAlias.equals("")) ? joinType + " join " + tableName : joinType + " join " + tableName + " " + joinAlias;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public SqlField getTableName() {
+        return tableName;
+    }
+
+    public String getJoinType() {
+        return joinType;
+    }
+
+    public String getJoinAlias() {
+        return joinAlias;
     }
 }

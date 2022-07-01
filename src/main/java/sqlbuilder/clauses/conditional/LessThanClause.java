@@ -1,20 +1,30 @@
 package sqlbuilder.clauses.conditional;
 
+import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
+import sqlbuilder.model.SqlField;
 
 public class LessThanClause<V> implements SqlClause {
 
+    private final SqlField sqlField;
+
     private final V value;
 
-    private final String fieldName;
-
-    public LessThanClause(String fieldName, V value) {
+    public LessThanClause(SqlField sqlField, V value) {
         this.value = value;
-        this.fieldName = fieldName;
+        this.sqlField = sqlField;
     }
 
     @Override
-    public String toSqlString() {
-        return fieldName + " < " + value;
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
+
+    public V getValue() {
+        return value;
+    }
+
+    public SqlField getSqlField() {
+        return sqlField;
     }
 }
