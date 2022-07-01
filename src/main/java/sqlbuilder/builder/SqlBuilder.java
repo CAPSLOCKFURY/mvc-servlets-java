@@ -14,26 +14,26 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder select(SqlField ...sqlFields){
-        sqlClauses.add(new SelectClause(sqlFields));
+        ast.add(new SelectClause(sqlFields));
         return this;
     }
 
     @Override
     public SqlBuilder from(String tableName){
-        sqlClauses.add(new FromClause(tableName));
+        ast.add(new FromClause(tableName));
         return this;
     }
 
     @Override
     public SqlBuilder from(SqlField sqlField){
-        sqlClauses.add(new FromClause(sqlField.toString()));
+        ast.add(new FromClause(sqlField.toString()));
         return this;
     }
 
     @Override
     public SqlBuilder from(SqlBuilder sqlBuilder){
-        sqlClauses.add(new FromClause(null));
-        sqlClauses.add(new SubqueryClause(sqlBuilder));
+        ast.add(new FromClause(null));
+        ast.add(new SubqueryClause(sqlBuilder));
         return this;
     }
 
@@ -49,25 +49,25 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder join(SqlField tableName, String joinAlias, JoinType joinType){
-        sqlClauses.add(new JoinClause(tableName, joinAlias, joinType));
+        ast.add(new JoinClause(tableName, joinAlias, joinType));
         return this;
     }
 
     @Override
     public SqlBuilder join(SqlBuilder sqlBuilder){
-        sqlClauses.add(new SubqueryClause(sqlBuilder));
+        ast.add(new SubqueryClause(sqlBuilder));
         return this;
     }
 
     @Override
     public SqlBuilder on(SqlCondition sqlCondition){
-        sqlClauses.add(new OnClause(sqlCondition));
+        ast.add(new OnClause(sqlCondition));
         return this;
     }
 
     @Override
     public SqlBuilder where(SqlCondition sqlCondition){
-        sqlClauses.add(new WhereClause(sqlCondition));
+        ast.add(new WhereClause(sqlCondition));
         return this;
     }
 
@@ -82,13 +82,13 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder and(SqlCondition sqlCondition){
-        sqlClauses.add(new AndClause(sqlCondition));
+        ast.add(new AndClause(sqlCondition));
         return this;
     }
 
     @Override
     public SqlBuilder or(SqlCondition sqlCondition){
-        sqlClauses.add(new OrClause(sqlCondition));
+        ast.add(new OrClause(sqlCondition));
         return this;
     }
 
@@ -99,13 +99,13 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder orderBy(SqlField sqlField, SortDirection sortDirection){
-        sqlClauses.add(new OrderByClause(sqlField, sortDirection));
+        ast.add(new OrderByClause(sqlField, sortDirection));
         return this;
     }
 
     @Override
     public SqlBuilder groupBy(SqlField sqlField){
-        sqlClauses.add(new GroupByClause(sqlField));
+        ast.add(new GroupByClause(sqlField));
         return this;
     }
 
@@ -116,7 +116,7 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public String getSql(Visitor visitor){
-        for (SqlClause sqlClause : sqlClauses){
+        for (SqlClause sqlClause : ast){
             sqlClause.accept(visitor);
         }
         return visitor.toSqlString();
@@ -125,7 +125,7 @@ public class SqlBuilder extends AbstractSqlBuilder {
     @Override
     public String clear(){
         String returnCopy = getSql();
-        sqlClauses.clear();
+        ast.clear();
         return returnCopy;
     }
 

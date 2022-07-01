@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class AbstractSqlBuilder {
 
-    protected final List<SqlClause> sqlClauses = new LinkedList<>();
+    protected final List<SqlClause> ast = new LinkedList<>();
 
     public abstract SqlBuilder select(SqlField...sqlFields);
 
