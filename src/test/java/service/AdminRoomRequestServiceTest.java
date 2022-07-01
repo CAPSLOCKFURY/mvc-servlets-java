@@ -42,7 +42,7 @@ public class AdminRoomRequestServiceTest {
         Orderable orderable = new Orderable("id", OrderDirection.ASC);
         Pageable pageable = new Pageable(1, 15);
         List<AdminRoomRequestDTO> roomRequests = service.getAdminRoomRequests("en", RoomRequestStatus.AWAITING, orderable, pageable);
-        assertEquals(1, roomRequests.size());
+        assertEquals(2, roomRequests.size());
     }
 
     @Test
