@@ -49,6 +49,10 @@ public class AdminRoomsService {
             if(isRoomAssigned.getAssigned()){
                 return false;
             }
+            Room room = roomsDao.getRoomById(roomId, "en");
+            if(room.getStatus().equals("unavailable")){
+                return false;
+            }
             OverlapCountDTO overlapCount = roomsDao.getDatesOverlapCount(roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), roomId);
             if (overlapCount.getCount() != 0) {
                 return false;
