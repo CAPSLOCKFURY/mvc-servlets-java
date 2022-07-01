@@ -105,6 +105,7 @@ public class PostgreSQLRoomsDao extends RoomsDao {
         updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REQUESTS, new Object[]{endDate, roomId});
         updateEntity(SqlQueries.Room.DELETE_REFUNDED_BILLINGS, new Object[]{endDate, roomId});
         updateEntity(SqlQueries.Room.DELETE_REFUNDED_ROOM_REGISTRIES, new Object[]{endDate, roomId});
+        updateEntity(SqlQueries.Room.REMOVE_ASSIGNED_ROOM, new Object[]{roomId, LocalDate.now(), endDate});
         return true;
     }
 
