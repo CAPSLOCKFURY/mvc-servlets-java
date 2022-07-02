@@ -36,6 +36,7 @@ public class RoomRequestForm extends Form {
             dynamicOptionsAttribute = "roomClassesMap", literal = "class=\"form-select my-2\"",
             label = @HtmlLabel(forElement = "roomClass", localizedText = "roomClass")
     )
+    @Min(min = 0, localizedError = "errors.roomClassNumberFormat")
     private Integer roomClass;
 
     @HtmlInput(id = "checkInDate", name = "checkInDate", type = InputType.DATE, literal = "class=\"form-control my-2\"",
@@ -70,8 +71,7 @@ public class RoomRequestForm extends Form {
         try {
             this.capacity = Integer.parseInt(capacity);
         } catch (NumberFormatException nfe){
-            addLocalizedError("errors.capacityNumberFormat");
-            this.capacity = 0;
+            this.capacity = null;
         }
     }
 
@@ -82,11 +82,7 @@ public class RoomRequestForm extends Form {
     public void setRoomClass(String roomClass) {
         try {
             this.roomClass = Integer.parseInt(roomClass);
-            if(this.roomClass <= 0){
-                addLocalizedError("errors.roomClassNumberFormat");
-            }
         } catch (NumberFormatException nfe){
-            addLocalizedError("errors.roomClassNumberFormat");
             this.roomClass = 0;
         }
     }
