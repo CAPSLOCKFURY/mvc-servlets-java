@@ -16,71 +16,77 @@ import java.util.stream.Collectors;
  */
 public class CookieMessageTransport implements MessageTransport {
 
-    private List<String> messages = new LinkedList<>();
+    private final List<String> messages = new LinkedList<>();
 
     private Locale locale = Locale.ROOT;
 
-    /**
-     * This method needed, if {@link #setMessage(HttpServletRequest, HttpServletResponse)} is not enough for you,
-     * or you want more flexibility
-     * @return Cookie which contains all messages
-     */
-    public Cookie getMessageCookie() {
+    private String namespace = "messages";
+
+    private String bundleName = "messages";
+
+    private Cookie getMessageCookie() {
         String joinedMessages = String.join(";", messages);
         String urlSafeMessages = UTF8UrlCoder.encode(joinedMessages);
-        return new Cookie("messages", urlSafeMessages);
+        return new Cookie(namespace, urlSafeMessages);
     }
 
+    @Override
     public void setMessage(HttpServletRequest request, HttpServletResponse response) {
         response.addCookie(getMessageCookie());
     }
 
+    @Override
     public List<String> getMessages(){
         return messages;
     }
 
+    @Override
     public void addMessage(String message){
         messages.add(message);
     }
 
+    @Override
     public void addLocalizedMessage(String key) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
         messages.add(bundle.getString(key));
     }
 
-    /**
-     * @param cookies accepts cookies
-     * @return List of decoded messages from message cookie
-     */
-    public static List<String> getMessagesFromCookies(Cookie[] cookies){
+    @Override
+    public void processMessages(HttpServletRequest request, HttpServletResponse response) {
+        List<String> messages = getMessagesFromCookies(request.getCookies());
+        request.setAttribute(namespace, messages);
+        deleteMessageCookie(request.getCookies(), request, response);
+    }
+
+    private List<String> getMessagesFromCookies(Cookie[] cookies){
         return Arrays.stream(cookies)
-                .filter(c -> c.getName().equals("messages"))
+                .filter(c -> c.getName().equals(namespace))
                 .flatMap(c -> Arrays.stream(UTF8UrlCoder.decode(c.getValue()).split(";")))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Delete cookie which stores messages from request
-     */
-    public void deleteMessageCookie(Cookie[] cookies, HttpServletRequest request, HttpServletResponse response){
+    private void deleteMessageCookie(Cookie[] cookies, HttpServletRequest request, HttpServletResponse response){
         Arrays.stream(cookies)
-                .filter(c -> c.getName().equals("messages"))
+                .filter(c -> c.getName().equals(namespace))
                 .forEach(c -> {
-                    c.setValue("");
-                    c.setMaxAge(0);
-                    c.setPath(request.getRequestURI());
-                    response.addCookie(c);
-                }
-        );
+                            c.setValue("");
+                            c.setMaxAge(0);
+                            c.setPath(request.getRequestURI());
+                            response.addCookie(c);
+                        }
+                );
     }
 
-    public void processMessages(HttpServletRequest request, HttpServletResponse response) {
-        List<String> messages = getMessagesFromCookies(request.getCookies());
-        request.setAttribute("messages", messages);
-        deleteMessageCookie(request.getCookies(), request, response);
-    }
-
+    @Override
     public void setLocale(Locale locale){
         this.locale = locale;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public void setBundleName(String bundleName) {
+        this.bundleName = bundleName;
     }
 }
