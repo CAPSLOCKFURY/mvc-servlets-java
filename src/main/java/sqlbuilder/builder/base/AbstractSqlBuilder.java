@@ -3,6 +3,7 @@ package sqlbuilder.builder.base;
 import sqlbuilder.builder.JoinType;
 import sqlbuilder.builder.SortDirection;
 import sqlbuilder.builder.SqlBuilder;
+import sqlbuilder.builder.base.visitor.PostgreSQLVisitor;
 import sqlbuilder.builder.base.visitor.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.conditions.SqlCondition;
@@ -12,6 +13,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractSqlBuilder {
+
+    protected Visitor visitor;
+
+    public AbstractSqlBuilder() {
+        visitor = new PostgreSQLVisitor();
+    }
+
+    public AbstractSqlBuilder(Visitor visitor) {
+        this.visitor = visitor;
+    }
 
     protected final List<SqlClause> ast = new LinkedList<>();
 
@@ -48,8 +59,6 @@ public abstract class AbstractSqlBuilder {
     public abstract SqlBuilder groupBy(SqlField sqlField);
 
     public abstract String getSql();
-
-    public abstract String getSql(Visitor visitor);
 
     public abstract String clear();
 }

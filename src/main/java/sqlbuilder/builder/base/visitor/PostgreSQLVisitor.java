@@ -11,6 +11,8 @@ import sqlbuilder.functions.SumFunction;
 import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
 
+import java.util.List;
+
 public class PostgreSQLVisitor implements Visitor {
 
     private String sql = "";
@@ -153,8 +155,18 @@ public class PostgreSQLVisitor implements Visitor {
     }
 
     @Override
-    public String toSqlString() {
+    public String toSqlString(List<SqlClause> ast) {
+        for (SqlClause sqlClause : ast){
+            sqlClause.accept(this);
+        }
         return sql.trim();
+    }
+
+    @Override
+    public String clear() {
+        String sqlCopy = sql;
+        sql = "";
+        return sqlCopy;
     }
 
     private void appendSql(String sql){

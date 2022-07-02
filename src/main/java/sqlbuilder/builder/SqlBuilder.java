@@ -1,9 +1,7 @@
 package sqlbuilder.builder;
 
 import sqlbuilder.builder.base.AbstractSqlBuilder;
-import sqlbuilder.builder.base.visitor.PostgreSQLVisitor;
 import sqlbuilder.builder.base.visitor.Visitor;
-import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.clauses.conditional.AndClause;
 import sqlbuilder.clauses.conditional.OrClause;
 import sqlbuilder.clauses.general.*;
@@ -11,6 +9,13 @@ import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
 
 public class SqlBuilder extends AbstractSqlBuilder {
+
+    public SqlBuilder() {
+    }
+
+    public SqlBuilder(Visitor visitor) {
+        super(visitor);
+    }
 
     @Override
     public SqlBuilder select(SqlField ...sqlFields){
@@ -109,23 +114,17 @@ public class SqlBuilder extends AbstractSqlBuilder {
         return this;
     }
 
-    @Override
-    public String getSql(){
-        return getSql(new PostgreSQLVisitor());
-    }
 
     @Override
-    public String getSql(Visitor visitor){
-        for (SqlClause sqlClause : ast){
-            sqlClause.accept(visitor);
-        }
-        return visitor.toSqlString();
+    public String getSql(){
+        return visitor.toSqlString(ast);
     }
 
     @Override
     public String clear(){
         String returnCopy = getSql();
         ast.clear();
+        visitor.clear();
         return returnCopy;
     }
 

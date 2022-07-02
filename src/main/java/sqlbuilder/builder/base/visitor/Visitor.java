@@ -1,5 +1,6 @@
 package sqlbuilder.builder.base.visitor;
 
+import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.clauses.conditional.*;
 import sqlbuilder.clauses.general.*;
 import sqlbuilder.conditions.SqlCondition;
@@ -8,9 +9,13 @@ import sqlbuilder.functions.CountFunction;
 import sqlbuilder.functions.SumFunction;
 import sqlbuilder.model.SqlField;
 
+import java.util.List;
+
 public interface Visitor {
 
-    String toSqlString();
+    String toSqlString(List<SqlClause> ast);
+
+    String clear();
 
     void visit(SelectClause clause);
 
