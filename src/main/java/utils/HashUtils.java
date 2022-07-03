@@ -1,5 +1,7 @@
 package utils;
 
+import exceptions.security.PasswordHashingException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +21,7 @@ public class HashUtils {
             return sb.toString();
         } catch (NoSuchAlgorithmException nae){
             nae.printStackTrace();
-            throw new RuntimeException("Password hashing failed");
+            throw new PasswordHashingException();
         }
     }
 
