@@ -24,8 +24,6 @@ public abstract class UserDao extends OrderableAbstractDao {
 
     public abstract List<User> getAllUsers();
 
-    public abstract boolean changePassword(String newPassword, Long userId);
-
     public UserDao(Connection connection) {
         super(connection);
     }

@@ -6,6 +6,7 @@ import dao.factory.SqlDB;
 import forms.*;
 import models.User;
 
+import static utils.HashUtils.hashString;
 
 public class UserService {
 
@@ -31,13 +32,15 @@ public class UserService {
                 form.addLocalizedError("errors.loginExists");
                 return 0;
             }
-            return userDao.createUser(new User(form));
+            User user = new User(form);
+            user.setPassword(hashString(form.getPassword()));
+            return userDao.createUser(user);
         }
     }
 
     public User loginUser(LoginForm form){
         try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
-            User user = userDao.getUserByLoginAndPassword(form.getLogin(), form.getPassword());
+            User user = userDao.getUserByLoginAndPassword(form.getLogin(), hashString(form.getPassword()));
             if (user.getId() == null) {
                 form.addLocalizedError("errors.userNotFound");
                 return user;
@@ -71,13 +74,13 @@ public class UserService {
 
     public boolean changeUserPassword(ChangePasswordForm form, Long userId){
         try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
-            User user = userDao.findUserForPasswordChange(form.getOldPassword(), userId);
+            User user = userDao.findUserForPasswordChange(hashString(form.getOldPassword()), userId);
             if (user.getId() == null) {
                 form.addLocalizedError("errors.IncorrectOldPassword");
                 return false;
             }
-            user.setPassword(form.getNewPassword());
-            return userDao.changePassword(form.getNewPassword(), userId);
+            user.setPassword(hashString(form.getNewPassword()));
+            return userDao.updateUser(user);
         }
     }
 }

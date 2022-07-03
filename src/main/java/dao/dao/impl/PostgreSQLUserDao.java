@@ -42,18 +42,13 @@ public class PostgreSQLUserDao extends UserDao {
     @Override
     public boolean updateUser(User user){
             return updateEntityById(SqlQueries.User.UPDATE_USER,
-                    new Object[]{user.getLogin(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole(), user.getBalance()},
+                    new Object[]{user.getLogin(), user.getEmail(), user.getPassword(),user.getFirstName(), user.getLastName(), user.getRole(), user.getBalance()},
                     user.getId());
     }
 
     @Override
     public User findUserForPasswordChange(String password, Long userId) {
         return getOneByParams(SqlQueries.User.FIND_USER_FOR_PASSWORD_CHANGE, new Object[]{password, userId}, User.class);
-    }
-
-    @Override
-    public boolean changePassword(String newPassword, Long userId) {
-        return updateEntityById(SqlQueries.User.CHANGE_USER_PASSWORD, new Object[]{newPassword}, userId);
     }
 
     public PostgreSQLUserDao(Connection connection) {

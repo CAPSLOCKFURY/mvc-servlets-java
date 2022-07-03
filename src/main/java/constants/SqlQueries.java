@@ -137,10 +137,6 @@ public final class SqlQueries {
                 "    left outer join room_class_translation rct on rct.class_id = room_requests.room_class and rct.language = ?\n" +
                 "    where room_requests.id = ?";
 
-        public static final String DECLINE_ASSIGNED_ROOM = "update room_requests set room_id = null, status = 'awaiting', comment=? where id = ?";
-
-        public static final String ADMIN_CLOSE_REQUEST = "update room_requests set manager_comment = ?, status = 'closed', room_id = null where id=?";
-
         private RoomRequest(){}
     }
 
@@ -150,19 +146,17 @@ public final class SqlQueries {
 
         public static final String FIND_ALL_USERS = "select id, login, email, password, first_name, last_name, role, balance from users";
 
-        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name, balance, role) values (?, ?, md5(?), ?, ?, ?, ?)";
+        public static final String INSERT_USER = "insert into users(login, email, password, first_name, last_name, balance, role) values (?, ?, ?, ?, ?, ?, ?)";
 
-        public static final String UPDATE_USER = "update users set login = ?, email = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
-
-        public static final String CHANGE_USER_PASSWORD = "update users set password = md5(?) where id = ?";
+        public static final String UPDATE_USER = "update users set login = ?, email = ?, password = ?, first_name = ?, last_name = ?, role = ?, balance = ? where id = ?";
 
         public static final String FIND_BY_LOGIN = "select id, login, email, password, first_name, last_name, role, balance from users where login = ?";
 
         public static final String FIND_BY_EMAIL = "select id, login, email, password, first_name, last_name, role, balance from users where email = ?";
 
-        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select id, login, email, password, first_name, last_name, role, balance from users where login = ? and password = md5(?)";
+        public static final String FIND_BY_LOGIN_AND_PASSWORD = "select id, login, email, password, first_name, last_name, role, balance from users where login = ? and password = ?";
 
-        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select id, login, email, password, first_name, last_name, role, balance from users where password = md5(?) and id = ?";
+        public static final String FIND_USER_FOR_PASSWORD_CHANGE = "select id, login, email, password, first_name, last_name, role, balance from users where password = ? and id = ?";
 
         private User(){}
     }
