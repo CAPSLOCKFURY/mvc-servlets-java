@@ -1,6 +1,6 @@
 package sqlbuilder.functions.base;
 
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 
 public interface SqlFunction {
 

@@ -1,6 +1,6 @@
 package sqlbuilder.conditions;
 
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.clauses.conditional.AndClause;
 import sqlbuilder.clauses.conditional.OrClause;

@@ -1,7 +1,7 @@
 package sqlbuilder.clauses.general;
 
 import sqlbuilder.builder.SqlBuilder;
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 
 public class SubqueryClause implements SqlClause {

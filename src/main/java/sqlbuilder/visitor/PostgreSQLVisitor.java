@@ -1,4 +1,4 @@
-package sqlbuilder.builder.base.visitor;
+package sqlbuilder.visitor;
 
 import sqlbuilder.builder.SqlBuilder;
 import sqlbuilder.clauses.base.SqlClause;
@@ -10,6 +10,7 @@ import sqlbuilder.functions.CountFunction;
 import sqlbuilder.functions.SumFunction;
 import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
+import sqlbuilder.visitor.base.Visitor;
 
 import java.util.List;
 

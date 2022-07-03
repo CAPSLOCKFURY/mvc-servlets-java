@@ -1,7 +1,7 @@
 package sqlbuilder.model.base;
 
 import sqlbuilder.builder.SqlBuilder;
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
 

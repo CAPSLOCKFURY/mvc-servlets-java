@@ -1,4 +1,4 @@
-package sqlbuilder.builder.base.visitor;
+package sqlbuilder.visitor.base;
 
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.clauses.conditional.*;

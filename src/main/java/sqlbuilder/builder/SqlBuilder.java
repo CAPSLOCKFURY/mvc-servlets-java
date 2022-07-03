@@ -1,7 +1,9 @@
 package sqlbuilder.builder;
 
+import sqlbuilder.builder.base.JoinType;
+import sqlbuilder.builder.base.SortDirection;
 import sqlbuilder.builder.base.AbstractSqlBuilder;
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.clauses.conditional.AndClause;
 import sqlbuilder.clauses.conditional.OrClause;
 import sqlbuilder.clauses.general.*;

@@ -1,4 +1,4 @@
-package sqlbuilder.builder;
+package sqlbuilder.builder.base;
 
 public enum SortDirection {
 

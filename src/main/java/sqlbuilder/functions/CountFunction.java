@@ -1,6 +1,6 @@
 package sqlbuilder.functions;
 
-import sqlbuilder.builder.base.visitor.Visitor;
+import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
 

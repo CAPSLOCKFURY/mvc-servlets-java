@@ -3,7 +3,7 @@ package sqlbuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import sqlbuilder.builder.SortDirection;
+import sqlbuilder.builder.base.SortDirection;
 import sqlbuilder.builder.SqlBuilder;
 import sqlbuilder.model.SqlModel;
 
