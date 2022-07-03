@@ -11,10 +11,30 @@ import sqlbuilder.model.SqlField;
 
 import java.util.List;
 
+/**
+ * Visitor class for constructing sql query from sql ast
+ * visit method is called on enter in ast node
+ * exit method is called at the end
+ * <p>
+ *     Note: see accept method in each node to understand how visitor methods will be called
+ * </p>
+ */
 public interface Visitor {
 
+    /**
+     * Return sql string from given ast
+     * <p>
+     *     Note: you should iterate though ast and call accept methods
+     * </p>
+     * @param ast List of sql nodes
+     * @return Constructed sql string
+     */
     String toSqlString(List<SqlClause> ast);
 
+    /**
+     * Get sql string constructed from {@link #toSqlString} method call, and clears internal state of visitor if needed
+     * @return Constructed sql
+     */
     String clear();
 
     void visit(SelectClause clause);
