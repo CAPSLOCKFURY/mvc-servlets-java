@@ -88,7 +88,7 @@ public class AdminRoomsService {
             roomsDao.transaction.rollback();
             return false;
         } finally {
-            roomsDao.transaction.close();
+            roomsDao.close();
         }
     }
 
