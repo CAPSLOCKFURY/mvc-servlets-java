@@ -15,6 +15,10 @@ public class SelectClause implements SqlClause {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        for(SqlField sqlField : sqlFields){
+            sqlField.accept(visitor);
+        }
+        visitor.exit(this);
     }
 
     public SqlField[] getSqlFields() {

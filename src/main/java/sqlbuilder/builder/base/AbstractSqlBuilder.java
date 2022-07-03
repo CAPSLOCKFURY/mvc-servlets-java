@@ -1,11 +1,13 @@
 package sqlbuilder.builder.base;
 
+import dao.factory.SqlDB;
 import sqlbuilder.builder.SqlBuilder;
 import sqlbuilder.visitor.PostgreSQLVisitor;
 import sqlbuilder.visitor.base.Visitor;
 import sqlbuilder.clauses.base.SqlClause;
 import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.model.SqlField;
+import sqlbuilder.visitor.base.VisitorFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,11 +16,12 @@ public abstract class AbstractSqlBuilder {
 
     protected Visitor visitor;
 
-    public AbstractSqlBuilder() {
-        visitor = new PostgreSQLVisitor();
+
+    public AbstractSqlBuilder(SqlDB sqlDB) {
+        this(VisitorFactory.getVisitor(sqlDB));
     }
 
-    public AbstractSqlBuilder(Visitor visitor) {
+    public AbstractSqlBuilder(Visitor visitor){
         this.visitor = visitor;
     }
 
@@ -59,4 +62,16 @@ public abstract class AbstractSqlBuilder {
     public abstract String getSql();
 
     public abstract String clear();
+
+    public void setVisitor(Visitor visitor) {
+        this.visitor = visitor;
+    }
+
+    public List<SqlClause> getAst() {
+        return ast;
+    }
+
+    public Visitor getVisitor() {
+        return visitor;
+    }
 }

@@ -22,6 +22,7 @@ public class JoinClause implements SqlClause {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        visitor.exit(this);
     }
 
     public SqlField getTableName() {

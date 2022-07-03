@@ -16,6 +16,7 @@ public class AndClause implements SqlClause {
     public void accept(Visitor visitor) {
         visitor.visit(this);
         sqlCondition.accept(visitor);
+        visitor.exit(this);
     }
 
 }

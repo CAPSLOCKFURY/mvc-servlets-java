@@ -39,6 +39,11 @@ public class SqlCondition extends AbstractSqlCondition {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        sqlField.accept(visitor);
+        for(SqlClause clause : clauses){
+            clause.accept(visitor);
+        }
+        visitor.exit(this);
     }
 
     public boolean isNestedCondition() {

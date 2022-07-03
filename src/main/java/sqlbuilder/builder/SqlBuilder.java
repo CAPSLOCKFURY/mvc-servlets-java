@@ -1,5 +1,6 @@
 package sqlbuilder.builder;
 
+import dao.factory.SqlDB;
 import sqlbuilder.builder.base.JoinType;
 import sqlbuilder.builder.base.SortDirection;
 import sqlbuilder.builder.base.AbstractSqlBuilder;
@@ -13,9 +14,14 @@ import sqlbuilder.model.SqlField;
 public class SqlBuilder extends AbstractSqlBuilder {
 
     public SqlBuilder() {
+        super(SqlDB.POSTGRESQL);
     }
 
-    public SqlBuilder(Visitor visitor) {
+    public SqlBuilder(SqlDB sqlDB) {
+        super(sqlDB);
+    }
+
+    private SqlBuilder(Visitor visitor){
         super(visitor);
     }
 
@@ -46,7 +52,7 @@ public class SqlBuilder extends AbstractSqlBuilder {
 
     @Override
     public SqlBuilder subquery(){
-        return new SqlBuilder();
+        return new SqlBuilder(visitor);
     }
 
     @Override
@@ -115,7 +121,6 @@ public class SqlBuilder extends AbstractSqlBuilder {
         ast.add(new GroupByClause(sqlField));
         return this;
     }
-
 
     @Override
     public String getSql(){

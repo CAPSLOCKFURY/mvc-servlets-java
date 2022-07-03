@@ -18,6 +18,7 @@ public class LessThanClause<V> implements SqlClause {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        visitor.exit(this);
     }
 
     public V getValue() {

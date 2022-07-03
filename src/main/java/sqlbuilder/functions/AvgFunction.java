@@ -19,5 +19,6 @@ public class AvgFunction implements SqlFunction {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        visitor.exit(this);
     }
 }

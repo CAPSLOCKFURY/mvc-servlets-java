@@ -8,7 +8,6 @@ import sqlbuilder.conditions.SqlCondition;
 import sqlbuilder.functions.AvgFunction;
 import sqlbuilder.functions.CountFunction;
 import sqlbuilder.functions.SumFunction;
-import sqlbuilder.functions.base.SqlFunction;
 import sqlbuilder.model.SqlField;
 import sqlbuilder.visitor.base.Visitor;
 
@@ -20,15 +19,17 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public void visit(SelectClause clause) {
+        appendSql("select");
+    }
+
+    @Override
+    public void exit(SelectClause clause){
         SqlField[] sqlFields = clause.getSqlFields();
-        for(SqlField sqlField : sqlFields){
-            sqlField.accept(this);
-        }
         String[] sqlFieldNames = new String[sqlFields.length];
         for (int i = 0; i < sqlFields.length; i++) {
-            sqlFieldNames[i] = sqlFields[i].toString();
+            sqlFieldNames[i] = sqlFields[i].getFieldName();
         }
-        appendSql("select ".concat(String.join(", ", sqlFieldNames)));
+        appendSql(String.join(", ", sqlFieldNames));
     }
 
     @Override
@@ -79,7 +80,13 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public void visit(SubqueryClause clause) {
-        appendSql("(" + clause.getSqlBuilder().getSql() + " )");
+        sql += "(";
+        toSqlString(clause.getSqlBuilder().getAst());
+    }
+
+    @Override
+    public void exit(SubqueryClause clause){
+        appendSql(")");
     }
 
     @Override
@@ -87,10 +94,10 @@ public class PostgreSQLVisitor implements Visitor {
         if(condition.isNestedCondition()){
             sql += "(";
         }
-        condition.getSqlField().accept(this);
-        for (SqlClause sqlClause : condition.getClauses()) {
-            sqlClause.accept(this);
-        }
+    }
+
+    @Override
+    public void exit(SqlCondition condition){
         if(condition.isNestedCondition()) {
             sql += ")";
         }
@@ -129,9 +136,11 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public void visit(SqlField sqlField) {
-        for(SqlFunction sqlFunction : sqlField.getSqlFunctions()){
-            sqlFunction.accept(this);
-        }
+
+    }
+
+    @Override
+    public void exit(SqlField sqlField){
         if(sqlField.getAlias() != null){
             sqlField.setFieldName(sqlField.getFieldName() + " as " + sqlField.getAlias());
         }

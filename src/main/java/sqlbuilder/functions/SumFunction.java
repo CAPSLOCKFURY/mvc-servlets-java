@@ -15,6 +15,7 @@ public class SumFunction implements SqlFunction {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        visitor.exit(this);
     }
 
     public SqlField getSqlField() {

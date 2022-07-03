@@ -94,9 +94,13 @@ public class SqlField extends AbstractSqlField {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        for(SqlFunction sqlFunction : sqlFunctions) {
+            sqlFunction.accept(visitor);
+        }
         if(sqlClause != null) {
             sqlClause.accept(visitor);
         }
+        visitor.exit(this);
     }
 
     public SqlClause getSqlClause() {

@@ -15,6 +15,7 @@ public class SubqueryClause implements SqlClause {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+        visitor.exit(this);
     }
 
     public SqlBuilder getSqlBuilder() {

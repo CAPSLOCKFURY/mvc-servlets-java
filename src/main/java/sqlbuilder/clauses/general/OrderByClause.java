@@ -20,6 +20,7 @@ public class OrderByClause implements SqlClause {
     public void accept(Visitor visitor) {
         sqlField.accept(visitor);
         visitor.visit(this);
+        visitor.exit(this);
     }
 
     public SqlField getSqlField() {
