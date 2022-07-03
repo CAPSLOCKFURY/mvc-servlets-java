@@ -18,6 +18,14 @@ public class PostgreSQLVisitor implements Visitor {
     private String sql = "";
 
     @Override
+    public String toSqlString(List<SqlClause> ast) {
+        for (SqlClause sqlClause : ast){
+            sqlClause.accept(this);
+        }
+        return sql.trim();
+    }
+
+    @Override
     public void visit(SelectClause clause) {
         appendSql("select");
     }
@@ -162,14 +170,6 @@ public class PostgreSQLVisitor implements Visitor {
     public void visit(AvgFunction function) {
         SqlField sqlField = function.getSqlField();
         sqlField.setFieldName("avg(" + sqlField.getFieldName() + ")");
-    }
-
-    @Override
-    public String toSqlString(List<SqlClause> ast) {
-        for (SqlClause sqlClause : ast){
-            sqlClause.accept(this);
-        }
-        return sql.trim();
     }
 
     @Override
