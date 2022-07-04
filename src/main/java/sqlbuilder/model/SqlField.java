@@ -20,6 +20,8 @@ public class SqlField extends AbstractSqlField {
 
     private String alias;
 
+    private boolean negated = false;
+
     private final List<SqlFunction> sqlFunctions = new LinkedList<>();
 
     public SqlField(String fieldName) {
@@ -29,6 +31,12 @@ public class SqlField extends AbstractSqlField {
     @Override
     public SqlField as(String alias){
         this.alias = alias;
+        return this;
+    }
+
+    @Override
+    public SqlField not() {
+        negated = !negated;
         return this;
     }
 
@@ -97,10 +105,10 @@ public class SqlField extends AbstractSqlField {
         for(SqlFunction sqlFunction : sqlFunctions) {
             sqlFunction.accept(visitor);
         }
+        visitor.exit(this);
         if(sqlClause != null) {
             sqlClause.accept(visitor);
         }
-        visitor.exit(this);
     }
 
     public SqlClause getSqlClause() {
@@ -121,5 +129,9 @@ public class SqlField extends AbstractSqlField {
 
     public void setFieldName(String fieldName){
         this.fieldName = fieldName;
+    }
+
+    public boolean isNegated() {
+        return negated;
     }
 }

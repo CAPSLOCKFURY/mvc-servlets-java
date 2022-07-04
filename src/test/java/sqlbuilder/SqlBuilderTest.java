@@ -59,7 +59,17 @@ public class SqlBuilderTest {
                 ),
                 Arguments.of(sb.select(m.get("a").sum().as("sm")).from("table").clear(), "select sum(a) as sm from table"),
                 Arguments.of(sb.select(m.get("a").as("b")).from("table").where(m.get("b").sum().eq(100L)).clear(),
-                        "select a as b from table where sum(b) = 100")
+                        "select a as b from table where sum(b) = 100"),
+                Arguments.of(sb.
+                        select(m.get("a").not()).from("table").where(m.get("b").not().eq(1)).clear(),
+                        "select not a from table where not b = 1"
+                ),
+                Arguments.of(sb
+                        .select(m.get("a")).from("table").where(m.get("a").eq(1))
+                                .or(m.get("b").not().eq(1).or(m.get("c").eq(1)))
+                        .clear(),
+                        "select a from table where a = 1 or (not b = 1 or c = 1)"
+                )
         );
     }
 

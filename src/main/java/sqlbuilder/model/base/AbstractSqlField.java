@@ -17,6 +17,8 @@ public abstract class AbstractSqlField {
 
     public abstract SqlField as(String alias);
 
+    public abstract SqlField not();
+
     public abstract <V> SqlCondition eq(V value);
 
     public abstract SqlCondition eq(SqlBuilder sqlBuilder);

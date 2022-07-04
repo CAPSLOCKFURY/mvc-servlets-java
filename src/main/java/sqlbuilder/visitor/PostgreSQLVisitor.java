@@ -154,6 +154,9 @@ public class PostgreSQLVisitor implements Visitor {
         if(sqlField.getAlias() != null){
             sqlField.setFieldName(sqlField.getFieldName() + " as " + sqlField.getAlias());
         }
+        if(sqlField.isNegated()){
+            sqlField.setFieldName("not ".concat(sqlField.getFieldName()));
+        }
     }
 
     @Override
