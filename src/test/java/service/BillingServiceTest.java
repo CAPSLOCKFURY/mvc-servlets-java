@@ -11,6 +11,7 @@ import models.base.pagination.Pageable;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,12 +22,9 @@ public class BillingServiceTest {
 
     private final static BillingService service = BillingService.getInstance();
 
-    public static Connection connection;
-
     @BeforeAll
     public static void setUp(){
         ConnectionPool.initPool();
-        connection = ConnectionPool.getConnection();
     }
 
     @AfterEach
@@ -45,7 +43,7 @@ public class BillingServiceTest {
     @Test
     @Order(2)
     void payBillingTest(){
-        BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao(connection);
+        BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao(ConnectionPool.getConnection());
         MessageTransport messageTransport = new CookieMessageTransport();
         boolean result = service.payBilling(3L, 1L, messageTransport);
         assertTrue(result);
