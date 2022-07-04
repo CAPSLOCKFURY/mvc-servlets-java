@@ -30,7 +30,7 @@ public class SqlBuilderTest {
                         .from(sb.subquery().select(m.get("a"), m.get("b")).from("table2"))
                         .orderBy(m.get("a"), SortDirection.DESC)
                         .clear(),
-                        "select a, b from (select a, b from table2 ) order by a desc"
+                        "select a, b from (select a, b from table2) order by a desc"
                 ),
                 Arguments.of(sb
                         .select(m.get("abc")).from(m.get("table3"))
@@ -45,7 +45,17 @@ public class SqlBuilderTest {
                                         m.get("c").eq(1L)
                                         .and(m.get("c").eq(2L))
                         ).clear(),
-                        "select a from sample_table where a = 1 and b = 'abc' or (c = 1 and c = 2 )"
+                        "select a from sample_table where a = 1 and b = 'abc' or (c = 1 and c = 2)"
+                ),
+                Arguments.of(sb
+                        .select(m.get("a"), m.get("b"))
+                        .from("table")
+                        .where(m.get("a").eq(1)
+                                .or(
+                                        m.get("b").eq(2).or(m.get("c").eq(3)).and(m.get("d").eq(4))))
+                                        .or(m.get("e").eq(5).and(m.get("f").eq(6)))
+                        .clear(),
+                        "select a, b from table where (a = 1 or (b = 2 or c = 3 and d = 4)) or (e = 5 and f = 6)"
                 ),
                 Arguments.of(sb.select(m.get("a").sum().as("sm")).from("table").clear(), "select sum(a) as sm from table"),
                 Arguments.of(sb.select(m.get("a").as("b")).from("table").where(m.get("b").sum().eq(100L)).clear(),

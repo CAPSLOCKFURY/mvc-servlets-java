@@ -15,14 +15,14 @@ import java.util.List;
 
 public class PostgreSQLVisitor implements Visitor {
 
-    private String sql = "";
+    private StringBuilder sql = new StringBuilder();
 
     @Override
     public String toSqlString(List<SqlClause> ast) {
         for (SqlClause sqlClause : ast){
             sqlClause.accept(this);
         }
-        return sql.trim();
+        return sql.toString().trim();
     }
 
     @Override
@@ -88,26 +88,28 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public void visit(SubqueryClause clause) {
-        sql += "(";
+        sql.append("(");
         toSqlString(clause.getSqlBuilder().getAst());
     }
 
     @Override
     public void exit(SubqueryClause clause){
+        removeLastEmptyChar();
         appendSql(")");
     }
 
     @Override
     public void visit(SqlCondition condition) {
         if(condition.isNestedCondition()){
-            sql += "(";
+            sql.append("(");
         }
     }
 
     @Override
     public void exit(SqlCondition condition){
         if(condition.isNestedCondition()) {
-            sql += ")";
+            removeLastEmptyChar();
+            appendSql(")");
         }
     }
 
@@ -174,12 +176,26 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public String clear() {
-        String sqlCopy = sql;
-        sql = "";
+        String sqlCopy = sql.toString();
+        sql.setLength(0);
         return sqlCopy;
     }
 
     private void appendSql(String sql){
-        this.sql = this.sql.concat(sql) + " ";
+        this.sql.append(sql.concat(" "));
+    }
+
+    private char lastChar(){
+        return sql.charAt(sql.length() - 1);
+    }
+
+    private void removeLastChar(){
+        sql.setLength(sql.length() - 1);
+    }
+
+    private void removeLastEmptyChar(){
+        if(lastChar() == ' '){
+            removeLastChar();
+        }
     }
 }
