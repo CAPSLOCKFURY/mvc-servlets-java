@@ -115,13 +115,12 @@ public class PostgreSQLVisitor implements Visitor {
 
     @Override
     public void visit(EqualsClause<?> clause) {
-        String valueString;
-        if (clause.getValue().getClass().equals(SqlBuilder.class)) {
-            valueString = (((SqlBuilder) clause.getValue()).getSql());
+        if (clause.hasSubquery()) {
+            appendSql(clause.getSqlField().getFieldName() + " =");
         } else {
-            valueString = clause.getValue().toString();
+            String valueString = clause.getValue().toString();
+            appendSql(clause.getSqlField().getFieldName() + " = " + valueString);
         }
-        appendSql(clause.getSqlField().getFieldName() + " = " + valueString);
     }
 
     @Override

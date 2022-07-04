@@ -48,6 +48,11 @@ public class SqlBuilderTest {
                         "select a from sample_table where a = 1 and b = 'abc' or (c = 1 and c = 2)"
                 ),
                 Arguments.of(sb
+                        .select(m.get("a")).from("table").where(m.get("b").eq(sb.subquery().select(m.get("a").sum()).from("table2")))
+                        .clear(),
+                        "select a from table where b = (select sum(a) from table2)"
+                ),
+                Arguments.of(sb
                         .select(m.get("a"), m.get("b"))
                         .from("table")
                         .where(m.get("a").eq(1)
