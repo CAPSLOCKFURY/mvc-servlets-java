@@ -9,8 +9,6 @@ public abstract class AbstractSqlCondition {
 
     public abstract SqlCondition and(SqlCondition sqlCondition);
 
-//    public abstract String getSql();
-
     public abstract void accept(Visitor visitor);
 
 }

@@ -37,8 +37,4 @@ public abstract class AbstractSqlField {
 
     public abstract void accept(Visitor visitor);
 
-//    public void appendSql(SqlClause clause){
-//        sql = sql.concat(clause.toSqlString());
-//    }
-
 }
