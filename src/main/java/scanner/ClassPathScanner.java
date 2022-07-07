@@ -27,16 +27,24 @@ public class ClassPathScanner {
 
     private URL[] urls;
 
-    private boolean threadedScan = true;
+    private final boolean threadedScan;
 
-    private int threadCount = 10;
+    private final int threadCount;
+
+    private final boolean ignoreNoClassDef;
+
+    private final boolean skipJars;
 
     public ClassPathScanner(){
-        this(Thread.currentThread().getContextClassLoader());
+        this(new Config());
     }
 
-    public ClassPathScanner(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    private ClassPathScanner(Config config){
+        classLoader = config.classLoader;
+        threadedScan = config.threadedScan;
+        threadCount = config.threadCount;
+        ignoreNoClassDef = config.ignoreNoClassDef;
+        skipJars = config.skipJars;
     }
 
     private void prepareGlobalClassLoader(){
@@ -98,6 +106,9 @@ public class ClassPathScanner {
     private ClassSink scanClasspathSync(){
         ClassSink classSink = new ClassSink();
         for (URL url : urls) {
+            if(skipJars && url.toString().startsWith("jar")){
+                continue;
+            }
             classSink.add(scanUrl(url, ""));
         }
         return classSink;
@@ -107,6 +118,9 @@ public class ClassPathScanner {
         ClassSink classSink = new ClassSink();
         ExecutorService executors = Executors.newFixedThreadPool(threadCount);
         for(URL url : urls){
+            if(skipJars && url.toString().startsWith("jar")){
+                continue;
+            }
             executors.submit(() -> classSink.add(scanUrl(url, "")));
         }
         try {
@@ -145,9 +159,11 @@ public class ClassPathScanner {
                         try {
                             classes.add(globalClassLoader.loadClass(s));
                         } catch (ClassNotFoundException e) {
-                            logger.error("Class not found: {}", e.getMessage());
-                        } catch (NoClassDefFoundError ignored){
-
+                            logger.error("Class not found: {}", s);
+                        } catch (NoClassDefFoundError e){
+                            if(!ignoreNoClassDef){
+                                logger.error("No class def found: {}", s);
+                            }
                         }
                     });
             return classes;
@@ -174,7 +190,9 @@ public class ClassPathScanner {
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         } catch (NoClassDefFoundError e) {
-                            logger.error("No class def for: {}", s);
+                            if(!ignoreNoClassDef) {
+                                logger.error("No class def for: {}", s);
+                            }
                         }
                     });
             return classes;
@@ -184,13 +202,46 @@ public class ClassPathScanner {
         }
     }
 
-    public ClassPathScanner setThreadedScan(boolean threadedScan) {
-        this.threadedScan = threadedScan;
-        return this;
-    }
+    public static class Config{
 
-    public ClassPathScanner setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
-        return this;
+        private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        private boolean threadedScan = true;
+
+        private int threadCount = 10;
+
+        private boolean ignoreNoClassDef = true;
+
+        private boolean skipJars = false;
+
+        public Config classLoader(ClassLoader classLoader){
+            this.classLoader = classLoader;
+            return this;
+        }
+
+        public Config threadedScan(boolean b){
+            threadedScan = b;
+            return this;
+        }
+
+        public Config threadCount(int threadCount){
+            this.threadCount = threadCount;
+            return this;
+        }
+
+        public Config ignoreNoClassDef(boolean b){
+            ignoreNoClassDef = b;
+            return this;
+        }
+
+        public Config skipJars(boolean b){
+            skipJars = b;
+            return this;
+        }
+
+        public ClassPathScanner build(){
+            return new ClassPathScanner(this);
+        }
+
     }
 }
