@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
@@ -35,8 +36,16 @@ public class ClassPathScanner {
 
     private final boolean skipJars;
 
+    private Predicate<JarEntry> jarPreExcludeRules;
+
+    private Predicate<String> jarPostExcludeRules;
+
+    private Predicate<Path> filePreExcludeRules;
+
+    private Predicate<String> filePostExcludeRules;
+
     public ClassPathScanner(){
-        this(new Config());
+        this(new Config().postConfig());
     }
 
     private ClassPathScanner(Config config){
@@ -45,6 +54,10 @@ public class ClassPathScanner {
         threadCount = config.threadCount;
         ignoreNoClassDef = config.ignoreNoClassDef;
         skipJars = config.skipJars;
+        jarPreExcludeRules = config.jarPreExcludeRules;
+        jarPostExcludeRules = config.jarPostExcludeRules;
+        filePreExcludeRules = config.filePreExcludeRules;
+        filePostExcludeRules = config.filePostExcludeRules;
     }
 
     private void prepareGlobalClassLoader(){
@@ -149,12 +162,12 @@ public class ClassPathScanner {
         }
         try(JarFile jarFile = new JarFile(url.getFile().substring(6, url.getFile().indexOf('!')));) {
             jarFile.stream()
-                    .filter(e -> !e.toString().startsWith("META-INF"))
+                    .filter(jarPreExcludeRules)
                     .filter(e -> e.toString().endsWith(".class"))
                     .map(e -> e.getName().replace('/', '.'))
                     .filter(e -> packageName.equals("") || e.startsWith(packageName))
                     .map(e -> e.replaceAll(".class$", ""))
-                    .filter(e -> !e.endsWith("module-info"))
+                    .filter(jarPostExcludeRules)
                     .forEach(s ->{
                         try {
                             classes.add(globalClassLoader.loadClass(s));
@@ -179,10 +192,12 @@ public class ClassPathScanner {
             Path start = Paths.get(url.toURI());
             Files.walk(start, Integer.MAX_VALUE)
                     .map(start::relativize)
+                    .filter(filePreExcludeRules)
                     .map(Path::toString)
                     .filter(p -> p.endsWith(".class"))
                     .map(p -> p.replace('/', '.').replace('\\', '.'))
                     .map(p -> p.replaceAll(".class$", ""))
+                    .filter(filePostExcludeRules)
                     .forEach(s -> {
                         try {
                             String className = packageName.equals("") ? s : packageName.concat('.' + s);
@@ -202,7 +217,7 @@ public class ClassPathScanner {
         }
     }
 
-    public static class Config{
+    public static final class Config{
 
         private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -213,6 +228,14 @@ public class ClassPathScanner {
         private boolean ignoreNoClassDef = true;
 
         private boolean skipJars = false;
+
+        private Predicate<JarEntry> jarPreExcludeRules = ((Predicate<JarEntry>) e -> e.getName().startsWith("META-INF")).negate();
+
+        private Predicate<String> jarPostExcludeRules = ((Predicate<String>) s -> s.endsWith("module-info")).negate();
+
+        private Predicate<Path> filePreExcludeRules;
+
+        private Predicate<String> filePostExcludeRules;
 
         public Config classLoader(ClassLoader classLoader){
             this.classLoader = classLoader;
@@ -239,7 +262,89 @@ public class ClassPathScanner {
             return this;
         }
 
+        public Config removeJarExcludeRules(){
+            jarPreExcludeRules = null;
+            jarPostExcludeRules = null;
+            return this;
+        }
+
+        public Config removeFileExcludeRules(){
+            filePreExcludeRules = null;
+            filePostExcludeRules = null;
+            return this;
+        }
+
+        @SafeVarargs
+        public final Config jarPreExcludeRules(Predicate<JarEntry> ...predicates){
+            Predicate<JarEntry> predicate = joinPredicates(predicates);
+            if(jarPreExcludeRules != null){
+                jarPreExcludeRules = jarPreExcludeRules.and(predicate);
+            } else {
+                jarPreExcludeRules = predicate;
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Config jarPostExcludeRules(Predicate<String> ...predicates){
+            Predicate<String> predicate = joinPredicates(predicates);
+            if(jarPostExcludeRules != null){
+                jarPostExcludeRules = jarPostExcludeRules.and(predicate);
+            } else {
+                jarPostExcludeRules = predicate;
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Config filePreExcludeRules(Predicate<Path> ...predicates){
+            Predicate<Path> predicate = joinPredicates(predicates);
+            if(filePreExcludeRules != null){
+                filePreExcludeRules = filePreExcludeRules.and(predicate);
+            } else {
+                filePreExcludeRules = predicate;
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Config filePostExcludeRules(Predicate<String> ...predicates){
+            Predicate<String> predicate = joinPredicates(predicates);
+            if(filePostExcludeRules != null){
+                filePostExcludeRules = filePostExcludeRules.and(predicate);
+            } else {
+                filePostExcludeRules = predicate;
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        private final <P> Predicate<P> joinPredicates(Predicate<P> ...predicates){
+            Predicate<P> globalPredicate = predicates[0].negate();
+            for (int i = 1; i < predicates.length; i++) {
+                globalPredicate = globalPredicate.and(predicates[i].negate());
+            }
+            return globalPredicate;
+        }
+
+        private Config postConfig(){
+            if(jarPreExcludeRules == null){
+                jarPreExcludeRules = t -> true;
+            }
+            if(jarPostExcludeRules == null){
+                jarPostExcludeRules = t -> true;
+            }
+            if(filePreExcludeRules == null){
+                filePreExcludeRules = t -> true;
+            }
+            if(filePostExcludeRules == null){
+                filePostExcludeRules = t -> true;
+            }
+            return this;
+        }
+
         public ClassPathScanner build(){
+            postConfig();
             return new ClassPathScanner(this);
         }
 
