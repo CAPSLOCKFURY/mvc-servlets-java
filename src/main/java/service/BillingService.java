@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.BillingDao;
 import dao.dao.RoomRequestDao;
 import dao.dao.UserDao;
@@ -17,8 +18,10 @@ import java.util.List;
 
 public class BillingService {
 
-    private BillingService(){
+    private final SqlDB sqlDB;
 
+    private BillingService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder{
@@ -30,7 +33,7 @@ public class BillingService {
     }
 
     public List<Billing> findBillingsByUserId(Long userId, Pageable pageable){
-        try(BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();){
+        try(BillingDao billingDao = DaoAbstractFactory.getFactory(sqlDB).getBillingDao();){
             return billingDao.getAllBillingsByUserId(userId, pageable);
         }
     }
@@ -38,9 +41,9 @@ public class BillingService {
     public boolean payBilling(Long userId, Long billingId, MessageTransport messageTransport){
         BillingDao billingDao = null;
         try {
-            billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
-            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(billingDao.getConnection());
-            RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(billingDao.getConnection());
+            billingDao = DaoAbstractFactory.getFactory(sqlDB).getBillingDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao(billingDao.getConnection());
+            RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao(billingDao.getConnection());
             billingDao.transaction.open();
 
             ExtendedBillingDTO extendedBilling = billingDao.getExtendedBillingById(billingId);
@@ -74,7 +77,7 @@ public class BillingService {
     }
 
     public int deleteOldBillings(){
-        BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao();
+        BillingDao billingDao = DaoAbstractFactory.getFactory(sqlDB).getBillingDao();
         try {
             billingDao.transaction.open();
             int result = billingDao.deleteOldBillings();

@@ -1,5 +1,7 @@
 package validators.base;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import exceptions.validators.ValidatorError;
 import scanner.ClassPathScanner;
 
@@ -8,6 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public final class ValidatorRegistry {
+
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
 
     private static final ValidatorRegistry instance = new ValidatorRegistry();
 
@@ -45,7 +49,7 @@ public final class ValidatorRegistry {
     @SuppressWarnings("unchecked")
     private Set<Class<? extends Annotation>> registerAnnotations(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        Set<Class<?>> annotationSet = classPathScanner.scan("validators.annotations", c -> c.isAnnotation() && c.isAnnotationPresent(ValidatedBy.class));
+        Set<Class<?>> annotationSet = classPathScanner.scan(context.validatorsPackage(), c -> c.isAnnotation() && c.isAnnotationPresent(ValidatedBy.class));
         return (Set<Class<? extends Annotation>>)(Set<?>) annotationSet;
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.RoomRegistryDAO;
 import dao.dao.RoomsDao;
 import dao.dao.UserDao;
@@ -23,8 +24,10 @@ import java.util.List;
 
 public class RoomsService {
 
-    private RoomsService(){
+    private final SqlDB sqlDB;
 
+    private RoomsService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder {
@@ -36,25 +39,25 @@ public class RoomsService {
     }
 
     public List<Room> getAllRooms(String locale, Orderable orderable, Pageable pageable){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.getAllRooms(locale, orderable, pageable);
         }
     }
 
     public List<RoomClass> getRoomClasses(String locale){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.getAllRoomClasses(locale);
         }
     }
 
     public Room getRoomById(Long id, String locale){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.getRoomById(id, locale);
         }
     }
 
     public RoomExtendedInfo getExtendedRoomInfo(Long id, String locale){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
         return roomsDao.getExtendedRoomInfoById(id , locale);
         }
     }
@@ -62,9 +65,9 @@ public class RoomsService {
     public boolean bookRoom(BookRoomForm form, Long roomId, Long userId){
         RoomsDao roomsDao = null;
         try {
-            roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-            UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao(roomsDao.getConnection());
-            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomsDao.getConnection());
+            roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();
+            UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao(roomsDao.getConnection());
+            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(sqlDB).getRoomRegistryDao(roomsDao.getConnection());
             roomsDao.transaction.open();
             OverlapCountDTO overlapCountDTO = roomsDao.getDatesOverlapCount(form.getCheckInDate(), form.getCheckOutDate(), roomId);
             if(overlapCountDTO.getCount() != 0){
@@ -101,13 +104,13 @@ public class RoomsService {
     }
 
     public List<RoomHistoryDTO> getUserRoomHistory(Long userId, String locale, Pageable pageable){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.getRoomHistory(userId, locale, pageable);
         }
     }
 
     public int archiveOldRoomRegistries(){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.archiveOldRoomRegistries();
         } catch (DaoException daoException){
             return -1;
@@ -115,7 +118,7 @@ public class RoomsService {
     }
 
     public int updateRoomsStatus(){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao()) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao()) {
             return roomsDao.updateRoomStatus();
         } catch (DaoException daoException){
             return -1;

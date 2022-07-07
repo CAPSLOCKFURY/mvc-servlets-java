@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.RoomRequestDao;
 import dao.dao.RoomsDao;
 import dao.factory.DaoAbstractFactory;
@@ -21,8 +22,10 @@ import java.util.List;
 
 public class AdminRoomsService {
 
-    private AdminRoomsService(){
+    private final SqlDB sqlDB;
 
+    private AdminRoomsService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder{
@@ -34,7 +37,7 @@ public class AdminRoomsService {
     }
 
     public List<Room> findSuitableRoomsForRequest(String locale, LocalDate checkInDate, LocalDate checkOutDate, Orderable orderable, Pageable pageable){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();) {
             return roomsDao.findSuitableRoomsForDates(locale, checkInDate, checkOutDate, orderable, pageable);
         }
     }
@@ -42,8 +45,8 @@ public class AdminRoomsService {
     public boolean assignRoomToRequest(Long roomId, Long requestId){
         RoomsDao roomsDao = null;
         try {
-            roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
-            RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao(roomsDao.getConnection());
+            roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();
+            RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao(roomsDao.getConnection());
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             IsRoomAssigned isRoomAssigned = roomRequestDao.isRoomAssigned(roomId, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate());
             if(isRoomAssigned.getAssigned()){
@@ -69,7 +72,7 @@ public class AdminRoomsService {
     }
 
     public List<RoomRegistryPdfReportDto> findDataForRoomRegistryReport(ReportConfigurationForm form, Pageable pageable){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();){
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();){
             return roomsDao.findDataForRoomRegistryReport(form.getCheckInDate(), form.getCheckOutDate(), pageable);
         } catch (DaoException daoException){
             return Collections.emptyList();
@@ -77,7 +80,7 @@ public class AdminRoomsService {
     }
 
     public boolean closeRoom(Long id, CloseRoomForm form){
-        RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();
+        RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();
         try{
             roomsDao.transaction.open();
             boolean result = roomsDao.setRoomUnavailableAndRefundMoney(id, form.getEndDate());
@@ -93,7 +96,7 @@ public class AdminRoomsService {
     }
 
     public boolean openRoom(Long id){
-        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao();) {
+        try(RoomsDao roomsDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao();) {
             Room room = roomsDao.getRoomById(id, "en");
             room.setStatus("free");
             return roomsDao.updateRoom(room);

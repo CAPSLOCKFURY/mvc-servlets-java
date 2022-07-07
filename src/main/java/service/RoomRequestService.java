@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.BillingDao;
 import dao.dao.RoomRegistryDAO;
 import dao.dao.RoomRequestDao;
@@ -21,8 +22,10 @@ import java.util.List;
 
 public class RoomRequestService {
 
-    private RoomRequestService(){
+    private final SqlDB sqlDB;
 
+    private RoomRequestService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder{
@@ -34,19 +37,19 @@ public class RoomRequestService {
     }
 
     public boolean createRoomRequest(RoomRequestForm form){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao()) {
             return roomRequestDao.createRoomRequest(new RoomRequest(form));
         }
     }
 
     public List<RoomRequest> getRoomRequestsByUserId(Long userId, String locale, Pageable pageable){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao()) {
             return roomRequestDao.getAllRoomRequestsByUserId(userId, locale, pageable);
         }
     }
 
     public boolean disableRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao()) {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");
@@ -64,10 +67,10 @@ public class RoomRequestService {
     public boolean confirmRoomRequest(Long requestId, Long userId, MessageTransport messageTransport){
         RoomRequestDao roomRequestDao = null;
         try {
-            roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();
-            RoomsDao roomDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomsDao(roomRequestDao.getConnection());
-            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRegistryDao(roomRequestDao.getConnection());
-            BillingDao billingDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getBillingDao(roomRequestDao.getConnection());
+            roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao();
+            RoomsDao roomDao = DaoAbstractFactory.getFactory(sqlDB).getRoomsDao(roomRequestDao.getConnection());
+            RoomRegistryDAO roomRegistryDAO = DaoAbstractFactory.getFactory(sqlDB).getRoomRegistryDao(roomRequestDao.getConnection());
+            BillingDao billingDao = DaoAbstractFactory.getFactory(sqlDB).getBillingDao(roomRequestDao.getConnection());
             roomRequestDao.transaction.open();
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if (!roomRequest.getUserId().equals(userId)) {
@@ -102,7 +105,7 @@ public class RoomRequestService {
     }
 
     public boolean declineAssignedRoom(String comment, Long userId, Long requestId, MessageTransport messageTransport){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao()) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao()) {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             if (!roomRequest.getUserId().equals(userId)) {
                 messageTransport.addLocalizedMessage("message.notYourRequest");

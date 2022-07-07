@@ -1,5 +1,7 @@
 package web;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import exceptions.WebMethodNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import scanner.ClassPathScanner;
@@ -13,6 +15,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class ControllerRegistry {
+
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
 
     private final Map<UrlBind, Method> methodMap = new HashMap<>();
 
@@ -50,7 +54,7 @@ public class ControllerRegistry {
 
     private void registerControllerInstances(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        Set<Class<?>> controllers = classPathScanner.scan("controllers", c -> c.isAnnotationPresent(WebController.class));
+        Set<Class<?>> controllers = classPathScanner.scan(context.controllersPackage(), c -> c.isAnnotationPresent(WebController.class));
         controllers.forEach(c -> {
             try {
                 Object controller = c.getConstructor().newInstance();

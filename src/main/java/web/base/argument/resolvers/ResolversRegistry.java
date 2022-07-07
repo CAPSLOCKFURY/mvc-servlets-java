@@ -1,5 +1,7 @@
 package web.base.argument.resolvers;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import scanner.ClassPathScanner;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResolversRegistry {
+
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
 
     private Map<Class<?>, WebMethodArgumentResolver<?>> resolverMap;
 
@@ -27,7 +31,7 @@ public class ResolversRegistry {
 
     private Set<Class<?>> getResolverClasses(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        return classPathScanner.scan("web.resolvers", WebMethodArgumentResolver.class::isAssignableFrom);
+        return classPathScanner.scan(context.argumentResolversPackage(), WebMethodArgumentResolver.class::isAssignableFrom);
     }
 
     private Map<Class<?>, WebMethodArgumentResolver<?>> getArgumentResolversMap(Set<Class<?>> resolvers){

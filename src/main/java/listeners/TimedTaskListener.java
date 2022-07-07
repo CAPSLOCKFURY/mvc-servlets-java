@@ -1,5 +1,7 @@
 package listeners;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -22,6 +24,8 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
 
     private ScheduledExecutorService scheduler;
 
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -33,7 +37,7 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
 
     public Set<Class<?>> getTimedTaskClasses(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        return classPathScanner.scan("tasks", c -> c.isAnnotationPresent(Scheduled.class) && ScheduledTask.class.isAssignableFrom(c));
+        return classPathScanner.scan(context.tasksPackage(), c -> c.isAnnotationPresent(Scheduled.class) && ScheduledTask.class.isAssignableFrom(c));
     }
 
     public List<ScheduledTask> createTasks(List<Class<?>> timedTaskClasses){

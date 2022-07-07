@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.RoomRequestDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
@@ -13,8 +14,10 @@ import java.util.List;
 
 public class AdminRoomRequestService {
 
-    private AdminRoomRequestService(){
+    private final SqlDB sqlDB;
 
+    private AdminRoomRequestService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder{
@@ -27,19 +30,19 @@ public class AdminRoomRequestService {
 
 
     public AdminRoomRequestDTO getAdminRoomRequestById(Long requestId, String locale){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao();) {
             return roomRequestDao.getRoomRequestForAdmin(requestId, locale);
         }
     }
 
     public List<AdminRoomRequestDTO> getAdminRoomRequests(String locale, RoomRequestStatus requestStatus, Orderable orderable, Pageable pageable){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao();) {
             return roomRequestDao.getRoomRequestsForAdmin(locale, requestStatus.getColName(), orderable, pageable);
         }
     }
 
     public boolean closeRoomRequest(Long requestId, String comment){
-        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getRoomRequestDao();) {
+        try(RoomRequestDao roomRequestDao = DaoAbstractFactory.getFactory(sqlDB).getRoomRequestDao();) {
             RoomRequest roomRequest = roomRequestDao.getRoomRequestById(requestId);
             roomRequest.setStatus("closed");
             roomRequest.setManagerComment(comment);

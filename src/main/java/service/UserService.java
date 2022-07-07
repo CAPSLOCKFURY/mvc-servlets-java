@@ -1,5 +1,6 @@
 package service;
 
+import context.ContextHolder;
 import dao.dao.UserDao;
 import dao.factory.DaoAbstractFactory;
 import dao.factory.SqlDB;
@@ -10,8 +11,10 @@ import static utils.HashUtils.hashString;
 
 public class UserService {
 
-    private UserService(){
+    private final SqlDB sqlDB;
 
+    private UserService(){
+        sqlDB = ContextHolder.getInstance().getApplicationContext().sqlDb();
     }
 
     private static final class SingletonHolder{
@@ -23,7 +26,7 @@ public class UserService {
     }
 
     public long createUser(RegisterForm form) {
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             if (userDao.getUserByEmail(form.getEmail()).getEmail() != null) {
                 form.addLocalizedError("errors.emailExists");
                 return 0;
@@ -39,7 +42,7 @@ public class UserService {
     }
 
     public User loginUser(LoginForm form){
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             User user = userDao.getUserByLoginAndPassword(form.getLogin(), hashString(form.getPassword()));
             if (user.getId() == null) {
                 form.addLocalizedError("errors.userNotFound");
@@ -50,13 +53,13 @@ public class UserService {
     }
 
     public User getUserById(Long id){
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             return userDao.getUserById(id);
         }
     }
 
     public boolean addUserBalance(AddBalanceForm form, Long userId){
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             User user = userDao.getUserById(userId);
             user.setBalance(user.getBalance().add(form.getAmount()));
             return userDao.updateUser(user);
@@ -64,7 +67,7 @@ public class UserService {
     }
 
     public boolean updateUser(UserUpdateProfileForm form, Long userId){
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             User user = userDao.getUserById(userId);
             user.setFirstName(form.getFirstName());
             user.setLastName(form.getLastName());
@@ -73,7 +76,7 @@ public class UserService {
     }
 
     public boolean changeUserPassword(ChangePasswordForm form, Long userId){
-        try(UserDao userDao = DaoAbstractFactory.getFactory(SqlDB.POSTGRESQL).getUserDao()) {
+        try(UserDao userDao = DaoAbstractFactory.getFactory(sqlDB).getUserDao()) {
             User user = userDao.findUserForPasswordChange(hashString(form.getOldPassword()), userId);
             if (user.getId() == null) {
                 form.addLocalizedError("errors.IncorrectOldPassword");

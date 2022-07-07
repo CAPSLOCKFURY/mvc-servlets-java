@@ -1,5 +1,7 @@
 package web;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import exceptions.WebMethodNotFoundException;
 import exceptions.security.SecurityNoRedirectUrl;
 import jakarta.servlet.ServletException;
@@ -31,6 +33,8 @@ public class FrontController extends HttpServlet {
     private static final Logger logger = LogManager.getLogger();
 
     private static final ControllerRegistry controllerRegistry = ControllerRegistry.getInstance();
+
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -74,7 +78,7 @@ public class FrontController extends HttpServlet {
 
     private void handleWebResult(WebResult webResult, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if(webResult.getDirection() == RequestDirection.FORWARD){
-            request.getRequestDispatcher("/pages/" + webResult.getUrl()).forward(request, response);
+            request.getRequestDispatcher(context.jspPagesPrefix() + webResult.getUrl()).forward(request, response);
         } else if(webResult.getDirection() == RequestDirection.REDIRECT){
             if(webResult.isAbsolute()){
                 response.sendRedirect(webResult.getUrl());
