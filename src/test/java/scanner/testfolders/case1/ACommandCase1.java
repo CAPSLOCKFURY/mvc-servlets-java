@@ -1,4 +1,4 @@
-package utils.testfolders.case3.inner.inner;
+package scanner.testfolders.case1;
 
 import web.base.Command;
 import web.base.WebResult;
@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebMapping(url = "", method = RequestMethod.POST)
-public class HCommandCase3 implements Command {
+public class ACommandCase1 implements Command {
     @Override
     public WebResult execute(HttpServletRequest request, HttpServletResponse response) {
         return null;

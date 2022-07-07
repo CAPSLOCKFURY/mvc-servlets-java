@@ -1,4 +1,4 @@
-package utils.testfolders.case3;
+package scanner.testfolders.case3;
 
 import web.base.Command;
 import web.base.WebResult;
