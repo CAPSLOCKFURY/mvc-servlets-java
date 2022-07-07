@@ -1,6 +1,6 @@
 package web.base.argument.resolvers;
 
-import utils.ClassUtils;
+import scanner.ClassPathScanner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -29,7 +29,8 @@ public class ResolversRegistry {
     }
 
     private List<Class<?>> getResolverClasses(){
-        return ClassUtils.getClassesInPackage("web.resolvers", WebMethodArgumentResolver.class::isAssignableFrom);
+        ClassPathScanner classPathScanner = new ClassPathScanner();
+        return classPathScanner.scan("web.resolvers", WebMethodArgumentResolver.class::isAssignableFrom);
     }
 
     private Map<Class<?>, WebMethodArgumentResolver<?>> getArgumentResolversMap(List<Class<?>> resolvers){

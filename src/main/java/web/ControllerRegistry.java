@@ -2,7 +2,7 @@ package web;
 
 import exceptions.WebMethodNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import utils.ClassUtils;
+import scanner.ClassPathScanner;
 import web.base.RequestMethod;
 import web.base.UrlBind;
 import web.base.annotations.WebController;
@@ -49,7 +49,8 @@ public class ControllerRegistry {
     }
 
     private void registerControllerInstances(){
-        List<Class<?>> controllers = ClassUtils.getClassesInPackage("controllers", c -> c.isAnnotationPresent(WebController.class));
+        ClassPathScanner classPathScanner = new ClassPathScanner();
+        List<Class<?>> controllers = classPathScanner.scan("controllers", c -> c.isAnnotationPresent(WebController.class));
         controllers.forEach(c -> {
             try {
                 Object controller = c.getConstructor().newInstance();

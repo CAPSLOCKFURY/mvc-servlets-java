@@ -5,9 +5,9 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpSessionAttributeListener;
 import jakarta.servlet.http.HttpSessionListener;
+import scanner.ClassPathScanner;
 import tasks.base.Scheduled;
 import tasks.base.ScheduledTask;
-import utils.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -30,8 +30,8 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
     }
 
     public List<Class<?>> getTimedTaskClasses(){
-        return ClassUtils.getClassesInPackage("tasks",
-                c -> c.isAnnotationPresent(Scheduled.class) && ScheduledTask.class.isAssignableFrom(c));
+        ClassPathScanner classPathScanner = new ClassPathScanner();
+        return classPathScanner.scan("tasks", c -> c.isAnnotationPresent(Scheduled.class) && ScheduledTask.class.isAssignableFrom(c));
     }
 
     public List<ScheduledTask> createTasks(List<Class<?>> timedTaskClasses){
