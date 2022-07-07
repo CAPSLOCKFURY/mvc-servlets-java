@@ -10,7 +10,9 @@ import tasks.base.Scheduled;
 import tasks.base.ScheduledTask;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
@@ -23,13 +25,13 @@ public class TimedTaskListener implements ServletContextListener, HttpSessionLis
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        createTasks(getTimedTaskClasses()).forEach(task -> {
+        createTasks(new ArrayList<>(getTimedTaskClasses())).forEach(task -> {
             Scheduled scheduled = task.getClass().getAnnotation(Scheduled.class);
             scheduler.scheduleAtFixedRate(task::run, scheduled.initialDelay(), scheduled.period(), scheduled.timeUnit());
         });
     }
 
-    public List<Class<?>> getTimedTaskClasses(){
+    public Set<Class<?>> getTimedTaskClasses(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
         return classPathScanner.scan("tasks", c -> c.isAnnotationPresent(Scheduled.class) && ScheduledTask.class.isAssignableFrom(c));
     }

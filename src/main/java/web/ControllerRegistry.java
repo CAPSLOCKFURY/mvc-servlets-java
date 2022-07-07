@@ -50,7 +50,7 @@ public class ControllerRegistry {
 
     private void registerControllerInstances(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        List<Class<?>> controllers = classPathScanner.scan("controllers", c -> c.isAnnotationPresent(WebController.class));
+        Set<Class<?>> controllers = classPathScanner.scan("controllers", c -> c.isAnnotationPresent(WebController.class));
         controllers.forEach(c -> {
             try {
                 Object controller = c.getConstructor().newInstance();

@@ -4,10 +4,7 @@ import scanner.ClassPathScanner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResolversRegistry {
@@ -28,12 +25,12 @@ public class ResolversRegistry {
         return resolverMap.get(type);
     }
 
-    private List<Class<?>> getResolverClasses(){
+    private Set<Class<?>> getResolverClasses(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
         return classPathScanner.scan("web.resolvers", WebMethodArgumentResolver.class::isAssignableFrom);
     }
 
-    private Map<Class<?>, WebMethodArgumentResolver<?>> getArgumentResolversMap(List<Class<?>> resolvers){
+    private Map<Class<?>, WebMethodArgumentResolver<?>> getArgumentResolversMap(Set<Class<?>> resolvers){
         Map<Class<?>, WebMethodArgumentResolver<?>> methodArgumentResolverMap = new HashMap<>();
         resolvers.forEach(r -> {
                     try {

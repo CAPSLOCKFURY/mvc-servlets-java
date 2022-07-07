@@ -45,8 +45,7 @@ public final class ValidatorRegistry {
     @SuppressWarnings("unchecked")
     private Set<Class<? extends Annotation>> registerAnnotations(){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        List<Class<?>> annotationClassesList = classPathScanner.scan("validators.annotations", c -> c.isAnnotation() && c.isAnnotationPresent(ValidatedBy.class));
-        Set<Class<?>> annotationSet = new HashSet<>(annotationClassesList);
+        Set<Class<?>> annotationSet = classPathScanner.scan("validators.annotations", c -> c.isAnnotation() && c.isAnnotationPresent(ValidatedBy.class));
         return (Set<Class<? extends Annotation>>)(Set<?>) annotationSet;
     }
 

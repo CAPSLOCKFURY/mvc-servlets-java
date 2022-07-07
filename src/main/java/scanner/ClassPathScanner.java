@@ -56,13 +56,13 @@ public class ClassPathScanner {
         return urls.toArray(new URL[0]);
     }
 
-    public List<Class<?>> scan(String packageName){
+    public Set<Class<?>> scan(String packageName){
         return scan(packageName, c -> true);
     }
 
-    public List<Class<?>> scan(String packageName, Predicate<Class<?>> predicate){
+    public Set<Class<?>> scan(String packageName, Predicate<Class<?>> predicate){
         packageName = packageName.replace('.', '/');
-        List<Class<?>> classes;
+        Set<Class<?>> classes;
         prepareGlobalClassLoader();
         if(packageName.equals("")){
             classes = scanClasspath(predicate);
@@ -77,17 +77,17 @@ public class ClassPathScanner {
         return classes;
     }
 
-    private List<Class<?>> scanPackage(String packageName, Predicate<Class<?>> predicate){
+    private Set<Class<?>> scanPackage(String packageName, Predicate<Class<?>> predicate){
         URL url = classLoader.getResource(packageName);
         if(url != null) {
-            return scanUrl(url, packageName.replace('/', '.')).stream().filter(predicate).collect(Collectors.toList());
+            return scanUrl(url, packageName.replace('/', '.')).stream().filter(predicate).collect(Collectors.toSet());
         } else {
             logger.error("Package not found for package name: {}", packageName);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 
-    private List<Class<?>> scanClasspath(Predicate<Class<?>> predicate) {
+    private Set<Class<?>> scanClasspath(Predicate<Class<?>> predicate) {
         if(!threadedScan) {
             return scanClasspathSync().getClasses(predicate);
         } else {
@@ -118,8 +118,8 @@ public class ClassPathScanner {
         return classSink;
     }
 
-    private List<Class<?>> scanUrl(URL url, String packageName){
-        List<Class<?>> classes;
+    private Set<Class<?>> scanUrl(URL url, String packageName){
+        Set<Class<?>> classes;
         if(url.toString().startsWith("jar")){
             classes = scanJar(url, packageName);
         } else {
@@ -128,8 +128,8 @@ public class ClassPathScanner {
         return classes;
     }
 
-    private List<Class<?>> scanJar(URL url, String packageName){
-        List<Class<?>> classes = new LinkedList<>();
+    private Set<Class<?>> scanJar(URL url, String packageName){
+        Set<Class<?>> classes = new HashSet<>();
         if(!url.toString().startsWith("jar")) {
             throw new IllegalArgumentException("Url is not jar file");
         }
@@ -157,8 +157,8 @@ public class ClassPathScanner {
         }
     }
 
-    private List<Class<?>> scanFile(URL url, String packageName){
-        List<Class<?>> classes = new LinkedList<>();
+    private Set<Class<?>> scanFile(URL url, String packageName){
+        Set<Class<?>> classes = new HashSet<>();
         try {
             Path start = Paths.get(url.toURI());
             Files.walk(start, Integer.MAX_VALUE)

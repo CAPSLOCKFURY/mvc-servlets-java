@@ -20,9 +20,7 @@ import scanner.testfolders.case4.BCase4;
 import scanner.testfolders.case4.CCase4;
 import web.base.annotations.WebMapping;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,32 +29,32 @@ public class ClassPathScannerTest {
 
     @ParameterizedTest
     @MethodSource("getClassesInPackageCases")
-    void testGetClassesInPackage(String packageName, List<Class<?>> expected){
+    void testGetClassesInPackage(String packageName, Set<Class<?>> expected){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        List<Class<?>> classes = classPathScanner.scan(packageName);
+        Set<Class<?>> classes = classPathScanner.scan(packageName);
         assertEquals(expected, classes);
     }
 
     @ParameterizedTest
     @MethodSource("getAnnotatedCommandClassesInPackageCases")
-    void testGetAnnotatedCommandClassesInPackage(String packageName, List<Class<?>> expected){
+    void testGetAnnotatedCommandClassesInPackage(String packageName, Set<Class<?>> expected){
         ClassPathScanner classPathScanner = new ClassPathScanner();
-        List<Class<?>> classes = classPathScanner.scan(packageName, c -> Command.class.isAssignableFrom(c) && c.isAnnotationPresent(WebMapping.class));
+        Set<Class<?>> classes = classPathScanner.scan(packageName, c -> Command.class.isAssignableFrom(c) && c.isAnnotationPresent(WebMapping.class));
         assertEquals(expected, classes);
     }
 
     public static Stream<Arguments> getClassesInPackageCases(){
         return Stream.of(
-                Arguments.of("scanner.testfolders.case1", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case1", new HashSet<>(
                         Arrays.asList(ACase1.class, ACommandCase1.class, BCase1.class, CCase1.class)
                 )),
-                Arguments.of("scanner.testfolders.case2", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case2", new HashSet<>(
 
                 )),
-                Arguments.of("scanner.testfolders.case3", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case3", new HashSet<>(
                         Arrays.asList(ACommandCase3.class, BCommandCase3.class, CCommandNoAnnotationCase3.class, DCommandCase3.class, ECase3.class, FCase3.class, HCommandCase3.class)
                 )),
-                Arguments.of("scanner.testfolders.case4", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case4", new HashSet<>(
                         Arrays.asList(ACase4.class, BCase4.class, CCase4.class)
                 ))
         );
@@ -64,16 +62,16 @@ public class ClassPathScannerTest {
 
     public static Stream<Arguments> getAnnotatedCommandClassesInPackageCases(){
         return Stream.of(
-                Arguments.of("scanner.testfolders.case1", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case1", new HashSet<>(
                         Arrays.asList(ACommandCase1.class)
                 )),
-                Arguments.of("scanner.testfolders.case2", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case2", new HashSet<>(
 
                 )),
-                Arguments.of("scanner.testfolders.case3", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case3", new HashSet<>(
                         Arrays.asList(ACommandCase3.class, BCommandCase3.class, DCommandCase3.class, HCommandCase3.class)
                 )),
-                Arguments.of("scanner.testfolders.case4", new ArrayList<>(
+                Arguments.of("scanner.testfolders.case4", new HashSet<>(
 
                 ))
         );
