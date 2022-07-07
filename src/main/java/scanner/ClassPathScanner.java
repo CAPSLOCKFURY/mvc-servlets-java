@@ -36,13 +36,13 @@ public class ClassPathScanner {
 
     private final boolean skipJars;
 
-    private Predicate<JarEntry> jarPreExcludeRules;
+    private final Predicate<JarEntry> jarPreExcludeRules;
 
-    private Predicate<String> jarPostExcludeRules;
+    private final Predicate<String> jarPostExcludeRules;
 
-    private Predicate<Path> filePreExcludeRules;
+    private final Predicate<Path> filePreExcludeRules;
 
-    private Predicate<String> filePostExcludeRules;
+    private final Predicate<String> filePostExcludeRules;
 
     public ClassPathScanner(){
         this(new Config().postConfig());
