@@ -8,11 +8,8 @@ import web.base.argument.resolvers.WebMethodArgumentResolver;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ArgumentResolver {
 
@@ -25,45 +22,38 @@ public class ArgumentResolver {
     }
 
     public Object[] resolveArguments(HttpServletRequest request, HttpServletResponse response){
-        AtomicReference<Object> previousResolved = new AtomicReference<>();
-        AtomicBoolean annotationResolved = new AtomicBoolean();
+        Object previousResolved = null;
+        boolean annotationResolved = false;
         Parameter[] parameters = method.getParameters();
         List<Object> resolvedArguments = new LinkedList<>();
-        Arrays.stream(parameters).forEach(p -> {
-            previousResolved.set(null);
-            annotationResolved.set(false);
+        for (Parameter p : parameters){
             Annotation[] annotations = p.getAnnotations();
-            Arrays.stream(annotations).forEach(a -> {
-                WebMethodArgumentResolver resolver = resolversRegistry.getResolver(a.annotationType());
-                if(resolver != null) {
-                    Object prevResolved = resolveAnnotation(request, response, previousResolved, a, p);
-                    previousResolved.set(prevResolved);
-                    annotationResolved.set(true);
-                }
-            });
-            if(annotationResolved.get()){
-                if(previousResolved.get() == null || (previousResolved.get().getClass().equals(p.getType()) || p.getType().isAssignableFrom(previousResolved.get().getClass()))) {
-                    resolvedArguments.add(previousResolved.get());
+            for (Annotation a : annotations){
+                previousResolved = resolveAnnotation(request, response, previousResolved, a, p);
+                annotationResolved = true;
+            }
+            if(annotationResolved){
+                if(previousResolved == null || (previousResolved.getClass().equals(p.getType()) || p.getType().isAssignableFrom(previousResolved.getClass()))) {
+                    resolvedArguments.add(previousResolved);
                 } else {
                     resolvedArguments.add(resolveParameter(request, response, previousResolved, p));
                 }
             } else {
-                resolvedArguments.add(resolveParameter(request, response, previousResolved, p));
+                resolvedArguments.add(resolveParameter(request, response, null, p));
             }
-        });
+        }
         return resolvedArguments.toArray();
     }
 
-    private Object resolveParameter(HttpServletRequest request, HttpServletResponse response, AtomicReference<Object> previousResolved, Parameter parameter){
+    private Object resolveParameter(HttpServletRequest request, HttpServletResponse response, Object previousResolved, Parameter parameter){
         WebMethodArgumentResolver<?> parameterResolver = resolversRegistry.getResolver(parameter.getType());
-        return parameterResolver.resolve(request, response, previousResolved.get(), parameter);
+        return parameterResolver.resolve(request, response, previousResolved, parameter);
     }
 
-    private Object resolveAnnotation(HttpServletRequest request, HttpServletResponse response, AtomicReference<Object> previousResolved, Annotation annotation, Parameter parameter){
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Object resolveAnnotation(HttpServletRequest request, HttpServletResponse response, Object previousResolved, Annotation annotation, Parameter parameter){
         WebMethodArgumentResolver resolver = resolversRegistry.getResolver(annotation.annotationType());
-        Object resolvedValue = resolver.resolve(request, response, previousResolved.get(), parameter, annotation);
-        previousResolved.set(resolvedValue);
-        return resolvedValue;
+        return resolver.resolve(request, response, previousResolved, parameter, annotation);
     }
 
 }
