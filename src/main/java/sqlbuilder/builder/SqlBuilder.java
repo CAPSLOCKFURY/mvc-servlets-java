@@ -1,5 +1,7 @@
 package sqlbuilder.builder;
 
+import context.ApplicationContext;
+import context.ContextHolder;
 import dao.factory.SqlDB;
 import sqlbuilder.builder.base.JoinType;
 import sqlbuilder.builder.base.SortDirection;
@@ -13,8 +15,10 @@ import sqlbuilder.model.SqlField;
 
 public class SqlBuilder extends AbstractSqlBuilder {
 
+    private static final ApplicationContext context = ContextHolder.getInstance().getApplicationContext();
+
     public SqlBuilder() {
-        super(SqlDB.POSTGRESQL);
+        super(context.sqlDb());
     }
 
     public SqlBuilder(SqlDB sqlDB) {
