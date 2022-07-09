@@ -44,9 +44,6 @@ public final class SqlQueries {
                 "where room_id = ?\n" +
                 "  and (daterange(?::date, ?::date, '[]') && daterange(room_requests.check_in_date::date, room_requests.check_out_date::date, '[]'))\n";
 
-        public static final String FIND_DATA_FOR_ROOM_REGISTRY_REPORT = "select user_id, u.first_name, u.last_name, check_in_date, check_out_date, room_id from room_registry " +
-                "join users u on room_registry.user_id = u.id";
-
         public static final String ARCHIVE_OLD_ROOM_REGISTRIES = "update room_registry set archived = true where check_out_date <= date(now())";
 
         public static final String UPDATE_ROOM_STATUS = "update rooms set status =\n" +
