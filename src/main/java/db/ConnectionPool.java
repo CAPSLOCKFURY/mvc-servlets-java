@@ -117,12 +117,12 @@ public class ConnectionPool {
             if(pool.offer(connection)) {
                 logger.debug("Returned connection back to pool");
             } else {
-                logger.fatal("Could not return connection to connection poll");
+                logger.fatal("Could not return connection to connection pool");
                 throw new ConnectionNotReturned();
             }
         } else {
             logger.fatal("Connection was not in used connections");
-            logger.fatal("Could not return connection to connection poll");
+            logger.fatal("Could not return connection to connection pool");
             throw new ConnectionNotReturned();
         }
     }
