@@ -20,8 +20,6 @@ import web.resolvers.annotations.GetParameter;
 import java.util.List;
 import java.util.Locale;
 
-import static utils.LocaleUtils.getLocaleFromCookies;
-
 @WebController
 public class BillingController {
 
@@ -30,10 +28,10 @@ public class BillingController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-billings/pay", method = RequestMethod.POST)
     public WebResult payBilling(HttpServletRequest request, HttpServletResponse response,
-                                @GetParameter(required = true, value = "billingId") Long billingId, User user) {
+                                @GetParameter(required = true, value = "billingId") Long billingId, User user, Locale locale) {
         Long userId = user.getId();
         MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        messageTransport.setLocale(locale);
         boolean billingPaid = billingService.payBilling(userId, billingId, messageTransport);
         messageTransport.setMessage(request, response);
         if(!billingPaid){
@@ -48,7 +46,6 @@ public class BillingController {
     public WebResult getUserBillings(HttpServletRequest request, HttpServletResponse response, User user) {
         MessageTransport messageTransport = new CookieMessageTransport();
         messageTransport.processMessages(request, response);
-        HttpSession session = request.getSession();
         Pageable pageable = Pageable.of(request, 10, true);
         List<Billing> billings = billingService.findBillingsByUserId(user.getId(), pageable);
         request.setAttribute("billings", billings);

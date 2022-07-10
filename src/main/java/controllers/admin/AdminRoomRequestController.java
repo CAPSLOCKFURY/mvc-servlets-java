@@ -20,6 +20,7 @@ import web.base.security.annotations.ManagerOnly;
 import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
+import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 
@@ -44,9 +45,10 @@ public class AdminRoomRequestController {
 
     @ManagerOnly("")
     @WebMapping(url = "/admin/room-requests", method = RequestMethod.GET)
-    public WebResult listRoomRequests(HttpServletRequest request) {
-        RoomRequestOrdering requestOrdering = RoomRequestOrdering.valueOfOrDefault(request.getParameter("requestOrdering"));
-        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
+    public WebResult listRoomRequests(HttpServletRequest request, @GetParameter("requestOrdering") String requestOrder,
+                                      @GetParameter("orderDirection") String orderDir) {
+        RoomRequestOrdering requestOrdering = RoomRequestOrdering.valueOfOrDefault(requestOrder);
+        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(orderDir);
         Orderable orderable = new Orderable(requestOrdering.getColName(), orderDirection);
         RoomRequestStatus requestStatusFilter = RoomRequestStatus.valueOfOrDefault(request.getParameter("requestStatus"));
         Pageable pageable = Pageable.of(request, 10, true);
@@ -57,16 +59,16 @@ public class AdminRoomRequestController {
 
     @ManagerOnly("")
     @WebMapping(url = "/admin/room-request", method = RequestMethod.GET)
-    public WebResult getRoomRequest(HttpServletRequest request, @GetParameter(required = true, value = "id") Long requestId) {
-        String locale = getLocaleFromCookies(request.getCookies());
-        AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale);
+    public WebResult getRoomRequest(HttpServletRequest request, @GetParameter(required = true, value = "id") Long requestId, Locale locale,
+                                    @GetParameter("orderColName") String orderColName, @GetParameter("orderDirection") String orderDir) {
+        AdminRoomRequestDTO roomRequest = roomRequestService.getAdminRoomRequestById(requestId, locale.toLanguageTag());
         request.setAttribute("roomRequest", roomRequest);
         Pageable pageable = Pageable.of(request, 10, true);
-        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
-        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
+        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(orderColName);
+        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(orderDir);
         Orderable orderable = new Orderable(roomOrdering.getColName(), orderDirection);
         if(roomRequest.getStatus().equals("awaiting")) {
-            List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale, roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), orderable, pageable);
+            List<Room> suitableRooms = roomsService.findSuitableRoomsForRequest(locale.toLanguageTag(), roomRequest.getCheckInDate(), roomRequest.getCheckOutDate(), orderable, pageable);
             request.setAttribute("rooms", suitableRooms);
         }
         return new WebResult("/admin/admin-room-request.jsp", RequestDirection.FORWARD);

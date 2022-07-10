@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static utils.LocaleUtils.getLocaleFromCookies;
-
 @WebController
 public class AdminPDFReportController {
 
@@ -36,7 +34,7 @@ public class AdminPDFReportController {
     @ManagerOnly("")
     @WebMapping(url = "/admin/report/pdf", method = RequestMethod.POST)
     public WebResult generateReport(HttpServletRequest request, HttpServletResponse response,
-                                    @Form ReportConfigurationForm form) {
+                                    @Form ReportConfigurationForm form, Locale locale) {
         Pageable pageable = new Pageable(form.getPage(), form.getEntitiesPerPage());
         ServletOutputStream out = null;
         try {
@@ -46,7 +44,7 @@ public class AdminPDFReportController {
         }
         List<RoomRegistryPdfReportDto> data = roomsService.findDataForRoomRegistryReport(form, pageable);
         RoomRegistryPDFReport pdfReport = new RoomRegistryPDFReport(out, data, request);
-        pdfReport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        pdfReport.setLocale(locale);
         pdfReport.buildDocument();
         return new WebResult("", RequestDirection.VOID);
     }

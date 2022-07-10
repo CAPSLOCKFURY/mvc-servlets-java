@@ -23,6 +23,7 @@ import web.resolvers.annotations.Form;
 import web.resolvers.annotations.GetParameter;
 
 import java.util.List;
+import java.util.Locale;
 
 import static utils.LocaleUtils.getLocaleFromCookies;
 
@@ -32,20 +33,21 @@ public class RoomController {
     private final RoomsService roomsService = RoomsService.getInstance();
 
     @WebMapping(url = "", method = RequestMethod.GET)
-    public WebResult listRooms(HttpServletRequest request) {
+    public WebResult listRooms(HttpServletRequest request, @GetParameter("orderColName") String orderColName,
+                               @GetParameter("orderDirection") String orderDir, Locale locale) {
         Pageable pageable = Pageable.of(request, 10, true);
-        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(request.getParameter("orderColName"));
-        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(request.getParameter("orderDirection"));
-        List<Room> rooms = roomsService.getAllRooms(getLocaleFromCookies(request.getCookies()), new Orderable(roomOrdering.getColName(), orderDirection), pageable);
+        RoomOrdering roomOrdering = RoomOrdering.valueOfOrDefault(orderColName);
+        OrderDirection orderDirection = OrderDirection.valueOfOrDefault(orderDir);
+        List<Room> rooms = roomsService.getAllRooms(locale.toLanguageTag(), new Orderable(roomOrdering.getColName(), orderDirection), pageable);
         request.setAttribute("rooms", rooms);
         return new WebResult("/index.jsp", RequestDirection.FORWARD);
     }
 
     @WebMapping(url = "/room", method = RequestMethod.GET)
-    public WebResult getRoom(HttpServletRequest request, HttpServletResponse response, @GetParameter(value = "id", required = true) Long roomId) {
+    public WebResult getRoom(HttpServletRequest request, HttpServletResponse response, @GetParameter(value = "id", required = true) Long roomId, Locale locale) {
         FormErrorPRG errorsProcessor = new CookieFormErrorsPRG();
         errorsProcessor.processErrors(request, response);
-        RoomExtendedInfo room = roomsService.getExtendedRoomInfo(roomId, getLocaleFromCookies(request.getCookies()));
+        RoomExtendedInfo room = roomsService.getExtendedRoomInfo(roomId, locale.toLanguageTag());
         request.setAttribute("room", room);
         return new WebResult("room.jsp", RequestDirection.FORWARD);
     }

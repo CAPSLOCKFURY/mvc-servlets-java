@@ -41,7 +41,6 @@ public class ProfileController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile", method = RequestMethod.GET)
     public WebResult getProfile(HttpServletRequest request, User user) {
-        HttpSession session = request.getSession();
         Long userId = user.getId();
         User dbUser = userService.getUserById(userId);
         request.setAttribute("user", dbUser);
@@ -61,12 +60,11 @@ public class ProfileController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/update", method = RequestMethod.POST)
     public WebResult updateProfile(HttpServletRequest request, HttpServletResponse response,
-                                   @Form UserUpdateProfileForm form) {
+                                   @Form UserUpdateProfileForm form, User user) {
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new WebResult("/profile/update", RequestDirection.REDIRECT);
         }
-        User user = (User) request.getSession().getAttribute("user");
         boolean isUpdated = userService.updateUser(form, user.getId());
         if(!form.isValid()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));

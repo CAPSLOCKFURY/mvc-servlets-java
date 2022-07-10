@@ -22,11 +22,11 @@ public class ArgumentResolver {
     }
 
     public Object[] resolveArguments(HttpServletRequest request, HttpServletResponse response){
-        Object previousResolved = null;
-        boolean annotationResolved = false;
         Parameter[] parameters = method.getParameters();
         List<Object> resolvedArguments = new LinkedList<>();
         for (Parameter p : parameters){
+            Object previousResolved = null;
+            boolean annotationResolved = false;
             Annotation[] annotations = p.getAnnotations();
             for (Annotation a : annotations){
                 previousResolved = resolveAnnotation(request, response, previousResolved, a, p);

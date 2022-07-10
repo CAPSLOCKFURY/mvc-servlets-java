@@ -35,7 +35,7 @@ public class AuthController {
 
     @NonAuthenticatedOnly("")
     @WebMapping(url = "/login", method = RequestMethod.POST)
-    public WebResult login(HttpServletRequest request, HttpServletResponse response, @Form LoginForm form) {
+    public WebResult login(HttpServletResponse response, @Form LoginForm form, HttpSession session) {
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -46,7 +46,6 @@ public class AuthController {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new WebResult("/login", RequestDirection.REDIRECT);
         }
-        HttpSession session = request.getSession();
         session.setAttribute("user", user);
         return new WebResult("/profile", RequestDirection.REDIRECT);
     }
@@ -60,7 +59,7 @@ public class AuthController {
     }
 
     @WebMapping(url = "/register", method = RequestMethod.POST)
-    public WebResult register(HttpServletRequest request, HttpServletResponse response, @Form RegisterForm form) {
+    public WebResult register(HttpServletResponse response, @Form RegisterForm form, HttpSession session) {
         boolean isValid = form.validate();
         if (!isValid) {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
@@ -71,7 +70,6 @@ public class AuthController {
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
             return new WebResult("/register", RequestDirection.REDIRECT);
         }
-        HttpSession session = request.getSession();
         User user = new User(form);
         user.setId(id);
         session.setAttribute("user", user);
@@ -88,12 +86,11 @@ public class AuthController {
 
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/change-password", method = RequestMethod.POST)
-    public WebResult changePassword(HttpServletRequest request, HttpServletResponse response,
-                                    @Form ChangePasswordForm form, User user) {
+    public WebResult changePassword(HttpServletResponse response,
+                                    @Form ChangePasswordForm form, User user, HttpSession session) {
         if(!form.validate()){
             response.addCookie(CookieFormErrorsPRG.setErrorCookie(form.getErrors()));
         }
-        HttpSession session = request.getSession();
         Long userId = user.getId();
         boolean isChanged = userService.changeUserPassword(form, userId);
         if(!isChanged){

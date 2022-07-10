@@ -36,10 +36,10 @@ public class RoomRequestController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-room-requests/confirm", method = RequestMethod.POST)
     public WebResult confirmRoomRequest(HttpServletRequest request, HttpServletResponse response,
-                                        @GetParameter(required = true, value = "requestId") Long requestId) {
+                                        @GetParameter(required = true, value = "requestId") Long requestId, Locale locale, User user) {
         MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
-        boolean isConfirmed = roomRequestService.confirmRoomRequest(requestId, ((User)request.getSession().getAttribute("user")).getId(), messageTransport);
+        messageTransport.setLocale(locale);
+        boolean isConfirmed = roomRequestService.confirmRoomRequest(requestId, user.getId(), messageTransport);
         messageTransport.setMessage(request, response);
         if(isConfirmed) {
             return new WebResult("/profile/my-billings", RequestDirection.REDIRECT);
@@ -52,9 +52,9 @@ public class RoomRequestController {
     @WebMapping(url = "/profile/my-room-requests/decline", method = RequestMethod.POST)
     public WebResult declineAssignedRoom(HttpServletRequest request, HttpServletResponse response,
                                          @GetParameter(required = true, value = "requestId") Long requestId,
-                                         @GetParameter(required = true, value = "comment") String comment, User user) {
+                                         @GetParameter(required = true, value = "comment") String comment, User user, Locale locale) {
         MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        messageTransport.setLocale(locale);
         roomRequestService.declineAssignedRoom(comment, user.getId(), requestId, messageTransport);
         messageTransport.setMessage(request, response);
         return new WebResult("/profile/my-room-requests", RequestDirection.REDIRECT);
@@ -63,10 +63,10 @@ public class RoomRequestController {
     @AuthenticatedOnly("")
     @WebMapping(url = "/profile/my-room-requests/disable", method = RequestMethod.GET)
     public WebResult disableRoomRequest(HttpServletRequest request, HttpServletResponse response,
-                                        @GetParameter("id") Long id, User user) {
+                                        @GetParameter("id") Long id, User user, Locale locale) {
         Long userId = user.getId();
         MessageTransport messageTransport = new CookieMessageTransport();
-        messageTransport.setLocale(new Locale(getLocaleFromCookies(request.getCookies())));
+        messageTransport.setLocale(locale);
         roomRequestService.disableRoomRequest(id, userId, messageTransport);
         messageTransport.setMessage(request, response);
         return new WebResult("/profile/my-room-requests", RequestDirection.REDIRECT);
